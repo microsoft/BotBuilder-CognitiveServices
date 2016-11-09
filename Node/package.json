@@ -1,0 +1,28 @@
+{
+  "name": "botbuilder-cognitiveservices",
+  "version": "0.0.1",
+  "description": "Cognitive Services extensions for Microsoft Bot Builder.",
+  "main": "./lib/botbuilder-cognitiveservices.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/BotBuilder-CognitiveServices.git"
+  },
+  "keywords": [
+    "botbuilder",
+    "bots",
+    "cognitive",
+    "services",
+    "qna",
+    "maker"
+  ],
+  "author": "Microsoft Corp",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/BotBuilder-CognitiveServices/issues"
+  },
+  "homepage": "https://github.com/Microsoft/BotBuilder-CognitiveServices#readme",
+  "dependencies": {
+    "botbuilder": "^3.4.4",
+    "request": "^2.78.0"
+  }
+}

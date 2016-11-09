@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Microsoft.Bot.Builder.CognitiveServices</id>
+    <version>0.0.1</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Provide Cognitive Services extensions to the Microsoft Bot Builder. This includes dialogs and scorables for QnA Maker.
+    </description>
+    <projectUrl>https://github.com/Microsoft/BotBuilder-CognitiveServices</projectUrl>
+    <iconUrl>http://docs.botframework.com/images/bot_icon.png</iconUrl>
+    <summary>Cognitive Services extensions for Microsoft Bot Builder.</summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="Microsoft.Bot.Builder" version="3.3.1"/>
+      <dependency id="Newtonsoft.Json" version="8.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.dll" target="lib\net46"/>
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.pdb" target="lib\net46" />
+    <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
+  </files>
+</package>

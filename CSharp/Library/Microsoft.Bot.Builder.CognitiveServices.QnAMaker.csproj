@@ -7,8 +7,8 @@
     <ProjectGuid>{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.Bot.Builder.CognitiveServices</RootNamespace>
-    <AssemblyName>Microsoft.Bot.Builder.CognitiveServices</AssemblyName>
+    <RootNamespace>Microsoft.Bot.Builder.CognitiveServices.QnAMaker</RootNamespace>
+    <AssemblyName>Microsoft.Bot.Builder.CognitiveServices.QnAMaker</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -29,6 +29,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
@@ -95,7 +101,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="createpackage.cmd" />
-    <None Include="Microsoft.Bot.Builder.CognitiveServices.nuspec" />
+    <None Include="Microsoft.Bot.Builder.CognitiveServices.QnAMaker.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -136,13 +136,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\Microsoft.Bot.Builder.CognitiveServices.csproj">
-      <Project>{cbfe0d35-d6c2-4b25-a498-cfc474a2c3a5}</Project>
-      <Name>Microsoft.Bot.Builder.CognitiveServices</Name>
-    </ProjectReference>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\..\Library\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.csproj">
+      <Project>{cbfe0d35-d6c2-4b25-a498-cfc474a2c3a5}</Project>
+      <Name>Microsoft.Bot.Builder.CognitiveServices.QnAMaker</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

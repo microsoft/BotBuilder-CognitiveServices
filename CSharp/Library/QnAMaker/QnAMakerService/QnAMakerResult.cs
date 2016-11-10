@@ -33,7 +33,7 @@
 
 using Newtonsoft.Json;
 
-namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
+namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     public class QnAMakerResult
     {

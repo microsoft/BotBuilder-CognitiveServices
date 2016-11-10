@@ -18,8 +18,8 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.dll" target="lib\net46"/>
-    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.pdb" target="lib\net46" />
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.dll" target="lib\net46"/>
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.pdb" target="lib\net46" />
     <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
   </files>
 </package>

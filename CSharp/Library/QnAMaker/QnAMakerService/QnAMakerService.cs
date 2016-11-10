@@ -38,7 +38,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
+namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     public interface IQnAService
     {
@@ -47,14 +47,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
         /// </summary>
         /// <param name="queryText">The query text.</param>
         /// <returns>The query uri</returns>
-        Uri BuildRequest(string queryText, out string postBody, out string subscriptionKey);
+        Uri BuildRequest(string queryText, out QnAMakerRequestBody postBody, out string subscriptionKey);
 
         /// <summary>
         /// Query the QnA service using this uri.
         /// </summary>
         /// <param name="uri">The query uri</param>
         /// <returns>The QnA service result.</returns>
-        Task<QnAMakerResult> QueryService(Uri uri, string postBody, string subscriptionKey);
+        Task<QnAMakerResult> QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey);
     }
 
     /// <summary>
@@ -79,16 +79,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
             SetField.NotNull(out this.qnaInfo, nameof(qnaInfo), qnaInfo);
         }
 
-        Uri IQnAService.BuildRequest(string queryText, out string postBody, out string subscriptionKey)
+        Uri IQnAService.BuildRequest(string queryText, out QnAMakerRequestBody postBody, out string subscriptionKey)
         {
             var knowledgebaseId = this.qnaInfo.KnowledgebaseId;
             var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/generateanswer");
+            postBody = new QnAMakerRequestBody { question = queryText };
             subscriptionKey = this.qnaInfo.SubscriptionKey;
-            postBody = $"{{\"question\": \"{queryText}\"}}";
             return builder.Uri;
         }
 
-        async Task<QnAMakerResult> IQnAService.QueryService(Uri uri, string postBody, string subscriptionKey)
+        async Task<QnAMakerResult> IQnAService.QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey)
         {
             string json;
             
@@ -96,7 +96,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
             {
                 client.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
                 client.Headers.Add("Content-Type", "application/json");
-                json = client.UploadString(uri, postBody);
+                json = client.UploadString(uri, JsonConvert.SerializeObject(postBody));
             }
 
             try
@@ -116,6 +116,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
         }
     }
 
+    public class QnAMakerRequestBody
+    {
+        [JsonProperty("question")]
+        public string question { get; set; }
+    }
+
     /// <summary>
     /// QnA Service extension methods.
     /// </summary>
@@ -127,12 +133,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
         /// <param name="service">QnA service.</param>
         /// <param name="text">The query text.</param>
         /// <returns>The QnA result.</returns>
-        public static async Task<QnAMakerResult> QueryService(this IQnAService service, string text)
+        public static async Task<QnAMakerResult> QueryServiceAsync(this IQnAService service, string text)
         {
-            string postBody;
+            QnAMakerRequestBody postBody;
             string subscriptionKey;
             var uri = service.BuildRequest(text, out postBody, out subscriptionKey);
-            return await service.QueryService(uri, postBody, subscriptionKey);
+            return await service.QueryServiceAsync(uri, postBody, subscriptionKey);
         }
     }
 }

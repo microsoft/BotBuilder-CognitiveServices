@@ -34,7 +34,7 @@
 using System;
 using Microsoft.Bot.Builder.Internals.Fibers;
 
-namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
+namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     /// <summary>
     /// The QnA Knowledgebase information.

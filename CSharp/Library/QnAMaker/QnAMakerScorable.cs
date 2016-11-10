@@ -40,7 +40,7 @@ using Microsoft.Bot.Builder.Internals.Scorables;
 using System.Threading;
 using System;
 
-namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
+namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     /// <summary>
     /// A scorable specialized to handle QnA response from QnA Maker.
@@ -66,7 +66,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
             var message = item as IMessageActivity;
             if (message != null && message.Text != null)
             {
-                var tasks = service.QueryService(message.Text);
+                var tasks = service.QueryServiceAsync(message.Text);
 
                 if (!string.IsNullOrEmpty(tasks.Result.Answer) && tasks.Result.Score >= 0.0)
                 {

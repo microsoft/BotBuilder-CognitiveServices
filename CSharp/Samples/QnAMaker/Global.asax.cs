@@ -6,7 +6,7 @@ using System;
 using System.Reflection;
 using System.Web.Http;
 using QnAMakerSampleBot.Dialogs;
-using Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog;
+using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 
 namespace QnAMakerSampleBot
 {

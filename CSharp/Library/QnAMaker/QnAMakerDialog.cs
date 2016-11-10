@@ -39,7 +39,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Reflection;
 using System.Linq;
 
-namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
+namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     /// <summary>
     /// A dialog specialized to handle QnA response from QnA Maker.
@@ -81,10 +81,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMakerDialog
    
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
-                var tasks = this.services.Select(s => s.QueryService(message.Text)).ToArray();
-                await context.PostAsync(tasks.FirstOrDefault().Result.Answer);
-                context.Wait(MessageReceivedAsync);
+                var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
+
+                var maxValue = tasks.Max(x => x.Result.Score);
+                var answer = tasks.First(x => x.Result.Score == maxValue).Result.Answer;
+                await context.PostAsync(answer);
             }
+            context.Wait(MessageReceivedAsync);
         }
     }
 }

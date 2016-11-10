@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QnAMakerSampleBot", "Sample
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{F8F3BE81-DC5E-4F9A-ACAA-18C3BF1409BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.CognitiveServices", "Library\Microsoft.Bot.Builder.CognitiveServices.csproj", "{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.CognitiveServices.QnAMaker", "Library\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.csproj", "{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

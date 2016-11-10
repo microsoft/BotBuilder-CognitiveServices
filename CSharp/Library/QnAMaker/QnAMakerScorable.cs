@@ -70,7 +70,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                 if (!string.IsNullOrEmpty(response.Answer) && response.Score >= 0.0)
                 {
-                    return response.Answer;
+                    return response;
                 }
             }
             return false;

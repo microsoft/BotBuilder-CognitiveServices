@@ -66,11 +66,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             var message = item as IMessageActivity;
             if (message != null && message.Text != null)
             {
-                var tasks = service.QueryServiceAsync(message.Text);
+                var response = await service.QueryServiceAsync(message.Text);
 
-                if (!string.IsNullOrEmpty(tasks.Result.Answer) && tasks.Result.Score >= 0.0)
+                if (!string.IsNullOrEmpty(response.Answer) && response.Score >= 0.0)
                 {
-                    return tasks.Result;
+                    return response;
                 }
             }
             return false;

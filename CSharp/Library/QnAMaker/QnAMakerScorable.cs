@@ -67,10 +67,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             if (message != null && message.Text != null)
             {
                 var response = await service.QueryServiceAsync(message.Text);
-
+         
                 if (!string.IsNullOrEmpty(response.Answer) && response.Score >= 0.0)
                 {
-                    return response.Answer;
+                    return response;
                 }
             }
             return false;

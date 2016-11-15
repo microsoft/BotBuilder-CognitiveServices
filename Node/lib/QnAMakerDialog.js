@@ -36,14 +36,13 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var botbuilder = require('botbuilder');
+var builder = require('botbuilder');
 var request = require('request');
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
 var QnAMakerDialog = (function (_super) {
     __extends(QnAMakerDialog, _super);
     function QnAMakerDialog(options) {
-        if (options === void 0) { options = {}; }
         _super.call(this);
         this.options = options;
         if (typeof this.options.qnaThreshold !== 'number') {
@@ -52,11 +51,18 @@ var QnAMakerDialog = (function (_super) {
         else {
             this.answerThreshold = this.options.qnaThreshold;
         }
+        if (this.options.defaultMessage && this.options.defaultMessage !== "") {
+            this.defaultNoMatchMessage = this.options.defaultMessage;
+        }
+        else {
+            this.defaultNoMatchMessage = "No match found!";
+        }
         this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
         this.ocpApimSubscriptionKey = this.options.subscriptionKey;
     }
     QnAMakerDialog.prototype.replyReceived = function (session) {
         var threshold = this.answerThreshold;
+        var noMatchMessage = this.defaultNoMatchMessage;
         var postBody = '{"question":"' + session.message.text + '"}';
         request({
             url: this.kbUri,
@@ -75,16 +81,20 @@ var QnAMakerDialog = (function (_super) {
                         session.send(result.answer);
                     }
                     else {
-                        session.send("No good match found!");
+                        session.send(noMatchMessage);
                     }
                 }
             }
             catch (e) {
-                console.log(e);
-                session.send("Not able to fetch response from server.");
+                this.emitError(session, e);
             }
         });
     };
+    QnAMakerDialog.prototype.emitError = function (session, err) {
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
+        session.error(err);
+    };
     return QnAMakerDialog;
-}(botbuilder.Dialog));
+}(builder.Dialog));
 exports.QnAMakerDialog = QnAMakerDialog;

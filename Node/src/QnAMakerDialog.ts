@@ -31,24 +31,26 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import botbuilder = require('botbuilder');
-import request = require('request');
+import * as builder from 'botbuilder';
+import * as request from 'request';
 
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
 
 export interface IQnADialogOptions {
 	qnaThreshold?: number;
-	knowledgeBaseId?: string;
-	subscriptionKey?:string;
+	knowledgeBaseId: string;
+	subscriptionKey: string;
+	defaultMessage?: string;
 }
 
-export class QnAMakerDialog extends botbuilder.Dialog {
+export class QnAMakerDialog extends builder.Dialog {
 	private kbUri: string;
 	private answerThreshold: number;
 	private ocpApimSubscriptionKey: string;
+	private defaultNoMatchMessage: string;
 
-	constructor(private options: IQnADialogOptions = {}){
+	constructor(private options: IQnADialogOptions){
 		super();
 		if(typeof this.options.qnaThreshold !== 'number'){
 			this.answerThreshold = 30.0;
@@ -57,13 +59,22 @@ export class QnAMakerDialog extends botbuilder.Dialog {
 		{
 			this.answerThreshold = this.options.qnaThreshold;
 		}
+		if(this.options.defaultMessage && this.options.defaultMessage !== "")
+		{
+			this.defaultNoMatchMessage = this.options.defaultMessage;
+		}
+		else
+		{
+			this.defaultNoMatchMessage = "No match found!";
+		}
 
 		this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
 		this.ocpApimSubscriptionKey = this.options.subscriptionKey
 	}
 
-	public replyReceived(session: botbuilder.Session): void {
+	public replyReceived(session: builder.Session): void {
         var threshold = this.answerThreshold;
+		var noMatchMessage = this.defaultNoMatchMessage;
         var postBody = '{"question":"' + session.message.text + '"}';
         request({
 				url: this.kbUri,
@@ -86,14 +97,19 @@ export class QnAMakerDialog extends botbuilder.Dialog {
                         }
                         else
                         {
-                            session.send("No good match found!");
+                            session.send(noMatchMessage);
                         }
                     }
                 } catch (e) {
-                    console.log(e);
-                    session.send("Not able to fetch response from server.");
+                    this.emitError(session, e);
                 }
             }
         );
     }
+	
+	private emitError(session: builder.Session, err: Error): void {
+		var m = err.toString();
+		err = err instanceof Error ? err : new Error(m);
+		session.error(err);
+	}
 }

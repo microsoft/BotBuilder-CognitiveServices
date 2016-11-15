@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "sourceMap": false,
+        "noImplicitAny": false,
+        "outDir": "../built",
+        "noEmitOnError": false,
+        "removeComments": false
+    },
+    "exclude": [
+        "botbuilder-cognitiveservices.d.ts"
+    ]
+}

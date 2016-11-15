@@ -31,9 +31,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import * as QnAMakerDialog from './QnAMakerDialog';
+import { QnAMakerDialog } from './QnAMakerDialog';
 
 declare var exports: any;
 
-exports.QnAMakerDialog = QnAMakerDialog.QnAMakerDialog;
+exports.QnAMakerDialog = QnAMakerDialog;
 

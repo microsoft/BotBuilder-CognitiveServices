@@ -31,5 +31,5 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 "use strict";
-var QnAMakerDialog = require('./QnAMakerDialog');
-exports.QnAMakerDialog = QnAMakerDialog.QnAMakerDialog;
+var QnAMakerDialog_1 = require('./QnAMakerDialog');
+exports.QnAMakerDialog = QnAMakerDialog_1.QnAMakerDialog;

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Cognitive Services extensions for Microsoft Bot Builder.",
   "main": "./lib/botbuilder-cognitiveservices.js",
+  "typings": "./lib/botbuilder-cognitiveservices.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Microsoft/BotBuilder-CognitiveServices.git"

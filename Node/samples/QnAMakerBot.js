@@ -1,7 +1,7 @@
 
 var restify = require('restify');
 var builder = require('botbuilder');
-var qnaMakerDialog = require('../lib/QnAMakerDialog');
+var cognitiveservices = require('../lib/botbuilder-cognitiveservices');
 
 //=========================================================
 // Bot Setup
@@ -25,11 +25,10 @@ server.post('/api/messages', connector.listen());
 // Bots Dialogs
 //=========================================================
 
-//var modelUri = 'http://qnaservice.cloudapp.net/KBService.svc/GetAnswer?kbid=&question=';
-
-var dialog = new qnaMakerDialog.QnAMakerDialog({
+var dialog = new cognitiveservices.QnAMakerDialog({
 	knowledgeBaseId: 'set your kbid here', 
 	subscriptionKey: 'set your subscription key here', 
-	qnaThreshold: 0.0});
+	defaultMessage: 'No match! Try changing the query terms!',
+	qnaThreshold: 10.0});
 
 bot.dialog('/', dialog);

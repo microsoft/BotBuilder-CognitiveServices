@@ -1,0 +1,9 @@
+CSharp/Library/bin/*
+CSharp/Library/obj/*
+CSharp/packages/*
+CSharp/Samples/*/bin/*
+CSharp/Samples/*/obj/*
+CSharp/.vs/*
+Node/node_modules/*
+Node/*/node_modules/*
+Node/built/*

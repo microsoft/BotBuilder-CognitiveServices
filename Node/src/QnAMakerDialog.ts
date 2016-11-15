@@ -86,7 +86,7 @@ export class QnAMakerDialog extends builder.Dialog {
 				body: postBody
 			}, 
 		
-			function(error, response, body){
+			function(error: Error, response: any, body: string){
                 try {
                     console.log(body);
                     if(!error){

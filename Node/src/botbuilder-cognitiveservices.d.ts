@@ -1,4 +1,6 @@
-﻿/** Options used to configure an IQnADialogOptions. */
+﻿import * as builder from 'botbuilder';
+
+/** Options used to configure an IQnADialogOptions. */
 export interface IQnADialogOptions {
     /** (Optional) minimum score needed to trigger the response. The default value is 30.0. */
     qnaThreshold?: number;
@@ -15,7 +17,7 @@ export interface IQnADialogOptions {
 }
 
 /** Fetches the best matching answer response from QnA Maker's Knowledge Base. */
-export class QnAMakerDialog extends botbuilder.Dialog {
+export class QnAMakerDialog extends builder.Dialog {
     /**  
     * Constructs a new instance of an QnAMakerDialog.
     * @param options used to initialize the dialog.
@@ -26,5 +28,5 @@ export class QnAMakerDialog extends botbuilder.Dialog {
     * Processes messages received from the user. Called by the dialog system. 
     * @param session Session object for the current conversation.
     */
-    replyReceived(session: Session): void;
+    replyReceived(session: builder.Session): void;
 }

@@ -32,10 +32,7 @@
 //
 
 import * as builder from 'botbuilder';
-import * as request from 'request';
-
-var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
-var qnaApi = 'generateanswer';
+import { QnAMakerRecognizer, IQnAMakerResult } from './QnAMakerRecognizer'; 
 
 export interface IQnADialogOptions {
 	qnaThreshold?: number;
@@ -45,10 +42,11 @@ export interface IQnADialogOptions {
 }
 
 export class QnAMakerDialog extends builder.Dialog {
-	private kbUri: string;
+	private kbId: string;
 	private answerThreshold: number;
 	private ocpApimSubscriptionKey: string;
-	private defaultNoMatchMessage: string;
+    private defaultNoMatchMessage: string;
+    private recognizers: QnAMakerRecognizer;
 
 	constructor(private options: IQnADialogOptions){
 		super();
@@ -68,45 +66,44 @@ export class QnAMakerDialog extends builder.Dialog {
 			this.defaultNoMatchMessage = "No match found!";
 		}
 
-		this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
-		this.ocpApimSubscriptionKey = this.options.subscriptionKey
+        this.kbId = this.options.knowledgeBaseId;
+        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
+	    this.recognizers = new QnAMakerRecognizer(this.kbId, this.ocpApimSubscriptionKey);
 	}
 
-	public replyReceived(session: builder.Session): void {
+	public replyReceived(session: builder.Session, recognizeResult?: IQnAMakerResult): void {
         var threshold = this.answerThreshold;
-		var noMatchMessage = this.defaultNoMatchMessage;
-        var postBody = '{"question":"' + session.message.text + '"}';
-        request({
-				url: this.kbUri,
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Ocp-Apim-Subscription-Key': this.ocpApimSubscriptionKey
-				},
-				body: postBody
-			}, 
-		
-			function(error: Error, response: any, body: string){
-                try {
-                    console.log(body);
-                    if(!error){
-                        var result = JSON.parse(body);
-                        if(parseFloat(result.score) >= threshold)
-                        {
-                            session.send(result.answer);
+        var noMatchMessage = this.defaultNoMatchMessage;
+        if (!recognizeResult) {
+            var locale = session.preferredLocale();
+            this.recognize({ message: session.message, locale: locale, dialogData: session.dialogData, activeDialog: true }, (error, result) => {
+                    try {
+                        if(!error){
+                            this.invokeAnswer(session, result, threshold, noMatchMessage);
                         }
-                        else
-                        {
-                            session.send(noMatchMessage);
-                        }
+                    } catch (e) {
+                        this.emitError(session, e);
                     }
-                } catch (e) {
-                    this.emitError(session, e);
                 }
-            }
-        );
+            );
+        } else {
+            this.invokeAnswer(session, recognizeResult, threshold, noMatchMessage);
+        }
     }
-	
+
+    public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
+        this.recognizers.recognize(context, cb);
+    }
+
+    private invokeAnswer(session: builder.Session, recognizeResult: IQnAMakerResult, threshold: number, noMatchMessage: string): void {
+        if (recognizeResult.score >= threshold) {
+            session.send(recognizeResult.answer);
+        }
+        else {
+            session.send(noMatchMessage);
+        }
+    }
+
 	private emitError(session: builder.Session, err: Error): void {
 		var m = err.toString();
 		err = err instanceof Error ? err : new Error(m);

@@ -97,12 +97,16 @@
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerModule.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerResult.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerService.cs" />
+    <Compile Include="Resource.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="createpackage.cmd" />
     <None Include="Microsoft.Bot.Builder.CognitiveServices.QnAMaker.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

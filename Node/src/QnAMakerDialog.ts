@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder Cognitive Services Github:
 // https://github.com/Microsoft/BotBuilder-CognitiveServices
 // 
 // Copyright (c) Microsoft Corporation
@@ -32,26 +32,18 @@
 //
 
 import * as builder from 'botbuilder';
-import { QnAMakerRecognizer, IQnAMakerResult } from './QnAMakerRecognizer'; 
-
-export interface IQnADialogOptions {
-	qnaThreshold?: number;
-	knowledgeBaseId: string;
-	subscriptionKey: string;
-	defaultMessage?: string;
-}
+import { QnAMakerRecognizer, IQnAMakerResult, IQnAMakerOptions } from './QnAMakerRecognizer'; 
 
 export class QnAMakerDialog extends builder.Dialog {
-	private kbId: string;
 	private answerThreshold: number;
-	private ocpApimSubscriptionKey: string;
-    private defaultNoMatchMessage: string;
-    private recognizers: QnAMakerRecognizer;
+	private defaultNoMatchMessage: string;
+    private recognizers: builder.IntentRecognizerSet;
 
-	constructor(private options: IQnADialogOptions){
-		super();
+    constructor(private options: IQnAMakerOptions){
+        super();
+        this.recognizers = new builder.IntentRecognizerSet(options);
 		if(typeof this.options.qnaThreshold !== 'number'){
-			this.answerThreshold = 30.0;
+			this.answerThreshold = 0.3;
 		}
 		else
 		{
@@ -65,18 +57,17 @@ export class QnAMakerDialog extends builder.Dialog {
 		{
 			this.defaultNoMatchMessage = "No match found!";
 		}
-
-        this.kbId = this.options.knowledgeBaseId;
-        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
-	    this.recognizers = new QnAMakerRecognizer(this.kbId, this.ocpApimSubscriptionKey);
 	}
 
-	public replyReceived(session: builder.Session, recognizeResult?: IQnAMakerResult): void {
+    public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
         var noMatchMessage = this.defaultNoMatchMessage;
         if (!recognizeResult) {
             var locale = session.preferredLocale();
-            this.recognize({ message: session.message, locale: locale, dialogData: session.dialogData, activeDialog: true }, (error, result) => {
+            var context = <builder.IRecognizeDialogContext>session.toRecognizeContext();
+            context.dialogData = session.dialogData;
+            context.activeDialog = true;
+            this.recognize(context, (error, result) => {
                     try {
                         if(!error){
                             this.invokeAnswer(session, result, threshold, noMatchMessage);
@@ -95,9 +86,17 @@ export class QnAMakerDialog extends builder.Dialog {
         this.recognizers.recognize(context, cb);
     }
 
-    private invokeAnswer(session: builder.Session, recognizeResult: IQnAMakerResult, threshold: number, noMatchMessage: string): void {
-        if (recognizeResult.score >= threshold) {
-            session.send(recognizeResult.answer);
+    public recognizer(plugin: builder.IIntentRecognizer): this {
+        // Append recognizer
+        this.recognizers.recognizer(plugin);
+        return this;
+
+    }
+	
+    private invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
+        var qnaMakerResult = recognizeResult as IQnAMakerResult;
+        if (qnaMakerResult.score >= threshold) {
+            session.send(qnaMakerResult.answer);
         }
         else {
             session.send(noMatchMessage);

@@ -5,14 +5,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var builder = require('botbuilder');
-var QnAMakerRecognizer_1 = require('./QnAMakerRecognizer');
 var QnAMakerDialog = (function (_super) {
     __extends(QnAMakerDialog, _super);
     function QnAMakerDialog(options) {
         _super.call(this);
         this.options = options;
+        this.recognizers = new builder.IntentRecognizerSet(options);
         if (typeof this.options.qnaThreshold !== 'number') {
-            this.answerThreshold = 30.0;
+            this.answerThreshold = 0.3;
         }
         else {
             this.answerThreshold = this.options.qnaThreshold;
@@ -23,9 +23,6 @@ var QnAMakerDialog = (function (_super) {
         else {
             this.defaultNoMatchMessage = "No match found!";
         }
-        this.kbId = this.options.knowledgeBaseId;
-        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
-        this.recognizers = new QnAMakerRecognizer_1.QnAMakerRecognizer(this.kbId, this.ocpApimSubscriptionKey);
     }
     QnAMakerDialog.prototype.replyReceived = function (session, recognizeResult) {
         var _this = this;
@@ -33,7 +30,10 @@ var QnAMakerDialog = (function (_super) {
         var noMatchMessage = this.defaultNoMatchMessage;
         if (!recognizeResult) {
             var locale = session.preferredLocale();
-            this.recognize({ message: session.message, locale: locale, dialogData: session.dialogData, activeDialog: true }, function (error, result) {
+            var context = session.toRecognizeContext();
+            context.dialogData = session.dialogData;
+            context.activeDialog = true;
+            this.recognize(context, function (error, result) {
                 try {
                     if (!error) {
                         _this.invokeAnswer(session, result, threshold, noMatchMessage);
@@ -51,11 +51,26 @@ var QnAMakerDialog = (function (_super) {
     QnAMakerDialog.prototype.recognize = function (context, cb) {
         this.recognizers.recognize(context, cb);
     };
+    QnAMakerDialog.prototype.recognizer = function (plugin) {
+        this.recognizers.recognizer(plugin);
+        return this;
+    };
     QnAMakerDialog.prototype.invokeAnswer = function (session, recognizeResult, threshold, noMatchMessage) {
-        if (recognizeResult.score >= threshold) {
-            session.send(recognizeResult.answer);
+        var qnaMakerResult = recognizeResult;
+        console.log('*****************');
+        console.log(qnaMakerResult.score);
+        console.log(threshold);
+        console.log('********XX*********');
+        if (qnaMakerResult.score >= threshold) {
+            console.log('*****************');
+            console.log(qnaMakerResult.answer);
+            console.log('********XX*********');
+            session.send(qnaMakerResult.answer);
         }
         else {
+            console.log('*****************');
+            console.log('INSIDE NO MATCH');
+            console.log('********XX*********');
             session.send(noMatchMessage);
         }
     };

@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder Cognitive Services Github:
 // https://github.com/Microsoft/BotBuilder-CognitiveServices
 // 
 // Copyright (c) Microsoft Corporation
@@ -37,23 +37,28 @@ import * as request from 'request';
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
 
-export interface IQnAMakerResult {
+export interface IQnAMakerResult extends builder.IIntentRecognizerResult {
     answer: string;
-    score: number;
 }
 
-export class QnAMakerRecognizer {
-	private kbUri: string;
-	private ocpApimSubscriptionKey: string;
-	
-    constructor(private knowledgeBaseId: string, subscriptionKey: string){
-		
-		this.kbUri = qnaMakerServiceEndpoint + knowledgeBaseId + '/' + qnaApi;
-		this.ocpApimSubscriptionKey = subscriptionKey
-	}
+export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
+    knowledgeBaseId: string;
+    subscriptionKey: string;
+    qnaThreshold?: number;
+    defaultMessage?: string;
+}
+
+export class QnAMakerRecognizer implements builder.IIntentRecognizer {
+    private kbUri: string;
+    private ocpApimSubscriptionKey: string;
+    
+    constructor(private options: IQnAMakerOptions){
+        this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
+        this.ocpApimSubscriptionKey = options.subscriptionKey;
+    }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
-        var result: IQnAMakerResult = { score: 0.0, answer: null };
+        var result: IQnAMakerResult = { score: 0.0, answer: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
             QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, (error, result) => {
@@ -85,6 +90,7 @@ export class QnAMakerRecognizer {
                         console.log(body);
                         if (!error) {
                             result = JSON.parse(body);
+                            result.score = result.score / 100;
                         }
                     } catch (e) {
                         error = e;

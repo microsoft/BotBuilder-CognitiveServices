@@ -3,13 +3,17 @@ var request = require('request');
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
 var QnAMakerRecognizer = (function () {
-    function QnAMakerRecognizer(knowledgeBaseId, subscriptionKey) {
-        this.knowledgeBaseId = knowledgeBaseId;
-        this.kbUri = qnaMakerServiceEndpoint + knowledgeBaseId + '/' + qnaApi;
-        this.ocpApimSubscriptionKey = subscriptionKey;
+    function QnAMakerRecognizer(options) {
+        this.options = options;
+        this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
+        this.ocpApimSubscriptionKey = options.subscriptionKey;
+        console.log('*****************');
+        console.log(this.kbUri);
+        console.log(this.ocpApimSubscriptionKey);
+        console.log('********XX*********');
     }
     QnAMakerRecognizer.prototype.recognize = function (context, cb) {
-        var result = { score: 0.0, answer: null };
+        var result = { score: 0.0, answer: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
             QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, function (error, result) {
@@ -39,6 +43,7 @@ var QnAMakerRecognizer = (function () {
                     console.log(body);
                     if (!error) {
                         result = JSON.parse(body);
+                        result.score = result.score / 100;
                     }
                 }
                 catch (e) {

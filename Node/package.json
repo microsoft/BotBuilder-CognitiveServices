@@ -23,7 +23,8 @@
   },
   "homepage": "https://github.com/Microsoft/BotBuilder-CognitiveServices#readme",
   "dependencies": {
-    "botbuilder": "^3.4.4",
-    "request": "^2.78.0"
+    "botbuilder": "^3.5.0-rc8",
+    "request": "^2.78.0",
+    "restify": "^4.3.0"
   }
 }

@@ -4,7 +4,7 @@
 // 
 // Microsoft Bot Framework: http://botframework.com
 // 
-// Bot Builder SDK Github:
+// Bot Builder Cognitive Services Github:
 // https://github.com/Microsoft/BotBuilder-CognitiveServices
 // 
 // Copyright (c) Microsoft Corporation

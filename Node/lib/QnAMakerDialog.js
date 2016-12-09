@@ -57,20 +57,10 @@ var QnAMakerDialog = (function (_super) {
     };
     QnAMakerDialog.prototype.invokeAnswer = function (session, recognizeResult, threshold, noMatchMessage) {
         var qnaMakerResult = recognizeResult;
-        console.log('*****************');
-        console.log(qnaMakerResult.score);
-        console.log(threshold);
-        console.log('********XX*********');
         if (qnaMakerResult.score >= threshold) {
-            console.log('*****************');
-            console.log(qnaMakerResult.answer);
-            console.log('********XX*********');
             session.send(qnaMakerResult.answer);
         }
         else {
-            console.log('*****************');
-            console.log('INSIDE NO MATCH');
-            console.log('********XX*********');
             session.send(noMatchMessage);
         }
     };

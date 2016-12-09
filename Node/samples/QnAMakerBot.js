@@ -26,14 +26,12 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-	//knowledgeBaseId: 'set your kbid here', 
-	//subscriptionKey: 'set your subscription key here'});
-	knowledgeBaseId: 'c677b0580d784b9097e173ae1f552f7b', 
-	subscriptionKey: '30c2e88b4ff142adbf595ad1ba9020b2'});
-
-var dialog = new cognitiveservices.QnAMakerDialog({ 
+	knowledgeBaseId: 'set your kbid here', 
+	subscriptionKey: 'set your subscription key here'});
+	
+var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({ 
 	recognizers: [recognizer],
 	defaultMessage: 'No match! Try changing the query terms!',
 	qnaThreshold: 0.3});
 
-bot.dialog('/', dialog);
+bot.dialog('/', basicQnAMakerDialog);

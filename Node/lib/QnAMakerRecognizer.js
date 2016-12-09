@@ -7,10 +7,6 @@ var QnAMakerRecognizer = (function () {
         this.options = options;
         this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
         this.ocpApimSubscriptionKey = options.subscriptionKey;
-        console.log('*****************');
-        console.log(this.kbUri);
-        console.log(this.ocpApimSubscriptionKey);
-        console.log('********XX*********');
     }
     QnAMakerRecognizer.prototype.recognize = function (context, cb) {
         var result = { score: 0.0, answer: null, intent: null };

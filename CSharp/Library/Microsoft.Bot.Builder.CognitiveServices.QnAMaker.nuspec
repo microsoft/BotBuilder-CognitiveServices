@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Microsoft.Bot.Builder.CognitiveServices</id>
+    <version>1.0.0</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Provide Cognitive Services extensions to the Microsoft Bot Builder. This includes dialogs and scorables for QnA Maker.
+    </description>
+    <projectUrl>https://github.com/Microsoft/BotBuilder-CognitiveServices</projectUrl>
+    <iconUrl>http://docs.botframework.com/images/bot_icon.png</iconUrl>
+    <summary>Cognitive Services extensions for Microsoft Bot Builder.</summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="Microsoft.Bot.Builder" version="3.3.3"/>
+      <dependency id="Newtonsoft.Json" version="8.0.3" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.dll" target="lib\net46"/>
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.pdb" target="lib\net46" />
+    <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
+    <file src="bin\release\ar\*.dll" target="lib\net46\ar"/>
+    <file src="bin\release\en\*.dll" target="lib\net46\en"/>
+    <file src="bin\release\es\*.dll" target="lib\net46\es"/>
+    <file src="bin\release\fa\*.dll" target="lib\net46\fa"/>
+    <file src="bin\release\fr\*.dll" target="lib\net46\fr"/>
+    <file src="bin\release\ja\*.dll" target="lib\net46\ja"/>
+    <file src="bin\release\ru\*.dll" target="lib\net46\ru"/>
+    <file src="bin\release\zh-hans\*.dll" target="lib\net46\zh-hans"/>
+    <file src="bin\release\de-dE\*.dll" target="lib\net46\de-dE"/>
+    <file src="bin\release\cs\*.dll" target="lib\net46\cs"/>
+  </files>
+</package>

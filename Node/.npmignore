@@ -1,0 +1,5 @@
+/built
+/samples
+/node_modules
+/src
+/**/.vscode

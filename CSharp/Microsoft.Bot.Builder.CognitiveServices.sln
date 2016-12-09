@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{356A4EE2-684F-461A-94E0-323782163FF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QnAMaker", "QnAMaker", "{ACBCF350-DC7A-4F19-A83F-ADB08F5A8778}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QnAMakerSampleBot", "Samples\QnAMaker\QnAMakerSampleBot.csproj", "{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{F8F3BE81-DC5E-4F9A-ACAA-18C3BF1409BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.CognitiveServices.QnAMaker", "Library\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.csproj", "{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACBCF350-DC7A-4F19-A83F-ADB08F5A8778} = {356A4EE2-684F-461A-94E0-323782163FF8}
+		{A8BA1066-5695-4D71-ABB4-65E5A5E0C3D4} = {ACBCF350-DC7A-4F19-A83F-ADB08F5A8778}
+		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5} = {F8F3BE81-DC5E-4F9A-ACAA-18C3BF1409BB}
+	EndGlobalSection
+EndGlobal

@@ -27,6 +27,11 @@ export class QnAMakerDialog extends builder.Dialog {
     /**
     * Processes messages received from the user. Called by the dialog system. 
     * @param session Session object for the current conversation.
+    * @param recognizeResult (Optional) recognition results returned from a prior call to the dialogs [recognize()](#recognize) method. 
     */
-    replyReceived(session: builder.Session): void;
+    replyReceived(session: builder.Session, recognizeResult?: IQnAMakerResult): void;
+
+    /** Attempts to find an answer to users text utterance from QnA Maker knowledge base. */
+    recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void;
 }
+

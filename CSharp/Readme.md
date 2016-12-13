@@ -47,7 +47,7 @@ public class BasicQnAMakerDialog : QnAMakerDialog
 ````
 
 ## Sample Bot
-You can find a sample bot that uses the QnAMakerDialog here : [FAQ Bot](https://docs.botframework.com/en-us/bot-intelligence/knowledge/#example-faq-bot)
+You can find a sample bot that uses the QnAMakerDialog [here](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/CSharp/Samples/QnAMaker)
 
 ## More Information
 Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and QnA Maker:

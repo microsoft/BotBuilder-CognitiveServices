@@ -37,6 +37,7 @@ using System.Web;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Newtonsoft.Json;
 using System.Net;
+using System.Text;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -94,8 +95,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             
             using (WebClient client = new WebClient())
             {
+                //Set the encoding to UTF8
+                client.Encoding = Encoding.UTF8;
+
+                //Add the subscription key header
                 client.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
                 client.Headers.Add("Content-Type", "application/json");
+                
                 json = client.UploadString(uri, JsonConvert.SerializeObject(postBody));
             }
 

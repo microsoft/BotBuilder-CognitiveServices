@@ -106,7 +106,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource.resx" />
+    <EmbeddedResource Include="Resource\Resource.de-de.resx" />
+    <EmbeddedResource Include="Resource\Resource.en.resx" />
+    <EmbeddedResource Include="Resource\Resource.es.resx" />
+    <EmbeddedResource Include="Resource\Resource.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

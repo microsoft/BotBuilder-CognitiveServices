@@ -1,7 +1,9 @@
 "use strict";
 var request = require('request');
+var entities = require('html-entities');
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
+var htmlentities = new entities.AllHtmlEntities();
 var QnAMakerRecognizer = (function () {
     function QnAMakerRecognizer(options) {
         this.options = options;
@@ -40,6 +42,7 @@ var QnAMakerRecognizer = (function () {
                     if (!error) {
                         result = JSON.parse(body);
                         result.score = result.score / 100;
+                        result.answer = htmlentities.decode(result.answer);
                     }
                 }
                 catch (e) {

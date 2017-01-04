@@ -111,6 +111,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 result.Score /= 100;
                 if (result.Score >= qnaInfo.ScoreThreshold)
                 {
+                    result.Answer = HttpUtility.HtmlDecode(result.Answer);
                     return result;
                 }
                 return new QnAMakerResult { Answer = qnaInfo.DefaultMessage, Score = 0.0 };

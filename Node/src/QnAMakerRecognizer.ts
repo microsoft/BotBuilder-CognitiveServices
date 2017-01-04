@@ -33,9 +33,11 @@
 
 import * as builder from 'botbuilder';
 import * as request from 'request';
+import * as entities from 'html-entities';
 
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
 var qnaApi = 'generateanswer';
+var htmlentities = new entities.AllHtmlEntities();
 
 export interface IQnAMakerResult extends builder.IIntentRecognizerResult {
     answer: string;
@@ -91,6 +93,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                         if (!error) {
                             result = JSON.parse(body);
                             result.score = result.score / 100;
+                            result.answer = htmlentities.decode(result.answer);
                         }
                     } catch (e) {
                         error = e;

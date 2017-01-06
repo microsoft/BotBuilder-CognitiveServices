@@ -73,7 +73,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             if (string.IsNullOrEmpty(defaultMessage))
             {
-                defaultMessage = Resource.defaultMessage;
+                defaultMessage = Resource.Resource.defaultMessage;
             }
             SetField.NotNull(out this.SubscriptionKey, nameof(subscriptionKey), subscriptionKey);
             SetField.NotNull(out this.KnowledgebaseId, nameof(knowledgebaseId), knowledgebaseId);

@@ -97,7 +97,11 @@
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerModule.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerResult.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerService.cs" />
-    <Compile Include="Resource.Designer.cs" />
+    <Compile Include="Resource\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -114,7 +118,11 @@
     <EmbeddedResource Include="Resource\Resource.fa.resx" />
     <EmbeddedResource Include="Resource\Resource.fr.resx" />
     <EmbeddedResource Include="Resource\Resource.ja.resx" />
-    <EmbeddedResource Include="Resource\Resource.resx" />
+    <EmbeddedResource Include="Resource\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resource\Resource.zh-hans.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Microsoft.Bot.Builder.CognitiveServices</id>
-    <version>1.0.2</version>
+    <version>$version$</version>
     <authors>Microsoft</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
@@ -13,13 +13,14 @@
     <summary>Cognitive Services extensions for Microsoft Bot Builder.</summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="Microsoft.Bot.Builder" version="3.3.3"/>
+      <dependency id="Microsoft.Bot.Builder" version="$builder$"/>
       <dependency id="Newtonsoft.Json" version="8.0.3" />
     </dependencies>
   </metadata>
   <files>
     <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.dll" target="lib\net46"/>
     <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.pdb" target="lib\net46" />
+    <file src="bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.xml" target="lib\net46" />
     <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
     <file src="bin\release\ar\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\ar"/>
     <file src="bin\release\en\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\en"/>

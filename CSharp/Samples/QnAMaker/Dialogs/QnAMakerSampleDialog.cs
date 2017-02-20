@@ -2,9 +2,11 @@
 using Microsoft.Bot.Connector;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using System;
 
 namespace QnAMakerSampleBot.Dialogs
 {
+    [Serializable]
     public sealed class DummyEchoDialog : IDialog<IMessageActivity>
     {
         async Task IDialog<IMessageActivity>.StartAsync(IDialogContext context)

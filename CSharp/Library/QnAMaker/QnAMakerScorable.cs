@@ -31,14 +31,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Internals.Fibers;
-using Microsoft.Bot.Builder.Dialogs.Internals;
-using Microsoft.Bot.Builder.Internals.Scorables;
 using System.Threading;
-using System;
+using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Builder.Internals.Scorables;
+using Microsoft.Bot.Connector;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -47,54 +44,48 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     /// </summary>
     public class QnAMakerScorable : IScorable<IActivity, double>
     {
-        protected readonly IQnAService service;
-        protected readonly IBotToUser botToUser;
+        protected readonly QnAMakerServiceScorable inner;
         protected readonly ITraits<double> traits;
+        protected readonly QnAMakerAttribute qnaInfo;
 
         /// <summary>
         /// Construct the QnA Scorable.
         /// </summary>
-        public QnAMakerScorable(IQnAService service, IBotToUser botToUser, ITraits<double> traits)
+        public QnAMakerScorable(QnAMakerServiceScorable inner, ITraits<double> traits, QnAMakerAttribute qnaInfo)
         {
-            SetField.NotNull(out this.service, nameof(service), service);
-            SetField.NotNull(out this.botToUser, nameof(botToUser), botToUser);
+            SetField.NotNull(out this.inner, nameof(inner), inner);
             SetField.NotNull(out this.traits, nameof(traits), traits);
+            SetField.NotNull(out this.qnaInfo, nameof(qnaInfo), qnaInfo);
         }
-       
+
         async Task<object> IScorable<IActivity, double>.PrepareAsync(IActivity item, CancellationToken token)
         {
-            var message = item as IMessageActivity;
-            if (message != null && message.Text != null)
+            var result = await this.inner.PrepareAsync(item, token);
+
+            if (result is QnAMakerResult)
             {
-                var response = await service.QueryServiceAsync(message.Text);
-         
-                if (!string.IsNullOrEmpty(response.Answer) && response.Score >= 0.0)
-                {
-                    return response;
-                }
+                var qnaMakerResult = (QnAMakerResult)result;
+
+                qnaMakerResult.Score /= 100;
+                return qnaMakerResult.Score >= qnaInfo.ScoreThreshold ? qnaMakerResult : null;
             }
-            return false;
+
+            return result;
         }
 
         public bool HasScore(IActivity item, object state)
         {
-            return state is QnAMakerResult;
+            return this.inner.HasScore(item, state);
         }
 
         public double GetScore(IActivity item, object state)
         {
-            double score = double.NaN;
-            if (state is QnAMakerResult)
-            {
-                score = this.traits.Minimum + ((this.traits.Maximum - this.traits.Minimum) * ((QnAMakerResult)state).Score);
-            }
-            return score;
+            return this.traits.Minimum + ((this.traits.Maximum - this.traits.Minimum) * this.inner.GetScore(item, state).Score);
         }
 
         async Task IScorable<IActivity, double>.PostAsync(IActivity item, object state, CancellationToken token)
         {
-            var qnaResult = (QnAMakerResult)state;
-            await botToUser.PostAsync(qnaResult.Answer);
+            await this.inner.PostAsync(item, state, token);
         }
 
         public Task DoneAsync(IActivity item, object state, CancellationToken token)

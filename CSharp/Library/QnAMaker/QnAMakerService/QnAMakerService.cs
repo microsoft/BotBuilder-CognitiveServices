@@ -107,14 +107,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
             try
             {
-                var result = JsonConvert.DeserializeObject<QnAMakerResult>(json);
-                result.Score /= 100;
-                if (result.Score >= qnaInfo.ScoreThreshold)
-                {
-                    result.Answer = HttpUtility.HtmlDecode(result.Answer);
-                    return result;
-                }
-                return new QnAMakerResult { Answer = qnaInfo.DefaultMessage, Score = 0.0 };
+                return JsonConvert.DeserializeObject<QnAMakerResult>(json);
             }
             catch (JsonException ex)
             {

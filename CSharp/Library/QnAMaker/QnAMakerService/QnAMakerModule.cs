@@ -55,9 +55,26 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
-            builder.Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold)).AsSelf().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<QnAMakerService>().Keyed<IQnAService>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<QnAMakerScorable>().Keyed<QnAMakerScorable>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().InstancePerMatchingLifetimeScope(DialogModule.LifetimeScopeTag);
+
+            builder
+                .Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold))
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder
+                .RegisterType<QnAMakerService>()
+                .Keyed<IQnAService>(FiberModule.Key_DoNotSerialize)
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder
+                .Register(c => new QnAMakerScorable(
+                    new QnAMakerServiceScorable(c.Resolve<IQnAService>(), c.Resolve<IBotToUser>()),
+                    c.Resolve<ITraits<double>>(),
+                    c.Resolve<QnAMakerAttribute>()))
+                .AsImplementedInterfaces()
+                .InstancePerMatchingLifetimeScope(DialogModule.LifetimeScopeTag);
         }
     }
 }

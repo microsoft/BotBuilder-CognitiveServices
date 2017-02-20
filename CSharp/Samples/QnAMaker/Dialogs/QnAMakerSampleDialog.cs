@@ -1,8 +1,8 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
-using System;
+using Microsoft.Bot.Connector;
 
 namespace QnAMakerSampleBot.Dialogs
 {

@@ -60,7 +60,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         async Task<object> IScorable<IActivity, double>.PrepareAsync(IActivity item, CancellationToken token)
         {
-            var result = await inner.PrepareAsync(item, token);
+            var result = await this.inner.PrepareAsync(item, token);
 
             if (result is QnAMakerResult)
             {

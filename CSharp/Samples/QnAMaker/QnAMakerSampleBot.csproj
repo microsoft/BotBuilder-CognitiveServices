@@ -121,7 +121,8 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\QnAMakerSampleDialog.cs" />
+    <Compile Include="Dialogs\BasicQnAMakerDialog.cs" />
+    <Compile Include="Dialogs\DummyEchoDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

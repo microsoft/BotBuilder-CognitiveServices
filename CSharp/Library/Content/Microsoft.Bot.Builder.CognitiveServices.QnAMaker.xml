@@ -20,17 +20,7 @@
             A scorable specialized to handle QnA response from QnA Maker.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerScorable.#ctor(Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerServiceScorable,Microsoft.Bot.Builder.Internals.Fibers.ITraits{System.Double},Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute)">
-            <summary>
-            Construct the QnA Scorable.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerServiceScorable">
-            <summary>
-            A scorable specialized to handle QnA response from QnA Maker service.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerServiceScorable.#ctor(Microsoft.Bot.Builder.CognitiveServices.QnAMaker.IQnAService,Microsoft.Bot.Builder.Dialogs.Internals.IBotToUser)">
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerScorable.#ctor(Microsoft.Bot.Builder.CognitiveServices.QnAMaker.IQnAService,Microsoft.Bot.Builder.Dialogs.Internals.IBotToUser,Microsoft.Bot.Builder.Internals.Fibers.ITraits{System.Double})">
             <summary>
             Construct the QnA Scorable.
             </summary>
@@ -131,23 +121,23 @@
             <param name="text">The query text.</param>
             <returns>The QnA result.</returns>
         </member>
-        <member name="T:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource">
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource.ResourceManager">
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.ResourceManager">
             <summary>
               Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource.Culture">
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Culture">
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource.defaultMessage">
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.defaultMessage">
             <summary>
               Looks up a localized string similar to No match found!.
             </summary>

@@ -71,8 +71,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             builder
                 .Register(c => new QnAMakerScorable(
                     new QnAMakerServiceScorable(c.Resolve<IQnAService>(), c.Resolve<IBotToUser>()),
-                    c.Resolve<ITraits<double>>(),
-                    c.Resolve<QnAMakerAttribute>()))
+                    c.Resolve<ITraits<double>>()))
                 .AsImplementedInterfaces()
                 .InstancePerMatchingLifetimeScope(DialogModule.LifetimeScopeTag);
         }

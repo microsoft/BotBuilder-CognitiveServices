@@ -46,16 +46,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     {
         protected readonly QnAMakerServiceScorable inner;
         protected readonly ITraits<double> traits;
-        protected readonly QnAMakerAttribute qnaInfo;
 
         /// <summary>
         /// Construct the QnA Scorable.
         /// </summary>
-        public QnAMakerScorable(QnAMakerServiceScorable inner, ITraits<double> traits, QnAMakerAttribute qnaInfo)
+        public QnAMakerScorable(QnAMakerServiceScorable inner, ITraits<double> traits)
         {
             SetField.NotNull(out this.inner, nameof(inner), inner);
             SetField.NotNull(out this.traits, nameof(traits), traits);
-            SetField.NotNull(out this.qnaInfo, nameof(qnaInfo), qnaInfo);
         }
 
         async Task<object> IScorable<IActivity, double>.PrepareAsync(IActivity item, CancellationToken token)
@@ -67,13 +65,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 var qnaMakerResult = (QnAMakerResult)result;
 
                 qnaMakerResult.Score /= 100;
-                
-                if (qnaMakerResult.Score == 0 & qnaInfo.ScoreThreshold == 0)
+                if (qnaMakerResult.Score == 0 & qnaMakerResult.ServiceCfg.ScoreThreshold == 0)
                 {
-                    qnaMakerResult.Answer = qnaInfo.DefaultMessage;
+                    qnaMakerResult.Answer = qnaMakerResult.ServiceCfg.DefaultMessage;
                 }
-                
-                return qnaMakerResult.Score >= qnaInfo.ScoreThreshold ? qnaMakerResult : null;
+
+                return qnaMakerResult.Score >= qnaMakerResult.ServiceCfg.ScoreThreshold ? qnaMakerResult : null;
             }
 
             return result;

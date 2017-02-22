@@ -107,7 +107,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
             try
             {
-                return JsonConvert.DeserializeObject<QnAMakerResult>(json);
+                var result = JsonConvert.DeserializeObject<QnAMakerResult>(json);
+
+                //Adding internal service cfg reference [used when checking configured threshold to provide an answer]
+                result.ServiceCfg = this.qnaInfo;
+
+                return result;
             }
             catch (JsonException ex)
             {

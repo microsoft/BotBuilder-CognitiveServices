@@ -18,7 +18,7 @@ namespace QnAMakerSampleBot
                 // http://docs.autofac.org/en/latest/integration/webapi.html#quick-start
                 var builder = new ContainerBuilder();
                 builder.RegisterModule(new DialogModule());
-                builder.RegisterModule(new QnAMakerModule("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.00));
+                builder.RegisterModule(new QnAMakerModule("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50));
                 builder.RegisterType<DummyEchoDialog>().As<IDialog<object>>().InstancePerDependency();
                 var config = System.Web.Http.GlobalConfiguration.Configuration;
                 builder.RegisterApiControllers(Assembly.GetExecutingAssembly());

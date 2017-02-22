@@ -38,6 +38,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Reflection;
 using System.Linq;
+using System.Web;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -78,15 +79,20 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-   
+
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
 
                 var maxValue = tasks.Max(x => x.Result.Score);
-                var answer = tasks.First(x => x.Result.Score == maxValue).Result.Answer;
-                await context.PostAsync(answer);
+                var qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
+
+                qnaMakerResult.Score /= 100;
+                var answer = qnaMakerResult.Score >= qnaMakerResult.ServiceCfg.ScoreThreshold ? qnaMakerResult.Answer : qnaMakerResult.ServiceCfg.DefaultMessage;
+
+                await context.PostAsync(HttpUtility.HtmlDecode(answer));
             }
+
             context.Wait(MessageReceivedAsync);
         }
     }

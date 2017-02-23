@@ -87,13 +87,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 var maxValue = tasks.Max(x => x.Result.Score);
                 var qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
 
-                qnaMakerResult.Score /= 100;
-                var answer = qnaMakerResult.Score >= qnaMakerResult.ServiceCfg.ScoreThreshold ? qnaMakerResult.Answer : qnaMakerResult.ServiceCfg.DefaultMessage;
-
-                await context.PostAsync(HttpUtility.HtmlDecode(answer));
+                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResult);
             }
 
             context.Wait(MessageReceivedAsync);
+        }
+
+        protected async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        {
+            result.Score /= 100;
+            var answer = result.Score >= result.ServiceCfg.ScoreThreshold ? result.Answer : result.ServiceCfg.DefaultMessage;
+
+            await context.PostAsync(HttpUtility.HtmlDecode(answer));
         }
     }
 }

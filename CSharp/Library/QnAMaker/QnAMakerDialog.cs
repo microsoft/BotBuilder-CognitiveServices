@@ -49,7 +49,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
-        
+
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -80,19 +80,30 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             var message = await argument;
 
+            var qnaMakerResult = default(QnAMakerResult);
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
 
                 var maxValue = tasks.Max(x => x.Result.Score);
-                var qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
+                qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
 
-                qnaMakerResult.Score /= 100;
-                var answer = qnaMakerResult.Score >= qnaMakerResult.ServiceCfg.ScoreThreshold ? qnaMakerResult.Answer : qnaMakerResult.ServiceCfg.DefaultMessage;
-
-                await context.PostAsync(HttpUtility.HtmlDecode(answer));
+                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResult);
             }
 
+            await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResult);
+        }
+
+        protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        {
+            result.Score /= 100;
+            var answer = result.Score >= result.ServiceCfg.ScoreThreshold ? result.Answer : result.ServiceCfg.DefaultMessage;
+
+            await context.PostAsync(HttpUtility.HtmlDecode(answer));
+        }
+
+        protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        {
             context.Wait(MessageReceivedAsync);
         }
     }

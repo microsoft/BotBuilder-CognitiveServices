@@ -62,5 +62,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// </summary>
         [JsonProperty(PropertyName = "score")]
         public double Score { get; set; }
+
+        /// <summary>
+        /// Internal member with instance used to configure the service that returned this result.
+        /// </summary>
+        internal QnAMakerAttribute ServiceCfg { get; set; }
     }
 }

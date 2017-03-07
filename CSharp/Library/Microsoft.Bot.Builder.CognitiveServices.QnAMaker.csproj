@@ -95,6 +95,7 @@
     <Compile Include="QnAMaker\QnAMakerDialog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QnAMaker\QnAMakerScorable.cs" />
+    <Compile Include="QnAMaker\QnAMakerServiceScorable.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerAttribute.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerModule.cs" />
     <Compile Include="QnAMaker\QnAMakerService\QnAMakerResult.cs" />

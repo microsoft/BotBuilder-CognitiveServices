@@ -40,7 +40,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     using Dialogs;
     using Dialogs.Internals;
     using Internals.Fibers;
-    using Internals.Scorables;
+    using Scorables;
 
     /// <summary>
     /// A scorable specialized to handle QnA response from QnA Maker service.

@@ -48,19 +48,22 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     subscriptionKey: string;
     qnaThreshold?: number;
     defaultMessage?: string;
+    intentName?: string;
 }
 
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     private kbUri: string;
     private ocpApimSubscriptionKey: string;
+    private intentName: string;
     
     constructor(private options: IQnAMakerOptions){
         this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
         this.ocpApimSubscriptionKey = options.subscriptionKey;
+        this.intentName = options.intentName || "qna";
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
-        var result: IQnAMakerResult = { score: 0.0, answer: null, intent: null };
+        var result: IQnAMakerResult = { score: 0.0, answer: null, intent: this.intentName };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
             QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, (error, result) => {
@@ -93,6 +96,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                         if (!error) {
                             result = JSON.parse(body);
                             result.score = result.score / 100;
+                            result.intent = this.intentName;                            
                             result.answer = htmlentities.decode(result.answer);
                         }
                     } catch (e) {

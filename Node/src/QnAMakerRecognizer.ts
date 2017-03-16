@@ -63,10 +63,14 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
+        let options = {
+            intent: this.intentName
+        };
+
         var result: IQnAMakerResult = { score: 0.0, answer: null, intent: this.intentName };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, (error, result) => {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, options, (error, result) => {
                     if (!error) {
                         cb(null, result);
                     } else {
@@ -77,7 +81,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, callback: (error: Error, result?: IQnAMakerResult) => void): void {
+    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, options: any, callback: (error: Error, result?: IQnAMakerResult) => void): void {
         try {
             var postBody = '{"question":"' + utterance + '"}';
             request({
@@ -89,14 +93,14 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                 },
                 body: postBody
             },
-                function (error: Error, response: any, body: string) {
+                (error: Error, response: any, body: string) => {
                     var result: IQnAMakerResult;
                     try {
                         console.log(body);
                         if (!error) {
                             result = JSON.parse(body);
                             result.score = result.score / 100;
-                            result.intent = this.intentName;                            
+                            result.intent = options.intent;
                             result.answer = htmlentities.decode(result.answer);
                         }
                     } catch (e) {

@@ -37,6 +37,8 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
+    /// <summary>An Autofac module for a QnA Maker definition</summary>
+    /// <seealso cref="Autofac.Module" />
     public sealed class QnAMakerModule : Module
     {
         string subscriptionKey;
@@ -45,6 +47,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         double threshold;
         int top;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QnAMakerModule" /> class.
+        /// </summary>
+        /// <param name="subscriptionKey">The subscription key.</param>
+        /// <param name="kbid">The kbid.</param>
+        /// <param name="defaultMessage">The default message.</param>
+        /// <param name="threshold">The threshold.</param>
+        /// <param name="top">The top.</param>
         public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold, int top = 1)
         {
             this.subscriptionKey = subscriptionKey;
@@ -54,6 +64,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             this.top = top;
         }
 
+        /// <summary>
+        /// Override to add registrations to the container.
+        /// </summary>
+        /// <param name="builder">The builder through which components can be
+        /// registered.</param>
+        /// <remarks>
+        /// Note that the ContainerBuilder parameter is unique to this module.
+        /// </remarks>
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);

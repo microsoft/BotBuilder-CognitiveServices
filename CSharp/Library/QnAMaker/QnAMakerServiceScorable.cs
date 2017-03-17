@@ -33,21 +33,23 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Web;
     using Connector;
     using Dialogs;
     using Dialogs.Internals;
     using Internals.Fibers;
     using Scorables;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Web;
 
     /// <summary>
     /// A scorable specialized to handle QnA response from QnA Maker service.
     /// </summary>
     public class QnAMakerServiceScorable : IScorable<IActivity, QnAMakerResult>
     {
+        /// <summary>The QnA Maker service</summary>
         protected readonly IQnAService service;
+        /// <summary>The bot to user object used to communicate back to the user</summary>
         protected readonly IBotToUser botToUser;
 
         /// <summary>
@@ -59,6 +61,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             SetField.NotNull(out this.botToUser, nameof(botToUser), botToUser);
         }
 
+        /// <summary>
+        /// Perform some asynchronous work to analyze the item and produce some opaque state.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task<object> PrepareAsync(IActivity item, CancellationToken token)
         {
             var message = item as IMessageActivity;
@@ -70,21 +78,47 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             return null;
         }
 
+        /// <summary>
+        /// Returns whether this scorable wants to participate in scoring this item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public bool HasScore(IActivity item, object state)
         {
             return state is QnAMakerResult;
         }
 
+        /// <summary>
+        /// Gets the score for this item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public QnAMakerResult GetScore(IActivity item, object state)
         {
             return (QnAMakerResult)state;
         }
 
+        /// <summary>
+        /// If this scorable wins, this method is called.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task PostAsync(IActivity item, object state, CancellationToken token)
         {
             await botToUser.PostAsync(((QnAMakerResult)state).Answer);
         }
 
+        /// <summary>
+        /// The scoring process has completed - dispose of any scoped resources.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public Task DoneAsync(IActivity item, object state, CancellationToken token)
         {
             return Task.CompletedTask;

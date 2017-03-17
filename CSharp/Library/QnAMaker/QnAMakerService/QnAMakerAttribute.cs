@@ -31,8 +31,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using System;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -47,7 +47,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// The Subscription Key to access the QnA Knowledge Base.
         /// </summary>
         public readonly string SubscriptionKey;
-        
+
         /// <summary>
         /// The QnA Knowledgebase ID.
         /// </summary>
@@ -71,6 +71,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <summary>
         /// Construct the QnA Knowledgebase information.
         /// </summary>
+        /// <param name="subscriptionKey">The subscription key.</param>
         /// <param name="knowledgebaseId">The QnA Knowledgebase ID.</param>
         /// <param name="defaultMessage">The default message returned when no match found.</param>
         /// <param name="scoreThreshold">The threshold for answer score.</param>

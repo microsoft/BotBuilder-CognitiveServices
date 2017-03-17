@@ -31,12 +31,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Builder.Scorables;
 using Microsoft.Bot.Connector;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -45,7 +45,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     /// </summary>
     public class QnAMakerScorable : IScorable<IActivity, double>
     {
+        /// <summary>A scorable specialized to handle QnA response from QnA Maker.</summary>
         protected readonly QnAMakerServiceScorable inner;
+        /// <summary>Traits of the scorable</summary>
         protected readonly ITraits<double> traits;
 
         /// <summary>
@@ -78,11 +80,23 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             return null;
         }
 
+        /// <summary>
+        /// Returns whether this scorable wants to participate in scoring this item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public bool HasScore(IActivity item, object state)
         {
             return this.inner.HasScore(item, state);
         }
 
+        /// <summary>
+        /// Gets the score for this item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public double GetScore(IActivity item, object state)
         {
             return this.traits.Minimum + ((this.traits.Maximum - this.traits.Minimum) * this.inner.GetScore(item, state).Score);
@@ -93,6 +107,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             await this.inner.PostAsync(item, state, token);
         }
 
+        /// <summary>
+        /// The scoring process has completed - dispose of any scoped resources.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="state"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public Task DoneAsync(IActivity item, object state, CancellationToken token)
         {
             return Task.CompletedTask;

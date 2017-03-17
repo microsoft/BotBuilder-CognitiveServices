@@ -37,16 +37,30 @@ using System.Collections.Generic;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
+    /// <summary></summary>
     [Serializable]
     public class QnAMakerResults
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QnAMakerResults"/> class.
+        /// </summary>
         public QnAMakerResults() { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QnAMakerResults"/> class.
+        /// </summary>
+        /// <param name="qnaMakerResults">The qna maker results.</param>
         public QnAMakerResults(List<QnAMakerResult> qnaMakerResults)
         {
             Answers = qnaMakerResults;
         }
 
+        /// <summary>
+        /// Gets or sets the answers.
+        /// </summary>
+        /// <value>
+        /// The answers.
+        /// </value>
         [JsonProperty(PropertyName = "answers")]
         public List<QnAMakerResult> Answers { get; set; }
 
@@ -56,6 +70,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         internal QnAMakerAttribute ServiceCfg { get; set; }
     }
 
+    /// <summary></summary>
     [Serializable]
     public class QnAMakerResult
     {

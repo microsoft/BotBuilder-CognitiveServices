@@ -6,7 +6,8 @@
         "noImplicitAny": true,
         "outDir": "../built",
         "noEmitOnError": true,
-        "removeComments": true
+        "removeComments": true,
+        "watch": true
     },
     "exclude": [
         "botbuilder-cognitiveservices.d.ts"

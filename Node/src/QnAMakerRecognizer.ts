@@ -48,33 +48,36 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     subscriptionKey: string;
     qnaThreshold?: number;
     defaultMessage?: string;
+    proxy?: string; // optional proxy setting
 }
 
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     private kbUri: string;
     private ocpApimSubscriptionKey: string;
-    
-    constructor(private options: IQnAMakerOptions){
+    private proxy: string;
+
+    constructor(private options: IQnAMakerOptions) {
         this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
         this.ocpApimSubscriptionKey = options.subscriptionKey;
+        this.proxy = options.proxy;
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
         var result: IQnAMakerResult = { score: 0.0, answer: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, (error, result) => {
-                    if (!error) {
-                        cb(null, result);
-                    } else {
-                        cb(error, null);
-                    }
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.proxy, (error, result) => {
+                if (!error) {
+                    cb(null, result);
+                } else {
+                    cb(error, null);
                 }
+            }
             );
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, callback: (error: Error, result?: IQnAMakerResult) => void): void {
+    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, proxy: string, callback: (error: Error, result?: IQnAMakerResult) => void): void {
         try {
             var postBody = '{"question":"' + utterance + '"}';
             request({
@@ -84,6 +87,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                     'Content-Type': 'application/json',
                     'Ocp-Apim-Subscription-Key': ocpApimSubscriptionKey
                 },
+                proxy: proxy,
                 body: postBody
             },
                 function (error: Error, response: any, body: string) {

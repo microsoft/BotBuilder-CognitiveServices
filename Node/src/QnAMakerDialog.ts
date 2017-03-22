@@ -32,32 +32,29 @@
 //
 
 import * as builder from 'botbuilder';
-import { QnAMakerRecognizer, IQnAMakerResult, IQnAMakerOptions } from './QnAMakerRecognizer'; 
+import { QnAMakerRecognizer, IQnAMakerResult, IQnAMakerOptions } from './QnAMakerRecognizer';
 
 export class QnAMakerDialog extends builder.Dialog {
-	private answerThreshold: number;
-	private defaultNoMatchMessage: string;
+    private answerThreshold: number;
+    private defaultNoMatchMessage: string;
     private recognizers: builder.IntentRecognizerSet;
 
-    constructor(private options: IQnAMakerOptions){
+    constructor(private options: IQnAMakerOptions) {
         super();
         this.recognizers = new builder.IntentRecognizerSet(options);
-		if(typeof this.options.qnaThreshold !== 'number'){
-			this.answerThreshold = 0.3;
-		}
-		else
-		{
-			this.answerThreshold = this.options.qnaThreshold;
-		}
-		if(this.options.defaultMessage && this.options.defaultMessage !== "")
-		{
-			this.defaultNoMatchMessage = this.options.defaultMessage;
-		}
-		else
-		{
-			this.defaultNoMatchMessage = "No match found!";
-		}
-	}
+        if (typeof this.options.qnaThreshold !== 'number') {
+            this.answerThreshold = 0.3;
+        }
+        else {
+            this.answerThreshold = this.options.qnaThreshold;
+        }
+        if (this.options.defaultMessage && this.options.defaultMessage !== "") {
+            this.defaultNoMatchMessage = this.options.defaultMessage;
+        }
+        else {
+            this.defaultNoMatchMessage = "No match found!";
+        }
+    }
 
     public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
@@ -68,14 +65,14 @@ export class QnAMakerDialog extends builder.Dialog {
             context.dialogData = session.dialogData;
             context.activeDialog = true;
             this.recognize(context, (error, result) => {
-                    try {
-                        if(!error){
-                            this.invokeAnswer(session, result, threshold, noMatchMessage);
-                        }
-                    } catch (e) {
-                        this.emitError(session, e);
+                try {
+                    if (!error) {
+                        this.invokeAnswer(session, result, threshold, noMatchMessage);
                     }
+                } catch (e) {
+                    this.emitError(session, e);
                 }
+            }
             );
         } else {
             this.invokeAnswer(session, recognizeResult, threshold, noMatchMessage);
@@ -92,7 +89,7 @@ export class QnAMakerDialog extends builder.Dialog {
         return this;
 
     }
-	
+
     private invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
         var qnaMakerResult = recognizeResult as IQnAMakerResult;
         if (qnaMakerResult.score >= threshold) {
@@ -103,9 +100,9 @@ export class QnAMakerDialog extends builder.Dialog {
         }
     }
 
-	private emitError(session: builder.Session, err: Error): void {
-		var m = err.toString();
-		err = err instanceof Error ? err : new Error(m);
-		session.error(err);
-	}
+    private emitError(session: builder.Session, err: Error): void {
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
+        session.error(err);
+    }
 }

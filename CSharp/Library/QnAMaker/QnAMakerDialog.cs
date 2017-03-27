@@ -39,6 +39,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Reflection;
 using System.Linq;
 using System.Web;
+using System.Collections.Generic;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -49,6 +50,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
+
+        [NonSerialized]
+        protected Dictionary<QnAMakerResponseHandlerAttribute, QnAMakerResponseHandler> HandlerByMaximumScore;
 
         public IQnAService[] MakeServicesFromAttributes()
         {
@@ -88,7 +92,23 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 var maxValue = tasks.Max(x => x.Result.Score);
                 qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
 
-                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResult);
+                if (HandlerByMaximumScore == null)
+                {
+                    HandlerByMaximumScore =
+                        new Dictionary<QnAMakerResponseHandlerAttribute, QnAMakerResponseHandler>(GetHandlersByMaximumScore());
+                }
+
+                var applicableHandlers = HandlerByMaximumScore.OrderBy(h => h.Key.MaximumScore).Where(h => h.Key.MaximumScore > (qnaMakerResult.Score / 100));
+                var handler = applicableHandlers.Any() ? applicableHandlers.First().Value : null;
+
+                if (handler != null)
+                {
+                    await handler.Invoke(context, message, qnaMakerResult);
+                }
+                else
+                {
+                    await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResult);
+                }
             }
 
             await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResult);
@@ -106,5 +126,54 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             context.Wait(MessageReceivedAsync);
         }
+
+        protected virtual IDictionary<QnAMakerResponseHandlerAttribute, QnAMakerResponseHandler> GetHandlersByMaximumScore()
+        {
+            return EnumerateHandlers(this).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
+
+        internal static IEnumerable<KeyValuePair<QnAMakerResponseHandlerAttribute, QnAMakerResponseHandler>> EnumerateHandlers(object dialog)
+        {
+            var type = dialog.GetType();
+            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            foreach (var method in methods)
+            {
+                var qNaResponseHandlerAttributes = method.GetCustomAttributes<QnAMakerResponseHandlerAttribute>(inherit: true).ToArray();
+                Delegate created = null;
+                try
+                {
+                    created = Delegate.CreateDelegate(typeof(QnAMakerResponseHandler), dialog, method, throwOnBindFailure: false);
+                }
+                catch (ArgumentException)
+                {
+                    // "Cannot bind to the target method because its signature or security transparency is not compatible with that of the delegate type."
+                    // https://github.com/Microsoft/BotBuilder/issues/634
+                    // https://github.com/Microsoft/BotBuilder/issues/435
+                }
+
+                var qNaResponseHanlder = (QnAMakerResponseHandler)created;
+                if (qNaResponseHanlder != null)
+                {
+                    foreach (var qNaResponseAttribute in qNaResponseHandlerAttributes)
+                    {
+                        if (qNaResponseAttribute != null && qNaResponseHandlerAttributes.Any())
+                            yield return new KeyValuePair<QnAMakerResponseHandlerAttribute, QnAMakerResponseHandler>(qNaResponseAttribute, qNaResponseHanlder);
+                    }
+                }
+            }
+        }
     }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public class QnAMakerResponseHandlerAttribute : Attribute
+    {
+        public readonly double MaximumScore;
+
+        public QnAMakerResponseHandlerAttribute(double maximumScore)
+        {
+            MaximumScore = maximumScore;
+        }
+    }
+
+    public delegate Task QnAMakerResponseHandler(IDialogContext context, IMessageActivity message, QnAMakerResult result);
 }

@@ -14,6 +14,22 @@
         {
         }
 
+        // Uncomment the two handlers below if you want to see an example of a 
+        // custom handler to respond to QnA Maker Service scores
+        // up to a maximum threshold.  This allows you to tailor responses
+        // depending on the confidence level in the answer provided
+        //[QnAMakerResponseHandler(0.7)]
+        //public async Task MidScoreHandler(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        //{
+        //    await context.PostAsync($"I think I found an answer that can help you....{result.Answer}");
+        //}
+
+        //[QnAMakerResponseHandler(0.4)]
+        //public async Task LowScoreHandler(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        //{
+        //    await context.PostAsync($"Sorry, I couldn't find an answer to your question");
+        //}
+
         // Uncomment the code below if you wanna see an example on how to
         // break the QnA loop in order to have custom logic within your 
         // inherited dialog that you could be using as Root

@@ -44,18 +44,21 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         string defaultMessage;
         double threshold;
 
-        public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold)
+        private int top;
+
+        public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold, int top = 1)
         {
             this.subscriptionKey = subscriptionKey;
             this.kbid = kbid;
             this.defaultMessage = defaultMessage;
             this.threshold = threshold;
+            this.top = top;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
-            builder.Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold)).AsSelf().AsImplementedInterfaces().SingleInstance();
+            builder.Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold, top)).AsSelf().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<QnAMakerService>().Keyed<IQnAService>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<QnAMakerScorable>().Keyed<QnAMakerScorable>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().InstancePerMatchingLifetimeScope(DialogModule.LifetimeScopeTag);
         }

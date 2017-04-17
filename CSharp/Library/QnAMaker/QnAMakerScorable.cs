@@ -68,7 +68,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             {
                 var response = await service.QueryServiceAsync(message.Text);
          
-                if (!string.IsNullOrEmpty(response.Answer) && response.Score >= 0.0)
+                if (response != null && response.Answers != null && response.Answers.Count > 0
+                    && !string.IsNullOrEmpty(response.Answers[0].Answer) && response.Answers[0].Score >= 0.0)
                 {
                     return response;
                 }

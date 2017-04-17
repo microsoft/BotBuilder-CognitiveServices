@@ -38,6 +38,8 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
+using System.Web;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -48,7 +50,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
-        
+        private QnAMakerResults qnAMakerResults;
+        private FeedbackRecord feedbackRecord;
+
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -83,11 +87,74 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
 
-                var maxValue = tasks.Max(x => x.Result.Score);
-                var answer = tasks.First(x => x.Result.Score == maxValue).Result.Answer;
-                await context.PostAsync(answer);
+                if (tasks.Any())
+                {
+                    var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
+                    qnAMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
+                    feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+
+                    if (qnAMakerResults != null && qnAMakerResults.Answers != null && qnAMakerResults.Answers.Count > 0)
+                    {
+                        var qnaList = qnAMakerResults.Answers;
+                        var questions = qnaList.Select(x => HttpUtility.HtmlDecode(x.Questions[0])).ToArray();
+
+                        if (IsConfidentAnswer(qnaList))
+                        {
+                            await context.PostAsync(HttpUtility.HtmlDecode(qnaList.FirstOrDefault().Answer));
+                            context.Done(true);
+                        }
+                        else
+                        {
+                            PromptDialog.Choice(
+                                context: context,
+                                resume: ResumeAndPostAnswer,
+                                options: questions,
+                                prompt: "I've found multiple responses matching your query. Please select from the following:",
+                                retry: "Please retry!! Click on the options or type in the exact text from the options.");
+                        }
+                    }
+                }
             }
-            context.Wait(MessageReceivedAsync);
+        }
+
+        private static bool IsConfidentAnswer(List<QnAMakerResult> qnAMakerResults)
+        {
+            if (qnAMakerResults.Count < 2 || qnAMakerResults.FirstOrDefault().Score >= 99)
+            {
+                return true;
+            }
+            if (qnAMakerResults[0].Score - qnAMakerResults[1].Score > 20.0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task ResumeAndPostAnswer(IDialogContext context, IAwaitable<string> argument)
+        {
+            var selection = await argument;
+
+            bool match = false;
+            foreach (var qnaMakerResult in qnAMakerResults.Answers)
+            {
+                if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
+                {
+                    context.PostAsync(HttpUtility.HtmlDecode(qnaMakerResult.Answer));
+                    match = true;
+                    feedbackRecord.KbQuestion = qnaMakerResult.Questions.FirstOrDefault();
+                    feedbackRecord.KbAnswer = qnaMakerResult.Answer;
+
+                    var tasks = this.services.Select(
+                        s => s.ActiveLearnAsync(feedbackRecord.UserId, feedbackRecord.UserQuestion, feedbackRecord.KbQuestion, feedbackRecord.KbAnswer)).ToArray();
+                    break;
+                }
+            }
+            if (!match)
+            {
+                context.PostAsync("Not able to match. Please click on the options or type in the exact text from the options.");
+            }
+
+            context.Done(true);
         }
     }
 }

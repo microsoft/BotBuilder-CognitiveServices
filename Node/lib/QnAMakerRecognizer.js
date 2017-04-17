@@ -1,20 +1,29 @@
 "use strict";
-var request = require('request');
-var entities = require('html-entities');
-var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
+Object.defineProperty(exports, "__esModule", { value: true });
+var request = require("request");
+var entities = require("html-entities");
+var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
 var qnaApi = 'generateanswer';
+var qnaTrainApi = 'train';
 var htmlentities = new entities.AllHtmlEntities();
 var QnAMakerRecognizer = (function () {
     function QnAMakerRecognizer(options) {
         this.options = options;
-        this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
-        this.ocpApimSubscriptionKey = options.subscriptionKey;
+        this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
+        this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
+        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
+        if (typeof this.options.top !== 'number') {
+            this.top = 1;
+        }
+        else {
+            this.top = this.options.top;
+        }
     }
     QnAMakerRecognizer.prototype.recognize = function (context, cb) {
-        var result = { score: 0.0, answer: null, intent: null };
+        var result = { score: 0.0, answers: null, intent: "QnA" };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, function (error, result) {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, function (error, result) {
                 if (!error) {
                     cb(null, result);
                 }
@@ -24,9 +33,9 @@ var QnAMakerRecognizer = (function () {
             });
         }
     };
-    QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, callback) {
+    QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, callback) {
         try {
-            var postBody = '{"question":"' + utterance + '"}';
+            var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
                 url: kbUrl,
                 method: 'POST',
@@ -38,11 +47,23 @@ var QnAMakerRecognizer = (function () {
             }, function (error, response, body) {
                 var result;
                 try {
-                    console.log(body);
                     if (!error) {
                         result = JSON.parse(body);
-                        result.score = result.score / 100;
-                        result.answer = htmlentities.decode(result.answer);
+                        var answerEntities = [];
+                        if (result.answers !== null && result.answers.length > 0) {
+                            result.answers.forEach(function (ans) {
+                                ans.score /= 100;
+                                ans.answer = htmlentities.decode(ans.answer);
+                                var answerEntity = {
+                                    score: ans.score,
+                                    entity: ans.answer,
+                                    type: 'answer'
+                                };
+                                answerEntities.push(answerEntity);
+                            });
+                            result.score = result.answers[0].score;
+                            result.entities = answerEntities;
+                        }
                     }
                 }
                 catch (e) {

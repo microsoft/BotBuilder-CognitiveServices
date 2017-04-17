@@ -43,13 +43,15 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         string kbid;
         string defaultMessage;
         double threshold;
+        int top
 
-        public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold)
+        public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold, int top = 1)
         {
             this.subscriptionKey = subscriptionKey;
             this.kbid = kbid;
             this.defaultMessage = defaultMessage;
             this.threshold = threshold;
+            this.top = top;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -57,7 +59,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             base.Load(builder);
 
             builder
-                .Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold))
+                .Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold, top))
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();

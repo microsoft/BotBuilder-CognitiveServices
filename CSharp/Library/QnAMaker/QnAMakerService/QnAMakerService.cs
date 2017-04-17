@@ -38,6 +38,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using Newtonsoft.Json;
 using System.Net;
 using System.Text;
+using System.Collections.Generic;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -51,11 +52,28 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         Uri BuildRequest(string queryText, out QnAMakerRequestBody postBody, out string subscriptionKey);
 
         /// <summary>
+        /// Build the feedback request uri for the query text and the selected QnA.
+        /// </summary>
+        /// <param name="userId">An unique ID for every user.</param>
+        /// <param name="userQuery">The original user query.</param>
+        /// <param name="kbQuestion">The question from the knowledgebase which corresponds to the selected answer.</param>
+        /// <param name="kbAnswer">The selected answer.</param>
+        /// <returns>The query uri</returns>
+        Uri BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey);
+
+        /// <summary>
         /// Query the QnA service using this uri.
         /// </summary>
         /// <param name="uri">The query uri</param>
-        /// <returns>The QnA service result.</returns>
-        Task<QnAMakerResult> QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey);
+        /// <returns>The QnA service results.</returns>
+        Task<QnAMakerResults> QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey);
+
+        /// <summary>
+        /// Sends the feedback entry the QnA service.
+        /// </summary>
+        /// <param name="uri">The train uri to record the feedback entry</param>
+        /// <returns>A boolean indicating success/failure.</returns>
+        Task<bool> ActiveLearnAsync(Uri uri, QnAMakerTrainingRequestBody postBody, string subscriptionKey);
     }
 
     /// <summary>
@@ -69,7 +87,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <summary>
         /// The base URI for accessing QnA Service.
         /// </summary>
-        public static readonly Uri UriBase = new Uri("https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases");
+        public static readonly Uri UriBase = new Uri("https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases");
 
         /// <summary>
         /// Construct the QnA service using the qnaInfo information.
@@ -84,12 +102,24 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             var knowledgebaseId = this.qnaInfo.KnowledgebaseId;
             var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/generateanswer");
-            postBody = new QnAMakerRequestBody { question = queryText };
+            postBody = new QnAMakerRequestBody { question = queryText, top = this.qnaInfo.Top };
             subscriptionKey = this.qnaInfo.SubscriptionKey;
             return builder.Uri;
         }
 
-        async Task<QnAMakerResult> IQnAService.QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey)
+        Uri IQnAService.BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey)
+        {
+            var knowledgebaseId = this.qnaInfo.KnowledgebaseId;
+            var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/train");
+            var feedbackRecord = new FeedbackRecord {UserId = userId, UserQuestion = userQuery, KbQuestion = kbQuestion, KbAnswer = kbAnswer};
+            var feedbackRecords = new List<FeedbackRecord>();
+            feedbackRecords.Add(feedbackRecord);
+            postBody = new QnAMakerTrainingRequestBody { KnowledgeBaseId = knowledgebaseId, FeedbackRecords = feedbackRecords};
+            subscriptionKey = this.qnaInfo.SubscriptionKey;
+            return builder.Uri;
+        }
+
+        async Task<QnAMakerResults> IQnAService.QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey)
         {
             string json;
             
@@ -107,16 +137,37 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
             try
             {
-                var result = JsonConvert.DeserializeObject<QnAMakerResult>(json);
-
-                //Adding internal service cfg reference [used when checking configured threshold to provide an answer]
-                result.ServiceCfg = this.qnaInfo;
-
-                return result;
+                var results = JsonConvert.DeserializeObject<QnAMakerResults>(json);
+              results.ServiceCfg = this.qnaInfo;
+                return results;
             }
             catch (JsonException ex)
             {
                 throw new ArgumentException("Unable to deserialize the QnA service response.", ex);
+            }
+        }
+
+        async Task<bool> IQnAService.ActiveLearnAsync(Uri uri, QnAMakerTrainingRequestBody postBody, string subscriptionKey)
+        {
+            try
+            {
+                string json;
+                using (WebClient client = new WebClient())
+                {
+                    //Set the encoding to UTF8
+                    client.Encoding = Encoding.UTF8;
+
+                    //Add the subscription key header
+                    client.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
+                    client.Headers.Add("Content-Type", "application/json");
+
+                    json = client.UploadString(uri, "PATCH", JsonConvert.SerializeObject(postBody));
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }
@@ -125,6 +176,34 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     {
         [JsonProperty("question")]
         public string question { get; set; }
+
+        [JsonProperty("top")]
+        public int top { get; set; }
+    }
+
+    public class QnAMakerTrainingRequestBody
+    {
+        [JsonProperty("knowledgeBaseId")]
+        public string KnowledgeBaseId { get; set; }
+
+        [JsonProperty("feedbackRecords")]
+        public List<FeedbackRecord> FeedbackRecords { get; set; }
+    }
+
+    [Serializable]
+    public class FeedbackRecord
+    {
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        [JsonProperty("userQuestion")]
+        public string UserQuestion { get; set; }
+
+        [JsonProperty("kbQuestion")]
+        public string KbQuestion { get; set; }
+
+        [JsonProperty("kbAnswer")]
+        public string KbAnswer { get; set; }
     }
 
     /// <summary>
@@ -138,12 +217,31 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <param name="service">QnA service.</param>
         /// <param name="text">The query text.</param>
         /// <returns>The QnA result.</returns>
-        public static async Task<QnAMakerResult> QueryServiceAsync(this IQnAService service, string text)
+        public static async Task<QnAMakerResults> QueryServiceAsync(this IQnAService service, string text)
         {
             QnAMakerRequestBody postBody;
             string subscriptionKey;
             var uri = service.BuildRequest(text, out postBody, out subscriptionKey);
             return await service.QueryServiceAsync(uri, postBody, subscriptionKey);
+        }
+
+        public static async Task<bool> ActiveLearnAsync(
+            this IQnAService service,
+            string userId,
+            string userQuestion,
+            string kbQuestion,
+            string kbAnswer)
+        {
+            QnAMakerTrainingRequestBody postBody;
+            string subscriptionKey;
+            var uri = service.BuildFeedbackRequest(
+                userId,
+                userQuestion,
+                kbQuestion,
+                kbAnswer,
+                out postBody,
+                out subscriptionKey);
+            return await service.ActiveLearnAsync(uri, postBody, subscriptionKey);
         }
     }
 }

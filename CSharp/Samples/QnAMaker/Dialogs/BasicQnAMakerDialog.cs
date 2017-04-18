@@ -5,6 +5,7 @@
     using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
     using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Connector;
+    using System.Linq;
 
     [Serializable]
     public class BasicQnAMakerDialog : QnAMakerDialog
@@ -13,7 +14,7 @@
         public BasicQnAMakerDialog() : base(new QnAMakerService(new QnAMakerAttribute("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50)))
         {
         }
-
+        
         // Uncomment the code below if you wanna see an example on how to
         // break the QnA loop in order to have custom logic within your 
         // inherited dialog that you could be using as Root
@@ -54,6 +55,18 @@
         //    else
         //    {
         //        await this.DefaultWaitNextMessageAsync(context, null, null);
+        //    }
+        //}
+
+        //protected override async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
+        //{
+        //    if (qnaMakerResults.Answers.Count > 0 && qnaMakerResults.Answers.FirstOrDefault().Score > 0.75)
+        //    {
+        //        await context.PostAsync(qnaMakerResults.Answers.FirstOrDefault().Answer);
+        //    }
+        //    else
+        //    {
+        //        await base.QnAFeedbackStepAsync(context, qnaMakerResults);
         //    }
         //}
     }

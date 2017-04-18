@@ -31,6 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Internals.Fibers;
@@ -60,17 +61,17 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             var result = await this.inner.PrepareAsync(item, token);
 
-            if (result is QnAMakerResult)
+            if (result is QnAMakerResults)
             {
-                var qnaMakerResult = (QnAMakerResult)result;
+                var qnaMakerResults = (QnAMakerResults)result;
 
-                qnaMakerResult.Score /= 100;
-                if (qnaMakerResult.Score == 0 & qnaMakerResult.ServiceCfg.ScoreThreshold == 0)
+                qnaMakerResults.Answers.FirstOrDefault().Score /= 100;
+                if (qnaMakerResults.Answers.FirstOrDefault().Score == 0 & qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
                 {
-                    qnaMakerResult.Answer = qnaMakerResult.ServiceCfg.DefaultMessage;
+                    qnaMakerResults.Answers.FirstOrDefault().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
                 }
 
-                return qnaMakerResult.Score >= qnaMakerResult.ServiceCfg.ScoreThreshold ? qnaMakerResult : null;
+                return qnaMakerResults.Answers.FirstOrDefault().Score >= qnaMakerResults.ServiceCfg.ScoreThreshold ? qnaMakerResults.Answers.FirstOrDefault() : null;
             }
 
             return result;

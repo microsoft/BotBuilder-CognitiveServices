@@ -43,7 +43,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         string kbid;
         string defaultMessage;
         double threshold;
-        int top
+        int top;
 
         public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold, int top = 1)
         {

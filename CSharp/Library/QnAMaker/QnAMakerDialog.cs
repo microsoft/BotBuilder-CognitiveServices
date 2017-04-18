@@ -32,13 +32,13 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Reflection;
 using System.Linq;
-using System.Collections.Generic;
 using System.Web;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
@@ -50,9 +50,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
-        private QnAMakerResults qnAMakerResults;
-        private FeedbackRecord feedbackRecord;
-
+        
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -82,7 +80,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-   
+            var qnaMakerResults = default(QnAMakerResults);
+
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
@@ -90,84 +89,137 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 if (tasks.Any())
                 {
                     var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
-                    qnAMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
-                    feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+                    qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
 
-                    if (qnAMakerResults != null && qnAMakerResults.Answers != null && qnAMakerResults.Answers.Count > 0)
+                    var filteredQnAResults = new List<QnAMakerResult>();
+                    foreach (var qnaMakerResult in qnaMakerResults.Answers)
                     {
-                        var qnaList = qnAMakerResults.Answers;
-                        var questions = qnaList.Select(x => HttpUtility.HtmlDecode(x.Questions[0])).ToArray();
-
-                        if (IsConfidentAnswer(qnaList))
+                        qnaMakerResult.Score /= 100;
+                        if (qnaMakerResult.Score >= qnaMakerResults.ServiceCfg.ScoreThreshold)
                         {
-                            await context.PostAsync(HttpUtility.HtmlDecode(qnaList.FirstOrDefault().Answer));
-                            context.Done(true);
+                            qnaMakerResult.Answer = HttpUtility.HtmlDecode(qnaMakerResult.Answer);
+                            filteredQnAResults.Add((qnaMakerResult));
+                        }
+                    }
+
+                    qnaMakerResults.Answers = filteredQnAResults;
+
+                    if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
+                    {
+                        if (this.IsConfidentAnswer(qnaMakerResults))
+                        {
+                            await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResults);
+                            await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
                         }
                         else
                         {
-                            PromptDialog.Choice(
+                            var feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+                            context.PrivateConversationData.SetValue("qnaMakerResults", qnaMakerResults);
+                            context.PrivateConversationData.SetValue("feedbackRecord", feedbackRecord);
+                            await this.QnAFeedbackStepAsync(context, qnaMakerResults);
+                        }
+                    }
+                    else
+                    {
+                        await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                        await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                    }
+                }
+                else
+                {
+                    await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                    await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                }
+            }
+            else
+            {
+                await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+            }
+        }
+
+        protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)
+        {
+            if (qnaMakerResults.Answers.Count < 2 || qnaMakerResults.Answers.FirstOrDefault().Score >= 99)
+            {
+                return true;
+            }
+
+            if (qnaMakerResults.Answers[0].Score - qnaMakerResults.Answers[1].Score > 20.0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task ResumeAndPostAnswer(IDialogContext context, IAwaitable<string> argument)
+        {
+            var selection = await argument;
+
+            var qnaMakerResults = default(QnAMakerResults);
+            context.PrivateConversationData.TryGetValue("qnaMakerResults", out qnaMakerResults);
+
+            if (qnaMakerResults != null)
+            {
+                bool match = false;
+                foreach (var qnaMakerResult in qnaMakerResults.Answers)
+                {
+                    if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
+                    {
+                        context.PostAsync(qnaMakerResult.Answer);
+                        match = true;
+
+                        var feedbackRecord = default(FeedbackRecord);
+                        context.PrivateConversationData.TryGetValue("feedbackRecord", out feedbackRecord);
+
+                        if (feedbackRecord != null)
+                        {
+                            feedbackRecord.KbQuestion = qnaMakerResult.Questions.FirstOrDefault();
+                            feedbackRecord.KbAnswer = qnaMakerResult.Answer;
+
+                            var tasks =
+                                this.services.Select(
+                                    s =>
+                                    s.ActiveLearnAsync(
+                                        feedbackRecord.UserId,
+                                        feedbackRecord.UserQuestion,
+                                        feedbackRecord.KbQuestion,
+                                        feedbackRecord.KbAnswer)).ToArray();
+                            break;
+                        }
+                    }
+                }
+                if (!match)
+                {
+                    context.PostAsync(
+                        "Not able to match. Please click on the options or type in the exact text from the options.");
+                }
+            }
+            await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
+        }
+
+        protected virtual async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
+        {
+            var qnaList = qnaMakerResults.Answers;
+            var questions = qnaList.Select(x => HttpUtility.HtmlDecode(x.Questions[0])).ToArray();
+
+            PromptDialog.Choice(
                                 context: context,
                                 resume: ResumeAndPostAnswer,
                                 options: questions,
                                 prompt: "I've found multiple responses matching your query. Please select from the following:",
                                 retry: "Please retry!! Click on the options or type in the exact text from the options.");
-                        }
-                    }
-                }
-            }
         }
 
-        private static bool IsConfidentAnswer(List<QnAMakerResult> qnAMakerResults)
+        protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
-            if (qnAMakerResults.Count < 2 || qnAMakerResults.FirstOrDefault().Score >= 99)
-            {
-                return true;
-            }
-            if (qnAMakerResults[0].Score - qnAMakerResults[1].Score > 20.0)
-            {
-                return true;
-            }
-            return false;
+            await context.PostAsync(result.Answers.FirstOrDefault().Answer);
         }
 
-        public async Task ResumeAndPostAnswer(IDialogContext context, IAwaitable<string> argument)
+        protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
-            var selection = await argument;
-
-            bool match = false;
-            foreach (var qnaMakerResult in qnAMakerResults.Answers)
-            {
-                if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
-                {
-                    context.PostAsync(HttpUtility.HtmlDecode(qnaMakerResult.Answer));
-                    match = true;
-                    feedbackRecord.KbQuestion = qnaMakerResult.Questions.FirstOrDefault();
-                    feedbackRecord.KbAnswer = qnaMakerResult.Answer;
-
-                    var tasks = this.services.Select(
-                        s => s.ActiveLearnAsync(feedbackRecord.UserId, feedbackRecord.UserQuestion, feedbackRecord.KbQuestion, feedbackRecord.KbAnswer)).ToArray();
-                    break;
-                }
-            }
-            if (!match)
-            {
-                context.PostAsync("Not able to match. Please click on the options or type in the exact text from the options.");
-            }
-
             context.Done(true);
-        }
-
-        protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
-        {
-            result.Score /= 100;
-            var answer = result.Score >= result.ServiceCfg.ScoreThreshold ? result.Answer : result.ServiceCfg.DefaultMessage;
-
-            await context.PostAsync(HttpUtility.HtmlDecode(answer));
-        }
-
-        protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
-        {
-            context.Wait(MessageReceivedAsync);
         }
     }
 }

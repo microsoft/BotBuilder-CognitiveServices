@@ -138,7 +138,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             try
             {
                 var results = JsonConvert.DeserializeObject<QnAMakerResults>(json);
-              results.ServiceCfg = this.qnaInfo;
+
+                //Adding internal service cfg reference [used when checking configured threshold to provide an answer]
+                results.ServiceCfg = this.qnaInfo;
                 return results;
             }
             catch (JsonException ex)
@@ -163,6 +165,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                     json = client.UploadString(uri, "PATCH", JsonConvert.SerializeObject(postBody));
                 }
+
                 return true;
             }
             catch

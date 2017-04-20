@@ -39,6 +39,8 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -59,7 +61,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <param name="kbQuestion">The question from the knowledgebase which corresponds to the selected answer.</param>
         /// <param name="kbAnswer">The selected answer.</param>
         /// <returns>The query uri</returns>
-        Uri BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey);
+        Uri BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey, out string knowledgebaseId);
 
         /// <summary>
         /// Query the QnA service using this uri.
@@ -107,15 +109,15 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             return builder.Uri;
         }
 
-        Uri IQnAService.BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey)
+        Uri IQnAService.BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string subscriptionKey, out string knowledgebaseId)
         {
-            var knowledgebaseId = this.qnaInfo.KnowledgebaseId;
+            knowledgebaseId = this.qnaInfo.KnowledgebaseId;
+            subscriptionKey = this.qnaInfo.SubscriptionKey;
             var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/train");
             var feedbackRecord = new FeedbackRecord {UserId = userId, UserQuestion = userQuery, KbQuestion = kbQuestion, KbAnswer = kbAnswer};
             var feedbackRecords = new List<FeedbackRecord>();
             feedbackRecords.Add(feedbackRecord);
-            postBody = new QnAMakerTrainingRequestBody { KnowledgeBaseId = knowledgebaseId, FeedbackRecords = feedbackRecords};
-            subscriptionKey = this.qnaInfo.SubscriptionKey;
+            postBody = new QnAMakerTrainingRequestBody { KnowledgeBaseId = knowledgebaseId, FeedbackRecords = feedbackRecords };
             return builder.Uri;
         }
 
@@ -137,11 +139,26 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
             try
             {
-                var results = JsonConvert.DeserializeObject<QnAMakerResults>(json);
+                var qnaMakerResults = JsonConvert.DeserializeObject<QnAMakerResults>(json);
 
                 //Adding internal service cfg reference [used when checking configured threshold to provide an answer]
-                results.ServiceCfg = this.qnaInfo;
-                return results;
+                qnaMakerResults.ServiceCfg = this.qnaInfo;
+
+                var filteredQnAResults = new List<QnAMakerResult>();
+                foreach (var qnaMakerResult in qnaMakerResults.Answers)
+                {
+                    qnaMakerResult.Score /= 100;
+                    if (qnaMakerResult.Score >= this.qnaInfo.ScoreThreshold)
+                    {
+                        qnaMakerResult.Answer = HttpUtility.HtmlDecode(qnaMakerResult.Answer);
+                        qnaMakerResult.Questions = qnaMakerResult.Questions.Select(x => HttpUtility.HtmlDecode(x)).ToList();
+                        filteredQnAResults.Add(qnaMakerResult);
+                    }
+                }
+
+                qnaMakerResults.Answers = filteredQnAResults;
+
+                return qnaMakerResults;
             }
             catch (JsonException ex)
             {
@@ -233,18 +250,27 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             string userId,
             string userQuestion,
             string kbQuestion,
-            string kbAnswer)
+            string kbAnswer,
+            string knowledgebaseId)
         {
             QnAMakerTrainingRequestBody postBody;
             string subscriptionKey;
+            string serviceKnowledgebaseId;
             var uri = service.BuildFeedbackRequest(
                 userId,
                 userQuestion,
                 kbQuestion,
                 kbAnswer,
                 out postBody,
-                out subscriptionKey);
-            return await service.ActiveLearnAsync(uri, postBody, subscriptionKey);
+                out subscriptionKey,
+                out serviceKnowledgebaseId);
+
+            if (serviceKnowledgebaseId.Equals(knowledgebaseId))
+            {
+                return await service.ActiveLearnAsync(uri, postBody, subscriptionKey);
+            }
+
+            return false;
         }
     }
 }

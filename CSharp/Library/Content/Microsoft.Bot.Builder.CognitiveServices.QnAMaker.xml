@@ -110,7 +110,7 @@
             <param name="queryText">The query text.</param>
             <returns>The query uri</returns>
         </member>
-        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.IQnAService.BuildFeedbackRequest(System.String,System.String,System.String,System.String,Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerTrainingRequestBody@,System.String@)">
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.IQnAService.BuildFeedbackRequest(System.String,System.String,System.String,System.String,Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerTrainingRequestBody@,System.String@,System.String@)">
             <summary>
             Build the feedback request uri for the query text and the selected QnA.
             </summary>

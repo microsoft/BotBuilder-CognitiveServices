@@ -50,7 +50,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
-        
+        private QnAMakerResults qnaMakerResults;
+        private FeedbackRecord feedbackRecord;
+        private const double QnAMakerHighConfidenceScoreThreshold = 0.99;
+        private const double QnAMakerHighConfidenceDeltaThreshold = 0.20;
+
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -80,29 +84,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-            var qnaMakerResults = default(QnAMakerResults);
-
+            
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
+                await Task.WhenAll(tasks);
 
                 if (tasks.Any())
                 {
                     var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
                     qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
-
-                    var filteredQnAResults = new List<QnAMakerResult>();
-                    foreach (var qnaMakerResult in qnaMakerResults.Answers)
-                    {
-                        qnaMakerResult.Score /= 100;
-                        if (qnaMakerResult.Score >= qnaMakerResults.ServiceCfg.ScoreThreshold)
-                        {
-                            qnaMakerResult.Answer = HttpUtility.HtmlDecode(qnaMakerResult.Answer);
-                            filteredQnAResults.Add((qnaMakerResult));
-                        }
-                    }
-
-                    qnaMakerResults.Answers = filteredQnAResults;
 
                     if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
                     {
@@ -113,9 +104,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                         }
                         else
                         {
-                            var feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
-                            context.PrivateConversationData.SetValue("qnaMakerResults", qnaMakerResults);
-                            context.PrivateConversationData.SetValue("feedbackRecord", feedbackRecord);
+                            feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+                            
                             await this.QnAFeedbackStepAsync(context, qnaMakerResults);
                         }
                     }
@@ -140,12 +130,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)
         {
-            if (qnaMakerResults.Answers.Count < 2 || qnaMakerResults.Answers.FirstOrDefault().Score >= 99)
+            if (qnaMakerResults.Answers.Count <= 1 || qnaMakerResults.Answers.FirstOrDefault().Score >= QnAMakerHighConfidenceScoreThreshold)
             {
                 return true;
             }
 
-            if (qnaMakerResults.Answers[0].Score - qnaMakerResults.Answers[1].Score > 20.0)
+            if (qnaMakerResults.Answers[0].Score - qnaMakerResults.Answers[1].Score > QnAMakerHighConfidenceDeltaThreshold)
             {
                 return true;
             }
@@ -157,9 +147,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             var selection = await argument;
 
-            var qnaMakerResults = default(QnAMakerResults);
-            context.PrivateConversationData.TryGetValue("qnaMakerResults", out qnaMakerResults);
-
             if (qnaMakerResults != null)
             {
                 bool match = false;
@@ -169,9 +156,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                     {
                         context.PostAsync(qnaMakerResult.Answer);
                         match = true;
-
-                        var feedbackRecord = default(FeedbackRecord);
-                        context.PrivateConversationData.TryGetValue("feedbackRecord", out feedbackRecord);
 
                         if (feedbackRecord != null)
                         {
@@ -185,15 +169,17 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                                         feedbackRecord.UserId,
                                         feedbackRecord.UserQuestion,
                                         feedbackRecord.KbQuestion,
-                                        feedbackRecord.KbAnswer)).ToArray();
+                                        feedbackRecord.KbAnswer,
+                                        qnaMakerResults.ServiceCfg.KnowledgebaseId)).ToArray();
+
+                            await Task.WhenAll(tasks);
                             break;
                         }
                     }
                 }
                 if (!match)
                 {
-                    context.PostAsync(
-                        "Not able to match. Please click on the options or type in the exact text from the options.");
+                    context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
                 }
             }
             await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
@@ -202,7 +188,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         protected virtual async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
         {
             var qnaList = qnaMakerResults.Answers;
-            var questions = qnaList.Select(x => HttpUtility.HtmlDecode(x.Questions[0])).ToArray();
+            var questions = qnaList.Select(x => x.Questions[0]).ToArray();
 
             PromptDialog.Choice(
                                 context: context,

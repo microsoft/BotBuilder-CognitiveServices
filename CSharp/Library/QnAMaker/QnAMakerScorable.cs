@@ -65,8 +65,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             {
                 var qnaMakerResults = (QnAMakerResults)result;
 
-                qnaMakerResults.Answers.FirstOrDefault().Score /= 100;
-                if (qnaMakerResults.Answers.FirstOrDefault().Score == 0 & qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
+                if (qnaMakerResults.Answers.FirstOrDefault().Score == 0 && qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
                 {
                     qnaMakerResults.Answers.FirstOrDefault().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
                 }

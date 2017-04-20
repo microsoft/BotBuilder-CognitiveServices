@@ -98,7 +98,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
                 var response = await client.PostAsync(uri, new StringContent(JsonConvert.SerializeObject(postBody), Encoding.UTF8, "application/json"));
-                json = await response.Content.ReadAsStringAsync();
+                json = await response?.Content?.ReadAsStringAsync();
             }
 
             try

@@ -90,7 +90,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         async Task<QnAMakerResult> IQnAService.QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey)
         {
-            string json;
+            string json = string.Empty;
             
             using (HttpClient client = new HttpClient())
             {
@@ -98,7 +98,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
                 var response = await client.PostAsync(uri, new StringContent(JsonConvert.SerializeObject(postBody), Encoding.UTF8, "application/json"));
-                json = await response?.Content?.ReadAsStringAsync();
+                if (response != null && response.Content != null)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                }
             }
 
             try

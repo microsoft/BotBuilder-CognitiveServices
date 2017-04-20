@@ -84,7 +84,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-            
+            var sendDefaultMessageAndWait = true;
+
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
@@ -105,23 +106,15 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                         else
                         {
                             feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
-                            
                             await this.QnAFeedbackStepAsync(context, qnaMakerResults);
                         }
+
+                        sendDefaultMessageAndWait = false;
                     }
-                    else
-                    {
-                        await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
-                        await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
-                    }
-                }
-                else
-                {
-                    await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
-                    await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
                 }
             }
-            else
+
+            if(sendDefaultMessageAndWait)
             {
                 await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
                 await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
@@ -130,7 +123,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)
         {
-            if (qnaMakerResults.Answers.Count <= 1 || qnaMakerResults.Answers.FirstOrDefault().Score >= QnAMakerHighConfidenceScoreThreshold)
+            if (qnaMakerResults.Answers.Count <= 1 || qnaMakerResults.Answers.First().Score >= QnAMakerHighConfidenceScoreThreshold)
             {
                 return true;
             }

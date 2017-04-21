@@ -10,15 +10,21 @@ var QnAMakerTools = (function () {
                 session.dialogData.qnaMakerResult = qnaMakerResult;
                 var questionOptions = [];
                 qnaMakerResult.answers.forEach(function (qna) { questionOptions.push(qna.questions[0]); });
+                questionOptions.push("None of the above.");
                 var promptOptions = { listStyle: builder.ListStyle.button };
-                builder.Prompts.choice(session, "Please select from the following:", questionOptions, promptOptions);
+                builder.Prompts.choice(session, "Did you mean:", questionOptions, promptOptions);
             },
             function (session, results) {
-                var qnaMakerResult = session.dialogData.qnaMakerResult;
-                var filteredResult = qnaMakerResult.answers.filter(function (qna) { return qna.questions[0] === results.response.entity; });
-                var selectedQnA = filteredResult[0];
-                session.send(selectedQnA.answer);
-                session.endDialogWithResult(selectedQnA);
+                if (results && results.response && results.response.entity) {
+                    var qnaMakerResult = session.dialogData.qnaMakerResult;
+                    var filteredResult = qnaMakerResult.answers.filter(function (qna) { return qna.questions[0] === results.response.entity; });
+                    if (filteredResult !== null && filteredResult.length > 0) {
+                        var selectedQnA = filteredResult[0];
+                        session.send(selectedQnA.answer);
+                        session.endDialogWithResult(selectedQnA);
+                    }
+                }
+                session.endDialog();
             },
         ]);
     }

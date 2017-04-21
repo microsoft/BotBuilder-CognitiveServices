@@ -33,7 +33,7 @@ export interface IQnAMakerResult{
     score: number;
 }
 
-/** Response returned by an QnA Maker recognizer. */
+/** Response returned by QnA Maker recognizer. */
 export interface IQnAMakerResult extends builder.IIntentRecognizerResult {
     /** List of top matched QnA with score greater than the specified threshold. */
     answers: IQnAMakerResult[];

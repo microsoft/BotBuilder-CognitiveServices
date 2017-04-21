@@ -69,13 +69,13 @@ var QnAMakerDialog = (function (_super) {
     };
     QnAMakerDialog.prototype.invokeAnswer = function (session, recognizeResult, threshold, noMatchMessage) {
         var qnaMakerResult = recognizeResult;
+        session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
         if (qnaMakerResult.score >= threshold && qnaMakerResult.answers.length > 0) {
             if (this.isConfidentAnswer(qnaMakerResult) || this.qnaMakerTools == null) {
                 this.respondFromQnAMakerResult(session, qnaMakerResult);
                 this.defaultWaitNextMessage(session, qnaMakerResult);
             }
             else {
-                session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
                 this.qnaFeedbackStep(session, qnaMakerResult);
             }
         }
@@ -103,10 +103,12 @@ var QnAMakerDialog = (function (_super) {
     };
     QnAMakerDialog.prototype.dialogResumed = function (session, result) {
         var selectedResponse = result;
-        var feedbackPostBody = '{"feedbackRecords": [{"userId": "' + session.message.user.id + '","userQuestion": "' + session.privateConversationData.qnaFeedbackUserQuestion
-            + '","kbQuestion": "' + selectedResponse.questions[0] + '","kbAnswer": "' + selectedResponse.answer + '"}]}';
-        this.recordQnAFeedback(feedbackPostBody);
-        session.endDialog();
+        if (selectedResponse && selectedResponse.answer && selectedResponse.questions && selectedResponse.questions.length > 0) {
+            var feedbackPostBody = '{"feedbackRecords": [{"userId": "' + session.message.user.id + '","userQuestion": "' + session.privateConversationData.qnaFeedbackUserQuestion
+                + '","kbQuestion": "' + selectedResponse.questions[0] + '","kbAnswer": "' + selectedResponse.answer + '"}]}';
+            this.recordQnAFeedback(feedbackPostBody);
+        }
+        this.defaultWaitNextMessage(session, { answers: [selectedResponse] });
     };
     QnAMakerDialog.prototype.recordQnAFeedback = function (body) {
         console.log(body);

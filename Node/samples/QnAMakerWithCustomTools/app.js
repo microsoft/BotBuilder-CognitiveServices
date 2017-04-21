@@ -2,6 +2,7 @@
 var restify = require('restify');
 var builder = require('botbuilder');
 var cognitiveservices = require('../../lib/botbuilder-cognitiveservices');
+var customQnAMakerTools = require('./CustomQnAMakerTools');
 
 //=========================================================
 // Bot Setup
@@ -30,32 +31,14 @@ var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	subscriptionKey: 'set your subscription key here',
 	top: 4});
 
-var qnaMakerTools = new cognitiveservices.QnAMakerTools();
-bot.library(qnaMakerTools.createLibrary());
+var customQnAMakerTools = new customQnAMakerTools.CustomQnAMakerTools();
+bot.library(customQnAMakerTools.createLibrary());
 	
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 	recognizers: [recognizer],
 	defaultMessage: 'No match! Try changing the query terms!',
 	qnaThreshold: 0.3,
-	feedbackLib: qnaMakerTools
+	feedbackLib: customQnAMakerTools
 });
-
-// Override to also include the knowledgebase question with the answer on confident matches
-basicQnAMakerDialog.respondFromQnAMakerResult = function(session, qnaMakerResult){
-	var result = qnaMakerResult;
-	var response = 'Here is the match from FAQ:  \r\n  Q: ' + result.answers[0].questions[0] + '  \r\n A: ' + result.answers[0].answer;
-	session.send(response);
-}
-
-// Override to log user query and matched Q&A before ending the dialog
-basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
-	if(session.privateConversationData.qnaFeedbackUserQuestion != null && qnaMakerResult.answers != null && qnaMakerResult.answers.length > 0 
-		&& qnaMakerResult.answers[0].questions != null && qnaMakerResult.answers[0].questions.length > 0 && qnaMakerResult.answers[0].answer != null){
-			console.log('User Query: ' + session.privateConversationData.qnaFeedbackUserQuestion);
-			console.log('KB Question: ' + qnaMakerResult.answers[0].questions[0]);
-			console.log('KB Answer: ' + qnaMakerResult.answers[0].answer);
-		}
-	session.endDialog();
-}
 
 bot.dialog('/', basicQnAMakerDialog);

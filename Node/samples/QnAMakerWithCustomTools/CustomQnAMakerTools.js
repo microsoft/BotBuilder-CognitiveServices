@@ -18,6 +18,8 @@ var CustomQnAMakerTools = (function () {
                 var filteredResult = qnaMakerResult.answers.filter(function (qna) { return qna.questions[0] === results.response.entity; });
                 var selectedQnA = filteredResult[0];
                 session.send(selectedQnA.answer);
+                // The following ends the dialog and returns the selected response to the parent dialog, which logs the record in QnA Maker service
+                // You can simply end the dialog, in case you don't want to learn from these selections using session.endDialog()
                 session.endDialogWithResult(selectedQnA);
             },
         ]);

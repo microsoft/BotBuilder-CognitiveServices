@@ -1,7 +1,7 @@
 
 var restify = require('restify');
 var builder = require('botbuilder');
-var cognitiveservices = require('../lib/botbuilder-cognitiveservices');
+var cognitiveservices = require('../../lib/botbuilder-cognitiveservices');
 
 //=========================================================
 // Bot Setup
@@ -26,17 +26,18 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-	//knowledgeBaseId: 'set your kbid here', 
-	//subscriptionKey: 'set your subscription key here'});
-	knowledgeBaseId: 'c00db5e6-5802-4e32-bd1d-0cbf83c86da1', 
-	subscriptionKey: '682875376ad54258acc921d95b4500c2',
+	knowledgeBaseId: 'set your kbid here', 
+	subscriptionKey: 'set your subscription key here',
 	top: 3});
-	
+
+var qnaMakerTools = new cognitiveservices.QnAMakerTools();
+bot.library(qnaMakerTools.createLibrary());
+
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 	recognizers: [recognizer],
 	defaultMessage: 'No match! Try changing the query terms!',
-	qnaThreshold: 0.3
+	qnaThreshold: 0.3,
+	feedbackLib: qnaMakerTools
 });
-
 
 bot.dialog('/', basicQnAMakerDialog);

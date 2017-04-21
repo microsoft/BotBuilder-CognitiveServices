@@ -16,6 +16,9 @@ export interface IQnAMakerOptions {
     
     /** (Optional) maximum number of answers from the QnA Maker service. */
     Top?: number;
+
+    /** And instance of dialog library which includes the feedback flow. This should be set if Top > 1. */
+    feedbackLib?: QnAMakerTools;
 }
 
 /** Result returned by an QnA Maker recognizer. */
@@ -114,3 +117,25 @@ export class QnAMakerDialog extends builder.Dialog {
     respondFromQnAMakerResult(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
 }
 
+/**
+ * Dialog library which includes the feedback flow when there are more than 1 good match
+ * This should be set if Top > 1.
+ */
+export class QnAMakerTools{
+    /**
+     * Constructs a new instance of QnAMakerTools
+     */
+    constructor();
+
+    /**
+     * Returns the dialog library including the feedback dialog.
+     */
+    public createLibrary(): builder.Library;
+
+    /**
+     * Starts the new dialog to select the best match from top N QnA Maker responses
+     * @param session Session object for the current conversation.
+     * @param qnaMakerResult QnA Maker response from the service. 
+     */
+    public answerSelector(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+}

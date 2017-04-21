@@ -34,22 +34,23 @@
 import * as builder from 'botbuilder';
 import * as request from 'request';
 import { QnAMakerRecognizer, IQnAMakerResults, IQnAMakerOptions, IQnAMakerResult } from './QnAMakerRecognizer'; 
-var qnaMakerTools = require('./QnAMakerTools');
+import { QnAMakerTools } from './QnAMakerTools';
 
 export class QnAMakerDialog extends builder.Dialog {
 	private answerThreshold: number;
     private defaultNoMatchMessage: string;
     private recognizers: builder.IntentRecognizerSet;
     private ocpApimSubscriptionKey: string;
-    private kbUriForTraining: string;  
-
+    private kbUriForTraining: string;
+    private qnaMakerTools: QnAMakerTools;
+   
     constructor(private options: IQnAMakerOptions){
         super();
         this.recognizers = new builder.IntentRecognizerSet(options);
         var qnaRecognizer = this.options.recognizers[0] as QnAMakerRecognizer;
         this.ocpApimSubscriptionKey = qnaRecognizer.ocpApimSubscriptionKey;
         this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
-
+        this.qnaMakerTools = this.options.feedbackLib;
         if(typeof this.options.qnaThreshold !== 'number'){
 			this.answerThreshold = 0.3;
 		}
@@ -103,7 +104,7 @@ export class QnAMakerDialog extends builder.Dialog {
     public invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
         var qnaMakerResult = recognizeResult as IQnAMakerResults;
         if (qnaMakerResult.score >= threshold && qnaMakerResult.answers.length > 0) {
-            if(this.isConfidentAnswer(qnaMakerResult)){
+            if(this.isConfidentAnswer(qnaMakerResult) || this.qnaMakerTools == null){
                 this.respondFromQnAMakerResult(session, qnaMakerResult);
                 this.defaultWaitNextMessage(session, qnaMakerResult);
             }
@@ -119,8 +120,7 @@ export class QnAMakerDialog extends builder.Dialog {
     }
 
     public qnaFeedbackStep(session: builder.Session, qnaMakerResult: IQnAMakerResults) : void {
-        session.library.library(qnaMakerTools.createLibrary());
-        qnaMakerTools.answerSelector(session, qnaMakerResult);
+        this.qnaMakerTools.answerSelector(session, qnaMakerResult);
     }
 
     public respondFromQnAMakerResult(session: builder.Session, qnaMakerResult: IQnAMakerResults): void {
@@ -133,7 +133,7 @@ export class QnAMakerDialog extends builder.Dialog {
 
     public isConfidentAnswer(qnaMakerResult: IQnAMakerResults): boolean{
         if(qnaMakerResult.answers.length <= 1 
-            || qnaMakerResult.answers[0].score >= 99
+            || qnaMakerResult.answers[0].score >= 0.99
             || (qnaMakerResult.answers[0].score - qnaMakerResult.answers[1].score > 0.2)
             ){
                 return true;

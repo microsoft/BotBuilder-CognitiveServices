@@ -12,7 +12,6 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var builder = require("botbuilder");
 var request = require("request");
-var qnaMakerTools = require('./QnAMakerTools');
 var QnAMakerDialog = (function (_super) {
     __extends(QnAMakerDialog, _super);
     function QnAMakerDialog(options) {
@@ -22,6 +21,7 @@ var QnAMakerDialog = (function (_super) {
         var qnaRecognizer = _this.options.recognizers[0];
         _this.ocpApimSubscriptionKey = qnaRecognizer.ocpApimSubscriptionKey;
         _this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
+        _this.qnaMakerTools = _this.options.feedbackLib;
         if (typeof _this.options.qnaThreshold !== 'number') {
             _this.answerThreshold = 0.3;
         }
@@ -70,7 +70,7 @@ var QnAMakerDialog = (function (_super) {
     QnAMakerDialog.prototype.invokeAnswer = function (session, recognizeResult, threshold, noMatchMessage) {
         var qnaMakerResult = recognizeResult;
         if (qnaMakerResult.score >= threshold && qnaMakerResult.answers.length > 0) {
-            if (this.isConfidentAnswer(qnaMakerResult)) {
+            if (this.isConfidentAnswer(qnaMakerResult) || this.qnaMakerTools == null) {
                 this.respondFromQnAMakerResult(session, qnaMakerResult);
                 this.defaultWaitNextMessage(session, qnaMakerResult);
             }
@@ -85,8 +85,7 @@ var QnAMakerDialog = (function (_super) {
         }
     };
     QnAMakerDialog.prototype.qnaFeedbackStep = function (session, qnaMakerResult) {
-        session.library.library(qnaMakerTools.createLibrary());
-        qnaMakerTools.answerSelector(session, qnaMakerResult);
+        this.qnaMakerTools.answerSelector(session, qnaMakerResult);
     };
     QnAMakerDialog.prototype.respondFromQnAMakerResult = function (session, qnaMakerResult) {
         session.send(qnaMakerResult.answers[0].answer);
@@ -96,7 +95,7 @@ var QnAMakerDialog = (function (_super) {
     };
     QnAMakerDialog.prototype.isConfidentAnswer = function (qnaMakerResult) {
         if (qnaMakerResult.answers.length <= 1
-            || qnaMakerResult.answers[0].score >= 99
+            || qnaMakerResult.answers[0].score >= 0.99
             || (qnaMakerResult.answers[0].score - qnaMakerResult.answers[1].score > 0.2)) {
             return true;
         }

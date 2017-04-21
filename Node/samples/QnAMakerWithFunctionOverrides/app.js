@@ -27,39 +27,29 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-	//knowledgeBaseId: 'set your kbid here', 
-	//subscriptionKey: 'set your subscription key here'});
-	knowledgeBaseId: 'c00db5e6-5802-4e32-bd1d-0cbf83c86da1', 
-	subscriptionKey: '682875376ad54258acc921d95b4500c2',
-	top: 5});
+	knowledgeBaseId: 'set your kbid here', 
+	subscriptionKey: 'set your subscription key here',
+	top: 4});
+
+var customQnAMakerTools = new customQnAMakerTools.CustomQnAMakerTools();
+bot.library(customQnAMakerTools.createLibrary());
 	
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 	recognizers: [recognizer],
 	defaultMessage: 'No match! Try changing the query terms!',
-	qnaThreshold: 0.3
+	qnaThreshold: 0.3,
+	feedbackLib: customQnAMakerTools
 });
 
+// Override to also include the knowledgebase question on confident matches
 basicQnAMakerDialog.respondFromQnAMakerResult = function(session, qnaMakerResult){
 	var result = qnaMakerResult;
-	console.log(qnaMakerResult);
-	if(result.answers[0].score > 0.7)
-	{
-		session.send('Here is what I found:');
-	}
-	else
-	{
-		session.send('The following answer seems somewhat similar to what you are looking for:')
-	}
+	session.send(result.answers[0].questions[0]);
 	cognitiveservices.QnAMakerDialog.prototype.respondFromQnAMakerResult(session, qnaMakerResult);
 }
 
+// Override to not call .endDialog()
 basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
-	session.send('Try another FAQ query.');
-}
-
-basicQnAMakerDialog.qnaFeedbackStep = function(session, qnaMakerResult){
-	session.library.library(customQnAMakerTools.createLibrary());
-    customQnAMakerTools.answerSelector(session, qnaMakerResult);
 }
 
 bot.dialog('/', basicQnAMakerDialog);

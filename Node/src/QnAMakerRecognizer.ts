@@ -34,6 +34,7 @@
 import * as builder from 'botbuilder';
 import * as request from 'request';
 import * as entities from 'html-entities';
+import { QnAMakerTools } from './QnAMakerTools';
 
 var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
 var qnaApi = 'generateanswer';
@@ -56,6 +57,7 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     top?: number;
     qnaThreshold?: number;
     defaultMessage?: string;
+    feedbackLib?: QnAMakerTools;
 }
 
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {

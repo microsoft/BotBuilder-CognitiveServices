@@ -34,24 +34,24 @@
 import * as builder from 'botbuilder';
 import { IQnAMakerResults, IQnAMakerResult } from './QnAMakerRecognizer'; 
 
-var lib = new builder.Library('qnaMakerTools');
-
-exports.createLibrary = function () {
-    return lib;
+export interface IQnAMakerTools{
+    createLibrary(): builder.Library;
+    answerSelector(session: builder.Session, options: IQnAMakerResults): void;
 }
 
-exports.answerSelector = function(session: builder.Session, options: IQnAMakerResults){
-    session.beginDialog('qnaMakerTools:answerSelection', options || {});
-}
-
-lib.dialog('answerSelection', [
+export class QnAMakerTools implements IQnAMakerTools{
+    private lib: builder.Library;
+    
+    constructor(){
+        this.lib = new builder.Library('qnaMakerTools');
+        this.lib.dialog('answerSelection', [
                 function (session, args) {
 					var qnaMakerResult = args as IQnAMakerResults;
                     session.dialogData.qnaMakerResult = qnaMakerResult;
                     var questionOptions: string[] = [];
         			qnaMakerResult.answers.forEach(function (qna: IQnAMakerResult) { questionOptions.push(qna.questions[0]); });
                     var promptOptions: builder.IPromptOptions = {listStyle: builder.ListStyle.button};
-                	builder.Prompts.choice(session,  "I've found multiple responses matching your query. Please select from the following:", questionOptions, promptOptions);
+                	builder.Prompts.choice(session,  "Please select from the following:", questionOptions, promptOptions);
                 },
                 function (session, results) {
                     var qnaMakerResult = session.dialogData.qnaMakerResult as IQnAMakerResults;
@@ -61,3 +61,14 @@ lib.dialog('answerSelection', [
 					session.endDialogWithResult(selectedQnA);
                 },
             ]);
+    }
+    
+    public createLibrary(): builder.Library{
+        return this.lib;
+    }
+
+    public answerSelector(session: builder.Session, options: IQnAMakerResults): void{
+        session.beginDialog('qnaMakerTools:answerSelection', options || {});
+    }
+
+}

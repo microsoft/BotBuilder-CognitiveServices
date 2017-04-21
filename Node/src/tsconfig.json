@@ -4,7 +4,7 @@
         "module": "commonjs",
         "sourceMap": false,
         "noImplicitAny": true,
-        "outDir": "../lib",
+        "outDir": "../built",
         "noEmitOnError": true,
         "removeComments": true
     },

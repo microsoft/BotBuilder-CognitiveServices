@@ -152,7 +152,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                         if (feedbackRecord != null)
                         {
-                            feedbackRecord.KbQuestion = qnaMakerResult.Questions.FirstOrDefault();
+                            feedbackRecord.KbQuestion = qnaMakerResult.Questions.First();
                             feedbackRecord.KbAnswer = qnaMakerResult.Answer;
 
                             var tasks =
@@ -193,7 +193,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
-            await context.PostAsync(result.Answers.FirstOrDefault().Answer);
+            await context.PostAsync(result.Answers.First().Answer);
         }
 
         protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)

@@ -65,12 +65,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             {
                 var qnaMakerResults = (QnAMakerResults)result;
 
-                if (qnaMakerResults.Answers.FirstOrDefault().Score == 0 && qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
+                if (qnaMakerResults.Answers.First().Score == 0 && qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
                 {
-                    qnaMakerResults.Answers.FirstOrDefault().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
+                    qnaMakerResults.Answers.First().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
                 }
 
-                return qnaMakerResults.Answers.FirstOrDefault().Score >= qnaMakerResults.ServiceCfg.ScoreThreshold ? qnaMakerResults.Answers.FirstOrDefault() : null;
+                return qnaMakerResults.Answers.First().Score >= qnaMakerResults.ServiceCfg.ScoreThreshold ? qnaMakerResults.Answers.First() : null;
             }
 
             return result;

@@ -103,13 +103,13 @@ export class QnAMakerDialog extends builder.Dialog {
 	
     public invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
         var qnaMakerResult = recognizeResult as IQnAMakerResults;
+        session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
         if (qnaMakerResult.score >= threshold && qnaMakerResult.answers.length > 0) {
             if(this.isConfidentAnswer(qnaMakerResult) || this.qnaMakerTools == null){
                 this.respondFromQnAMakerResult(session, qnaMakerResult);
                 this.defaultWaitNextMessage(session, qnaMakerResult);
             }
             else {
-                session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
                 this.qnaFeedbackStep(session, qnaMakerResult);
             }
         }
@@ -143,11 +143,13 @@ export class QnAMakerDialog extends builder.Dialog {
 
     public dialogResumed(session: builder.Session, result: builder.IDialogResult<IQnAMakerResult>): void {
         var selectedResponse = result as IQnAMakerResult;
-        var feedbackPostBody: string = 
-            '{"feedbackRecords": [{"userId": "' + session.message.user.id + '","userQuestion": "' + session.privateConversationData.qnaFeedbackUserQuestion
-             + '","kbQuestion": "' + selectedResponse.questions[0] + '","kbAnswer": "' + selectedResponse.answer + '"}]}';
-        this.recordQnAFeedback(feedbackPostBody);
-        session.endDialog();
+        if(selectedResponse && selectedResponse.answer && selectedResponse.questions && selectedResponse.questions.length > 0){
+            var feedbackPostBody: string =
+                '{"feedbackRecords": [{"userId": "' + session.message.user.id + '","userQuestion": "' + session.privateConversationData.qnaFeedbackUserQuestion
+                + '","kbQuestion": "' + selectedResponse.questions[0] + '","kbAnswer": "' + selectedResponse.answer + '"}]}';
+            this.recordQnAFeedback(feedbackPostBody);
+        }
+        this.defaultWaitNextMessage(session, {answers: [ selectedResponse ]} as IQnAMakerResults);
     }
 
     private recordQnAFeedback(body: string) : void {

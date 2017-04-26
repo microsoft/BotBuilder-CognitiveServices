@@ -10,7 +10,8 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
     using System;
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -60,11 +61,29 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Did you mean:.
+        /// </summary>
+        internal static string answerSelectionPrompt {
+            get {
+                return ResourceManager.GetString("answerSelectionPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No match found!.
         /// </summary>
         internal static string defaultMessage {
             get {
                 return ResourceManager.GetString("defaultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the above..
+        /// </summary>
+        internal static string noneOfTheAboveOption {
+            get {
+                return ResourceManager.GetString("noneOfTheAboveOption", resourceCulture);
             }
         }
     }

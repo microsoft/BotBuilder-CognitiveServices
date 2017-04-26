@@ -170,10 +170,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                         }
                     }
                 }
-                if (!match)
-                {
-                    context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
-                }
             }
             await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
         }
@@ -181,14 +177,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         protected virtual async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
         {
             var qnaList = qnaMakerResults.Answers;
-            var questions = qnaList.Select(x => x.Questions[0]).ToArray();
+            var questions = qnaList.Select(x => x.Questions[0]).Concat(new[] {Resource.Resource.noneOfTheAboveOption}).ToArray();
 
-            PromptDialog.Choice(
-                                context: context,
+            PromptDialog.Choice(context: context,
                                 resume: ResumeAndPostAnswer,
                                 options: questions,
-                                prompt: "I've found multiple responses matching your query. Please select from the following:",
-                                retry: "Please retry!! Click on the options or type in the exact text from the options.");
+                                prompt: Resource.Resource.answerSelectionPrompt);
         }
 
         protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)

@@ -64,16 +64,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             if (result is QnAMakerResults)
             {
                 var qnaMakerResults = (QnAMakerResults)result;
-
-                if (qnaMakerResults.Answers.First().Score == 0 && qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
+                if (qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
                 {
-                    qnaMakerResults.Answers.First().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
-                }
+                    if (qnaMakerResults.Answers.First().Score == 0 && qnaMakerResults.ServiceCfg.ScoreThreshold == 0)
+                    {
+                        qnaMakerResults.Answers.First().Answer = qnaMakerResults.ServiceCfg.DefaultMessage;
+                    }
 
-                return qnaMakerResults.Answers.First().Score >= qnaMakerResults.ServiceCfg.ScoreThreshold ? qnaMakerResults.Answers.First() : null;
+                    return qnaMakerResults.Answers.First().Score >= qnaMakerResults.ServiceCfg.ScoreThreshold ? qnaMakerResults.Answers.First() : null;
+                }
             }
 
-            return result;
+            return null;
         }
 
         public bool HasScore(IActivity item, object state)

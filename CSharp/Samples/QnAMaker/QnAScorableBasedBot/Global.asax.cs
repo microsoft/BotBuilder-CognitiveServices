@@ -19,13 +19,9 @@ namespace QnAMakerSampleBot
                 var builder = new ContainerBuilder();
                 builder.RegisterModule(new DialogModule());
 
-                // TODO: uncomment this section (and comment below) to test QnA handling with scorables
-                //builder.RegisterModule(new QnAMakerModule("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50));
-                //builder.RegisterType<DummyEchoDialog>().As<IDialog<object>>().InstancePerDependency();
-
-                // TODO: uncomment this section (and comment above) to test QnA handling with dialogs
-                builder.RegisterType<BasicQnAMakerDialog>().As<IDialog<object>>().InstancePerDependency();
-
+                builder.RegisterModule(new QnAMakerModule("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50));
+                builder.RegisterType<DummyEchoDialog>().As<IDialog<object>>().InstancePerDependency();
+                
                 var config = System.Web.Http.GlobalConfiguration.Configuration;
                 builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
                 builder.RegisterWebApiFilterProvider(config);

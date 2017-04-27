@@ -93,23 +93,26 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                 if (tasks.Any())
                 {
-                    var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
-                    qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
-
-                    if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
+                    if (tasks.Count(x => x.Result.Answers?.Count > 0) > 0)
                     {
-                        if (this.IsConfidentAnswer(qnaMakerResults))
-                        {
-                            await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResults);
-                            await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
-                        }
-                        else
-                        {
-                            feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
-                            await this.QnAFeedbackStepAsync(context, qnaMakerResults);
-                        }
+                        var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
+                        qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
 
-                        sendDefaultMessageAndWait = false;
+                        if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
+                        {
+                            if (this.IsConfidentAnswer(qnaMakerResults))
+                            {
+                                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResults);
+                                await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                            }
+                            else
+                            {
+                                feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+                                await this.QnAFeedbackStepAsync(context, qnaMakerResults);
+                            }
+
+                            sendDefaultMessageAndWait = false;
+                        }
                     }
                 }
             }

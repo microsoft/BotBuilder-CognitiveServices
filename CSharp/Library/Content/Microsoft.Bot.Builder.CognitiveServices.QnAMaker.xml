@@ -72,6 +72,7 @@
             <param name="knowledgebaseId">The QnA Knowledgebase ID.</param>
             <param name="defaultMessage">The default message returned when no match found.</param>
             <param name="scoreThreshold">The threshold for answer score.</param>
+            <param name="top">The number of answers to return.</param>
         </member>
         <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerResults.ServiceCfg">
             <summary>

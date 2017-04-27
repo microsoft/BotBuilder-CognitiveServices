@@ -74,6 +74,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <param name="knowledgebaseId">The QnA Knowledgebase ID.</param>
         /// <param name="defaultMessage">The default message returned when no match found.</param>
         /// <param name="scoreThreshold">The threshold for answer score.</param>
+        /// <param name="top">The number of answers to return.</param>
         public QnAMakerAttribute(string subscriptionKey, string knowledgebaseId, string defaultMessage = null, double scoreThreshold = 0.3, int top = 1)
         {
             if (string.IsNullOrEmpty(defaultMessage))

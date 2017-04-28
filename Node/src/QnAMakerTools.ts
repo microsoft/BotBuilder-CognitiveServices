@@ -51,7 +51,7 @@ export class QnAMakerTools implements IQnAMakerTools{
                     var questionOptions: string[] = [];
         			qnaMakerResult.answers.forEach(function (qna: IQnAMakerResult) { questionOptions.push(qna.questions[0]); });
                     questionOptions.push("None of the above.");
-                    var promptOptions: builder.IPromptOptions = {listStyle: builder.ListStyle.button};
+                    var promptOptions: builder.IPromptOptions = {listStyle: builder.ListStyle.button, maxRetries: 0};
                 	builder.Prompts.choice(session,  "Did you mean:", questionOptions, promptOptions);
                 },
                 function (session, results) {
@@ -63,6 +63,8 @@ export class QnAMakerTools implements IQnAMakerTools{
                             session.send(selectedQnA.answer);
                             session.endDialogWithResult(selectedQnA);
                         }
+                    } else {
+                        session.send("Sorry! Not able to match any of the options.");
                     }
                     session.endDialog();
                 },

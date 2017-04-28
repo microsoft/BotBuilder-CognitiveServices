@@ -126,4 +126,7 @@
   <data name="noneOfTheAboveOption" xml:space="preserve">
     <value>هیچکدام از موارد فوق</value>
   </data>
+  <data name="tooManyAttempts" xml:space="preserve">
+    <value>هیچ گزینه همسان</value>
+  </data>
 </root>

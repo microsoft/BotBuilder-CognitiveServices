@@ -126,4 +126,7 @@
   <data name="noneOfTheAboveOption" xml:space="preserve">
     <value>以上都不是。</value>
   </data>
+  <data name="tooManyAttempts" xml:space="preserve">
+    <value>没有选项匹配</value>
+  </data>
 </root>

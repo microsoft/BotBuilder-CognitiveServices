@@ -126,4 +126,7 @@
   <data name="noneOfTheAboveOption" xml:space="preserve">
     <value>None of the above.</value>
   </data>
+  <data name="tooManyAttempts" xml:space="preserve">
+    <value>Sorry! Not able to match any of the options.</value>
+  </data>
 </root>

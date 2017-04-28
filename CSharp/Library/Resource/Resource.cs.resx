@@ -126,4 +126,7 @@
   <data name="noneOfTheAboveOption" xml:space="preserve">
     <value>Žádná z výše uvedených možností.</value>
   </data>
+  <data name="tooManyAttempts" xml:space="preserve">
+    <value>Žádné možnosti neodpovídají</value>
+  </data>
 </root>

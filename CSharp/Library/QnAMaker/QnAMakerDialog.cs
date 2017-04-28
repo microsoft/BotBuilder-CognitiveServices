@@ -141,39 +141,42 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         private async Task ResumeAndPostAnswer(IDialogContext context, IAwaitable<string> argument)
         {
-            var selection = await argument;
-
-            if (qnaMakerResults != null)
+            try
             {
-                bool match = false;
-                foreach (var qnaMakerResult in qnaMakerResults.Answers)
+                var selection = await argument;
+                if (qnaMakerResults != null)
                 {
-                    if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
+                    bool match = false;
+                    foreach (var qnaMakerResult in qnaMakerResults.Answers)
                     {
-                        context.PostAsync(qnaMakerResult.Answer);
-                        match = true;
-
-                        if (feedbackRecord != null)
+                        if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
                         {
-                            feedbackRecord.KbQuestion = qnaMakerResult.Questions.First();
-                            feedbackRecord.KbAnswer = qnaMakerResult.Answer;
+                            await context.PostAsync(qnaMakerResult.Answer);
+                            match = true;
 
-                            var tasks =
-                                this.services.Select(
-                                    s =>
-                                    s.ActiveLearnAsync(
-                                        feedbackRecord.UserId,
-                                        feedbackRecord.UserQuestion,
-                                        feedbackRecord.KbQuestion,
-                                        feedbackRecord.KbAnswer,
-                                        qnaMakerResults.ServiceCfg.KnowledgebaseId)).ToArray();
+                            if (feedbackRecord != null)
+                            {
+                                feedbackRecord.KbQuestion = qnaMakerResult.Questions.First();
+                                feedbackRecord.KbAnswer = qnaMakerResult.Answer;
 
-                            await Task.WhenAll(tasks);
-                            break;
+                                var tasks =
+                                    this.services.Select(
+                                        s =>
+                                        s.ActiveLearnAsync(
+                                            feedbackRecord.UserId,
+                                            feedbackRecord.UserQuestion,
+                                            feedbackRecord.KbQuestion,
+                                            feedbackRecord.KbAnswer,
+                                            qnaMakerResults.ServiceCfg.KnowledgebaseId)).ToArray();
+
+                                await Task.WhenAll(tasks);
+                                break;
+                            }
                         }
                     }
                 }
             }
+            catch (TooManyAttemptsException) { }
             await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
         }
 
@@ -182,10 +185,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             var qnaList = qnaMakerResults.Answers;
             var questions = qnaList.Select(x => x.Questions[0]).Concat(new[] {Resource.Resource.noneOfTheAboveOption}).ToArray();
 
-            PromptDialog.Choice(context: context,
-                                resume: ResumeAndPostAnswer,
-                                options: questions,
-                                prompt: Resource.Resource.answerSelectionPrompt);
+            PromptOptions<string> promptOptions = new PromptOptions<string>(
+                prompt: Resource.Resource.answerSelectionPrompt,
+                tooManyAttempts: Resource.Resource.tooManyAttempts,
+                options: questions,
+                attempts: 0);
+
+            PromptDialog.Choice(context: context, resume: ResumeAndPostAnswer, promptOptions: promptOptions);
         }
 
         protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)

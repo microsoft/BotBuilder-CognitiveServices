@@ -195,5 +195,10 @@
               Looks up a localized string similar to None of the above..
             </summary>
         </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource.tooManyAttempts">
+            <summary>
+              Looks up a localized string similar to Sorry! Not able to match any of the options..
+            </summary>
+        </member>
     </members>
 </doc>

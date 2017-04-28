@@ -86,5 +86,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
                 return ResourceManager.GetString("noneOfTheAboveOption", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry! Not able to match any of the options..
+        /// </summary>
+        public static string tooManyAttempts {
+            get {
+                return ResourceManager.GetString("tooManyAttempts", resourceCulture);
+            }
+        }
     }
 }

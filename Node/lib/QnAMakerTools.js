@@ -11,7 +11,7 @@ var QnAMakerTools = (function () {
                 var questionOptions = [];
                 qnaMakerResult.answers.forEach(function (qna) { questionOptions.push(qna.questions[0]); });
                 questionOptions.push("None of the above.");
-                var promptOptions = { listStyle: builder.ListStyle.button };
+                var promptOptions = { listStyle: builder.ListStyle.button, maxRetries: 0 };
                 builder.Prompts.choice(session, "Did you mean:", questionOptions, promptOptions);
             },
             function (session, results) {
@@ -23,6 +23,9 @@ var QnAMakerTools = (function () {
                         session.send(selectedQnA.answer);
                         session.endDialogWithResult(selectedQnA);
                     }
+                }
+                else {
+                    session.send("Sorry! Not able to match any of the options.");
                 }
                 session.endDialog();
             },

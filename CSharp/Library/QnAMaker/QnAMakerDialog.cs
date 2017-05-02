@@ -32,6 +32,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
@@ -49,6 +50,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
         protected readonly IQnAService[] services;
+        private QnAMakerResults qnaMakerResults;
+        private FeedbackRecord feedbackRecord;
+        private const double QnAMakerHighConfidenceScoreThreshold = 0.99;
+        private const double QnAMakerHighConfidenceDeltaThreshold = 0.20;
 
         public IQnAService[] MakeServicesFromAttributes()
         {
@@ -79,32 +84,124 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
+            var sendDefaultMessageAndWait = true;
 
-            var qnaMakerResult = default(QnAMakerResult);
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
+                await Task.WhenAll(tasks);
 
-                var maxValue = tasks.Max(x => x.Result.Score);
-                qnaMakerResult = await tasks.First(x => x.Result.Score == maxValue);
+                if (tasks.Any())
+                {
+                    if (tasks.Count(x => x.Result.Answers?.Count > 0) > 0)
+                    {
+                        var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
+                        qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
 
-                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResult);
+                        if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
+                        {
+                            if (this.IsConfidentAnswer(qnaMakerResults))
+                            {
+                                await this.RespondFromQnAMakerResultAsync(context, message, qnaMakerResults);
+                                await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                            }
+                            else
+                            {
+                                feedbackRecord = new FeedbackRecord { UserId = message.From.Id, UserQuestion = message.Text };
+                                await this.QnAFeedbackStepAsync(context, qnaMakerResults);
+                            }
+
+                            sendDefaultMessageAndWait = false;
+                        }
+                    }
+                }
             }
 
-            await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResult);
+            if(sendDefaultMessageAndWait)
+            {
+                await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+            }
         }
 
-        protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)
         {
-            result.Score /= 100;
-            var answer = result.Score >= result.ServiceCfg.ScoreThreshold ? result.Answer : result.ServiceCfg.DefaultMessage;
+            if (qnaMakerResults.Answers.Count <= 1 || qnaMakerResults.Answers.First().Score >= QnAMakerHighConfidenceScoreThreshold)
+            {
+                return true;
+            }
 
-            await context.PostAsync(HttpUtility.HtmlDecode(answer));
+            if (qnaMakerResults.Answers[0].Score - qnaMakerResults.Answers[1].Score > QnAMakerHighConfidenceDeltaThreshold)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResult result)
+        private async Task ResumeAndPostAnswer(IDialogContext context, IAwaitable<string> argument)
         {
-            context.Wait(MessageReceivedAsync);
+            try
+            {
+                var selection = await argument;
+                if (qnaMakerResults != null)
+                {
+                    bool match = false;
+                    foreach (var qnaMakerResult in qnaMakerResults.Answers)
+                    {
+                        if (qnaMakerResult.Questions[0].Equals(selection, StringComparison.OrdinalIgnoreCase))
+                        {
+                            await context.PostAsync(qnaMakerResult.Answer);
+                            match = true;
+
+                            if (feedbackRecord != null)
+                            {
+                                feedbackRecord.KbQuestion = qnaMakerResult.Questions.First();
+                                feedbackRecord.KbAnswer = qnaMakerResult.Answer;
+
+                                var tasks =
+                                    this.services.Select(
+                                        s =>
+                                        s.ActiveLearnAsync(
+                                            feedbackRecord.UserId,
+                                            feedbackRecord.UserQuestion,
+                                            feedbackRecord.KbQuestion,
+                                            feedbackRecord.KbAnswer,
+                                            qnaMakerResults.ServiceCfg.KnowledgebaseId)).ToArray();
+
+                                await Task.WhenAll(tasks);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (TooManyAttemptsException) { }
+            await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
+        }
+
+        protected virtual async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
+        {
+            var qnaList = qnaMakerResults.Answers;
+            var questions = qnaList.Select(x => x.Questions[0]).Concat(new[] {Resource.Resource.noneOfTheAboveOption}).ToArray();
+
+            PromptOptions<string> promptOptions = new PromptOptions<string>(
+                prompt: Resource.Resource.answerSelectionPrompt,
+                tooManyAttempts: Resource.Resource.tooManyAttempts,
+                options: questions,
+                attempts: 0);
+
+            PromptDialog.Choice(context: context, resume: ResumeAndPostAnswer, promptOptions: promptOptions);
+        }
+
+        protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
+        {
+            await context.PostAsync(result.Answers.First().Answer);
+        }
+
+        protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
+        {
+            context.Done(true);
         }
     }
 }

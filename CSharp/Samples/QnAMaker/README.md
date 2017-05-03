@@ -26,6 +26,8 @@ public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
 ````
 
 #### QnA bot with Active Learning
+Active learning can be enabled using the QnA Maker dialog by setting the optional parameter 'top' to some value greater than 1. Then QnA Maker uses active learning to learn from the utterances that come into the system. In this process, QnAMaker responds with multiple relevant QnAs for low confidence scenarios and asks users to mark the correct response. The user feedback is logged and models are updated once the system has gathered enough examples. Users will be able to see improved responses based on the feedback received.
+
 [QnABotWithActiveLearning](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/CSharp/Samples/QnAMaker/QnABotWithActiveLearning) demonstrates a QnA bot, where the high confidence answers are directly sent as bot response. In case the confidence is low but multiple good matches are found, it asks for options through a prompt and returns the answers based on the selection. This feedback is also sent back to the service for training the knowledge base with user utterences. The optional 'top' parameter needs to be set to some value > 1. The 'top' represents the maximum number of responses that we will get from the QnA Maker Service. Everything else is similar to [SimpleQnABot](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/CSharp/Samples/QnAMaker/SimpleQnABot).
 ````
 [Serializable]

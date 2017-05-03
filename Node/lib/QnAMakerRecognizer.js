@@ -12,6 +12,7 @@ var QnAMakerRecognizer = (function () {
         this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
         this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
         this.ocpApimSubscriptionKey = this.options.subscriptionKey;
+        this.intentName = options.intentName || "qna";
         if (typeof this.options.top !== 'number') {
             this.top = 1;
         }
@@ -20,10 +21,10 @@ var QnAMakerRecognizer = (function () {
         }
     }
     QnAMakerRecognizer.prototype.recognize = function (context, cb) {
-        var result = { score: 0.0, answers: null, intent: "QnA" };
+        var result = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, function (error, result) {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, this.intentName, function (error, result) {
                 if (!error) {
                     cb(null, result);
                 }
@@ -33,7 +34,7 @@ var QnAMakerRecognizer = (function () {
             });
         }
     };
-    QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, callback) {
+    QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, intentName, callback) {
         try {
             var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
@@ -63,6 +64,7 @@ var QnAMakerRecognizer = (function () {
                             });
                             result.score = result.answers[0].score;
                             result.entities = answerEntities;
+                            result.intent = intentName;
                         }
                     }
                 }

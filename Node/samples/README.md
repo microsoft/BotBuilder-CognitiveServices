@@ -59,6 +59,8 @@ bot.dialog('/', basicQnAMakerDialog);
 ````
 
 #### QnA bot with Active Learning
+Active learning can be enabled using the QnA Maker dialog by setting the optional value 'top' to some value greater than one and initializing the QnA Maker tools library. Then QnA Maker uses active learning to learn from the utterances that come into the system. In this process, QnAMaker responds with multiple relevant QnAs for low confidence scenarios and asks users to mark the correct response. The user feedback is logged and models are updated once the system has gathered enough examples. Users will be able to see improved responses based on the feedback received.
+
 [QnAMakerBotWithActiveLearning](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/Node/samples/QnAMakerBotWithActiveLearning) demonstrates a QnA bot, where the high confidence answers are directly sent as bot response. In case the confidence is low but multiple good matches are found, it asks for options through a prompt and returns the answers based on the selection. This feedback is also sent back to the service for training the knowledge base with user utterences. 
 
 The recognizer instance is set up setting up the optional parameter 'top' to some value greater than 1.
@@ -137,3 +139,38 @@ basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
 	session.endDialog();
 }
 ````
+
+#### QnA + LUIS bot
+[QnAWithLUIS](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/intentDialog/Node/samples/QnAWithLUIS) demonstrates a bot using LUIS and QnA Maker. Both LUIS and QnA recognizers are first set up.
+````
+var qnarecognizer = new cognitiveservices.QnAMakerRecognizer({
+	knowledgeBaseId: 'set your kbid here', 
+	subscriptionKey: 'set your subscription key here',
+    top: 4});
+
+var model='set your luis model uri';
+var recognizer = new builder.LuisRecognizer(model);
+````
+And then the [IntentDialog](https://docs.botframework.com/en-us/node/builder/chat/IntentDialog/) is initiated with both the recognizers as follows:
+````
+var intents = new builder.IntentDialog({ recognizers: [recognizer, qnarecognizer] });
+bot.dialog('/', intents);
+
+intents.matches('luisIntent1', builder.DialogAction.send('Inside LUIS Intent 1.'));
+
+intents.matches('luisIntent2', builder.DialogAction.send('Inside LUIS Intent 2.'));
+
+intents.matches('qna', [
+    function (session, args, next) {
+        var answerEntity = builder.EntityRecognizer.findEntity(args.entities, 'answer');
+        session.send(answerEntity.entity);
+    }
+]);
+
+intents.onDefault([
+    function(session){
+        session.send('Sorry!! No match!!');
+	}
+]);
+````
+By default the recognizers will be evaluated in parallel and the recognizer returning the intent with the highest score will be matched. 

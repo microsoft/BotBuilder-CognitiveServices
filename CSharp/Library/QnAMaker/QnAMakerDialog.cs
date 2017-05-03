@@ -84,8 +84,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-            var sendDefaultMessageAndWait = true;
-
+            
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
@@ -93,6 +92,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                 if (tasks.Any())
                 {
+                    var sendDefaultMessageAndWait = true;
+                    qnaMakerResults = tasks.First(x => x.Result.ServiceCfg != null).Result;
                     if (tasks.Count(x => x.Result.Answers?.Count > 0) > 0)
                     {
                         var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
@@ -114,13 +115,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                             sendDefaultMessageAndWait = false;
                         }
                     }
-                }
-            }
 
-            if(sendDefaultMessageAndWait)
-            {
-                await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
-                await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                    if (sendDefaultMessageAndWait)
+                    {
+                        await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                        await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                    }
+                }
             }
         }
 

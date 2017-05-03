@@ -57,6 +57,7 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     top?: number;
     qnaThreshold?: number;
     defaultMessage?: string;
+    intentName?: string;
     feedbackLib?: QnAMakerTools;
 }
 
@@ -65,26 +66,27 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     public kbUriForTraining: string;
     public ocpApimSubscriptionKey: string;
     private top: number;
+    private intentName: string;
     
     constructor(private options: IQnAMakerOptions){
         this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
         this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
         this.ocpApimSubscriptionKey = this.options.subscriptionKey;
-
+        this.intentName = options.intentName || "qna";
         if(typeof this.options.top !== 'number'){
-			this.top = 1;
-		}
-		else
-		{
-			this.top = this.options.top;
-		}
+          this.top = 1;
+        }
+        else
+        {
+          this.top = this.options.top;
+        }
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResults) => void): void {
-        var result: IQnAMakerResults = { score: 0.0, answers: null, intent: "QnA" };
+        var result: IQnAMakerResults = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, (error, result) => {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, this.intentName, (error, result) => {
                     if (!error) {
                         cb(null, result);
                     } else {
@@ -95,7 +97,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, top: number, callback: (error: Error, result?: IQnAMakerResults) => void): void {
+    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, top: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
         try {
             var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
@@ -126,6 +128,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                                 });
                                 result.score = result.answers[0].score;
                                 result.entities = answerEntities;
+                                result.intent = intentName;
                             }
                         }
                     } catch (e) {

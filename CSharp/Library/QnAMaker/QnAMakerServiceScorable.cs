@@ -82,7 +82,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         public async Task PostAsync(IActivity item, object state, CancellationToken token)
         {
-            await botToUser.PostAsync(HttpUtility.HtmlDecode(((QnAMakerResult)state).Answer));
+            await botToUser.PostAsync(((QnAMakerResult)state).Answer);
         }
 
         public Task DoneAsync(IActivity item, object state, CancellationToken token)

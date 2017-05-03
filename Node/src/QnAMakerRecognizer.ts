@@ -34,43 +34,59 @@
 import * as builder from 'botbuilder';
 import * as request from 'request';
 import * as entities from 'html-entities';
+import { QnAMakerTools } from './QnAMakerTools';
 
-var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v1.0/knowledgebases/';
+var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
 var qnaApi = 'generateanswer';
+var qnaTrainApi = 'train';
 var htmlentities = new entities.AllHtmlEntities();
 
-export interface IQnAMakerResult extends builder.IIntentRecognizerResult {
+export interface IQnAMakerResults extends builder.IIntentRecognizerResult {
+    answers: IQnAMakerResult[];
+}
+
+export interface IQnAMakerResult{
     answer: string;
+    questions: string[];
+    score: number;
 }
 
 export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     knowledgeBaseId: string;
     subscriptionKey: string;
+    top?: number;
     qnaThreshold?: number;
     defaultMessage?: string;
     intentName?: string;
+    feedbackLib?: QnAMakerTools;
 }
 
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     private kbUri: string;
-    private ocpApimSubscriptionKey: string;
+    public kbUriForTraining: string;
+    public ocpApimSubscriptionKey: string;
+    private top: number;
     private intentName: string;
     
     constructor(private options: IQnAMakerOptions){
-        this.kbUri = qnaMakerServiceEndpoint + options.knowledgeBaseId + '/' + qnaApi;
-        this.ocpApimSubscriptionKey = options.subscriptionKey;
+        this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
+        this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
+        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
         this.intentName = options.intentName || "qna";
+        if(typeof this.options.top !== 'number'){
+          this.top = 1;
+        }
+        else
+        {
+          this.top = this.options.top;
+        }
     }
 
-    public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
-        let options = {
-            intent: this.intentName
-        };
-
-        var result: IQnAMakerResult = { score: 0.0, answer: null, intent: this.intentName };
+    public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResults) => void): void {
+        var result: IQnAMakerResults = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, options, (error, result) => {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, this.intentName, (error, result) => {
                     if (!error) {
                         cb(null, result);
                     } else {
@@ -81,9 +97,9 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, options: any, callback: (error: Error, result?: IQnAMakerResult) => void): void {
+    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, top: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
         try {
-            var postBody = '{"question":"' + utterance + '"}';
+            var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
                 url: kbUrl,
                 method: 'POST',
@@ -93,15 +109,27 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                 },
                 body: postBody
             },
-                (error: Error, response: any, body: string) => {
-                    var result: IQnAMakerResult;
+                function (error: Error, response: any, body: string) {
+                    var result: IQnAMakerResults;
                     try {
-                        console.log(body);
                         if (!error) {
                             result = JSON.parse(body);
-                            result.score = result.score / 100;
-                            result.intent = options.intent;
-                            result.answer = htmlentities.decode(result.answer);
+                            var answerEntities: builder.IEntity[] = [];
+                            if(result.answers !== null && result.answers.length > 0){
+                                result.answers.forEach((ans) => {
+                                    ans.score /= 100;
+                                    ans.answer = htmlentities.decode(ans.answer);
+                                    var answerEntity = {
+                                        score: ans.score,
+                                        entity: ans.answer,
+                                        type: 'answer'
+                                    }
+                                    answerEntities.push(answerEntity as builder.IEntity);
+                                });
+                                result.score = result.answers[0].score;
+                                result.entities = answerEntities;
+                                result.intent = intentName;
+                            }
                         }
                     } catch (e) {
                         error = e;

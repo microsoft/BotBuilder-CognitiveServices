@@ -32,17 +32,26 @@
 //
 
 import * as builder from 'botbuilder';
-import { QnAMakerRecognizer, IQnAMakerResult, IQnAMakerOptions } from './QnAMakerRecognizer'; 
+import * as request from 'request';
+import { QnAMakerRecognizer, IQnAMakerResults, IQnAMakerOptions, IQnAMakerResult } from './QnAMakerRecognizer'; 
+import { QnAMakerTools } from './QnAMakerTools';
 
 export class QnAMakerDialog extends builder.Dialog {
 	private answerThreshold: number;
-	private defaultNoMatchMessage: string;
+    private defaultNoMatchMessage: string;
     private recognizers: builder.IntentRecognizerSet;
-
+    private ocpApimSubscriptionKey: string;
+    private kbUriForTraining: string;
+    private qnaMakerTools: QnAMakerTools;
+   
     constructor(private options: IQnAMakerOptions){
         super();
         this.recognizers = new builder.IntentRecognizerSet(options);
-		if(typeof this.options.qnaThreshold !== 'number'){
+        var qnaRecognizer = this.options.recognizers[0] as QnAMakerRecognizer;
+        this.ocpApimSubscriptionKey = qnaRecognizer.ocpApimSubscriptionKey;
+        this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
+        this.qnaMakerTools = this.options.feedbackLib;
+        if(typeof this.options.qnaThreshold !== 'number'){
 			this.answerThreshold = 0.3;
 		}
 		else
@@ -57,7 +66,7 @@ export class QnAMakerDialog extends builder.Dialog {
 		{
 			this.defaultNoMatchMessage = "No match found!";
 		}
-	}
+ 	}
 
     public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
@@ -82,7 +91,7 @@ export class QnAMakerDialog extends builder.Dialog {
         }
     }
 
-    public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResult) => void): void {
+    public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResults) => void): void {
         this.recognizers.recognize(context, cb);
     }
 
@@ -90,20 +99,82 @@ export class QnAMakerDialog extends builder.Dialog {
         // Append recognizer
         this.recognizers.recognizer(plugin);
         return this;
-
     }
 	
-    private invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
-        var qnaMakerResult = recognizeResult as IQnAMakerResult;
-        if (qnaMakerResult.score >= threshold) {
-            session.send(qnaMakerResult.answer);
+    public invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
+        var qnaMakerResult = recognizeResult as IQnAMakerResults;
+        session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
+        if (qnaMakerResult.score >= threshold && qnaMakerResult.answers.length > 0) {
+            if(this.isConfidentAnswer(qnaMakerResult) || this.qnaMakerTools == null){
+                this.respondFromQnAMakerResult(session, qnaMakerResult);
+                this.defaultWaitNextMessage(session, qnaMakerResult);
+            }
+            else {
+                this.qnaFeedbackStep(session, qnaMakerResult);
+            }
         }
         else {
             session.send(noMatchMessage);
+            this.defaultWaitNextMessage(session, qnaMakerResult);
         }
     }
 
-	private emitError(session: builder.Session, err: Error): void {
+    public qnaFeedbackStep(session: builder.Session, qnaMakerResult: IQnAMakerResults) : void {
+        this.qnaMakerTools.answerSelector(session, qnaMakerResult);
+    }
+
+    public respondFromQnAMakerResult(session: builder.Session, qnaMakerResult: IQnAMakerResults): void {
+        session.send(qnaMakerResult.answers[0].answer);
+    }
+
+    public defaultWaitNextMessage(session: builder.Session, qnaMakerResult: IQnAMakerResults): void {
+        session.endDialog();
+    }
+
+    public isConfidentAnswer(qnaMakerResult: IQnAMakerResults): boolean{
+        if(qnaMakerResult.answers.length <= 1 
+            || qnaMakerResult.answers[0].score >= 0.99
+            || (qnaMakerResult.answers[0].score - qnaMakerResult.answers[1].score > 0.2)
+            ){
+                return true;
+            }
+        return false;
+    }
+
+    public dialogResumed(session: builder.Session, result: builder.IDialogResult<IQnAMakerResult>): void {
+        var selectedResponse = result as IQnAMakerResult;
+        if(selectedResponse && selectedResponse.answer && selectedResponse.questions && selectedResponse.questions.length > 0){
+            var feedbackPostBody: string =
+                '{"feedbackRecords": [{"userId": "' + session.message.user.id + '","userQuestion": "' + session.privateConversationData.qnaFeedbackUserQuestion
+                + '","kbQuestion": "' + selectedResponse.questions[0] + '","kbAnswer": "' + selectedResponse.answer + '"}]}';
+            this.recordQnAFeedback(feedbackPostBody);
+        }
+        this.defaultWaitNextMessage(session, {answers: [ selectedResponse ]} as IQnAMakerResults);
+    }
+
+    private recordQnAFeedback(body: string) : void {
+        console.log(body);
+        request({
+            url: this.kbUriForTraining,
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Ocp-Apim-Subscription-Key': this.ocpApimSubscriptionKey
+            },
+            body: body
+        },
+            function (error: Error, response: any, body: string) {
+                if(response.statusCode == 204){
+                    console.log('Feedback sent successfully.')
+                } else {
+                    console.log('error: '+ response.statusCode)
+                    console.log(body)
+                }
+            }
+        );
+    }
+
+ 	private emitError(session: builder.Session, err: Error): void {
 		var m = err.toString();
 		err = err instanceof Error ? err : new Error(m);
 		session.error(err);

@@ -33,9 +33,12 @@
 
 import { QnAMakerDialog } from './QnAMakerDialog';
 import { QnAMakerRecognizer } from './QnAMakerRecognizer';
+import { QnAMakerTools } from './QnAMakerTools';
 
 declare var exports: any;
 
 exports.QnAMakerDialog = QnAMakerDialog;
 exports.QnAMakerRecognizer = QnAMakerRecognizer;
+exports.QnAMakerTools = QnAMakerTools;
+
 

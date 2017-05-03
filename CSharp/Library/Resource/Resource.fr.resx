@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="answerSelectionPrompt" xml:space="preserve">
+    <value>Vouliez-vous dire:</value>
+  </data>
   <data name="defaultMessage" xml:space="preserve">
     <value>Pas de correspondance trouvée</value>
+  </data>
+  <data name="noneOfTheAboveOption" xml:space="preserve">
+    <value>Aucune de ces réponses.</value>
+  </data>
+  <data name="tooManyAttempts" xml:space="preserve">
+    <value>Aucune option ne correspond à</value>
   </data>
 </root>

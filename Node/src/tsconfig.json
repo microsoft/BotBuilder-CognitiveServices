@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
+        "allowJs": true,
         "sourceMap": false,
         "noImplicitAny": true,
         "outDir": "../built",

@@ -23,9 +23,12 @@
   },
   "homepage": "https://github.com/Microsoft/BotBuilder-CognitiveServices#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "botbuilder": "^3.8.2",
     "html-entities": "^1.2.0",
+    "lodash": "^4.17.4",
     "request": "^2.78.0",
-    "restify": "^4.3.0"
+    "restify": "^4.3.0",
+    "schema-inspector": "^1.6.8"
   }
 }

@@ -37,7 +37,7 @@ import { QnAMakerRecognizer, IQnAMakerResults, IQnAMakerOptions, IQnAMakerResult
 import { QnAMakerTools } from './QnAMakerTools';
 
 export class QnAMakerDialog extends builder.Dialog {
-	private answerThreshold: number;
+    private answerThreshold: number;
     private defaultNoMatchMessage: string;
     private recognizers: builder.IntentRecognizerSet;
     private ocpApimSubscriptionKey: string;
@@ -52,21 +52,21 @@ export class QnAMakerDialog extends builder.Dialog {
         this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
         this.qnaMakerTools = this.options.feedbackLib;
         if(typeof this.options.qnaThreshold !== 'number'){
-			this.answerThreshold = 0.3;
-		}
-		else
-		{
-			this.answerThreshold = this.options.qnaThreshold;
-		}
-		if(this.options.defaultMessage && this.options.defaultMessage !== "")
-		{
-			this.defaultNoMatchMessage = this.options.defaultMessage;
-		}
-		else
-		{
-			this.defaultNoMatchMessage = "No match found!";
-		}
- 	}
+            this.answerThreshold = 0.3;
+        }
+        else
+        {
+            this.answerThreshold = this.options.qnaThreshold;
+        }
+        if(this.options.defaultMessage && this.options.defaultMessage !== "")
+        {
+            this.defaultNoMatchMessage = this.options.defaultMessage;
+        }
+        else
+        {
+            this.defaultNoMatchMessage = "No match found!";
+        }
+    }
 
     public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
@@ -100,7 +100,7 @@ export class QnAMakerDialog extends builder.Dialog {
         this.recognizers.recognizer(plugin);
         return this;
     }
-	
+    
     public invokeAnswer(session: builder.Session, recognizeResult: builder.IIntentRecognizerResult, threshold: number, noMatchMessage: string): void {
         var qnaMakerResult = recognizeResult as IQnAMakerResults;
         session.privateConversationData.qnaFeedbackUserQuestion = session.message.text;
@@ -174,9 +174,9 @@ export class QnAMakerDialog extends builder.Dialog {
         );
     }
 
- 	private emitError(session: builder.Session, err: Error): void {
-		var m = err.toString();
-		err = err instanceof Error ? err : new Error(m);
-		session.error(err);
-	}
+    private emitError(session: builder.Session, err: Error): void {
+        var m = err.toString();
+        err = err instanceof Error ? err : new Error(m);
+        session.error(err);
+    }
 }

@@ -31,14 +31,19 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+// QnAMaker
 import { QnAMakerDialog } from './QnAMakerDialog';
 import { QnAMakerRecognizer } from './QnAMakerRecognizer';
 import { QnAMakerTools } from './QnAMakerTools';
+
+// LUIS Action Binding
+import * as LuisBuiltInTypes from './LuisBuiltInTypes';
+import * as LuisActionBinding from './LuisActionBinding';
 
 declare var exports: any;
 
 exports.QnAMakerDialog = QnAMakerDialog;
 exports.QnAMakerRecognizer = QnAMakerRecognizer;
 exports.QnAMakerTools = QnAMakerTools;
-
-
+exports.LuisBuiltInTypes = LuisBuiltInTypes;
+exports.LuisActionBinding = LuisActionBinding;

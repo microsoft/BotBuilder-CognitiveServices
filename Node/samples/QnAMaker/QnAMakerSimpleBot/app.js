@@ -1,8 +1,6 @@
-
 var restify = require('restify');
 var builder = require('botbuilder');
-var cognitiveservices = require('../../lib/botbuilder-cognitiveservices');
-var customQnAMakerTools = require('./CustomQnAMakerTools');
+var cognitiveservices = require('../../../lib/botbuilder-cognitiveservices');
 
 //=========================================================
 // Bot Setup
@@ -11,13 +9,13 @@ var customQnAMakerTools = require('./CustomQnAMakerTools');
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+    console.log('%s listening to %s', server.name, server.url); 
 });
   
 // Create chat bot
 var connector = new builder.ChatConnector({
- appId: process.env.MICROSOFT_APP_ID,
- appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -27,18 +25,13 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-	knowledgeBaseId: 'set your kbid here', 
-	subscriptionKey: 'set your subscription key here',
-	top: 4});
-
-var customQnAMakerTools = new customQnAMakerTools.CustomQnAMakerTools();
-bot.library(customQnAMakerTools.createLibrary());
-	
+    knowledgeBaseId: 'set your kbid here', 
+    subscriptionKey: 'set your subscription key here'});
+    
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
-	recognizers: [recognizer],
-	defaultMessage: 'No match! Try changing the query terms!',
-	qnaThreshold: 0.3,
-	feedbackLib: customQnAMakerTools
+    recognizers: [recognizer],
+    defaultMessage: 'No match! Try changing the query terms!',
+    qnaThreshold: 0.3
 });
 
 bot.dialog('/', basicQnAMakerDialog);

@@ -43,7 +43,7 @@ var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 ## Bot Samples
 
 #### Simple QnA bot
-[QnAMakerSimpleBot](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/Node/samples/QnAMakerSimpleBot) demonstrates a simple QnA bot where the bot responds with the top answer above specified threshold. You just need to set up the recognizer and the dialog as follows and add it as the root dialog.
+[QnAMakerSimpleBot](QnAMakerSimpleBot) demonstrates a simple QnA bot where the bot responds with the top answer above specified threshold. You just need to set up the recognizer and the dialog as follows and add it as the root dialog.
 ````
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 
@@ -61,7 +61,7 @@ bot.dialog('/', basicQnAMakerDialog);
 #### QnA bot with Active Learning
 Active learning can be enabled using the QnA Maker dialog by setting the optional value 'top' to some value greater than one and initializing the QnA Maker tools library. Then QnA Maker uses active learning to learn from the utterances that come into the system. In this process, QnAMaker responds with multiple relevant QnAs for low confidence scenarios and asks users to mark the correct response. The user feedback is logged and models are updated once the system has gathered enough examples. Users will be able to see improved responses based on the feedback received.
 
-[QnAMakerBotWithActiveLearning](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/Node/samples/QnAMakerBotWithActiveLearning) demonstrates a QnA bot, where the high confidence answers are directly sent as bot response. In case the confidence is low but multiple good matches are found, it asks for options through a prompt and returns the answers based on the selection. This feedback is also sent back to the service for training the knowledge base with user utterences. 
+[QnAMakerBotWithActiveLearning](QnAMakerBotWithActiveLearning) demonstrates a QnA bot, where the high confidence answers are directly sent as bot response. In case the confidence is low but multiple good matches are found, it asks for options through a prompt and returns the answers based on the selection. This feedback is also sent back to the service for training the knowledge base with user utterences. 
 
 The recognizer instance is set up setting up the optional parameter 'top' to some value greater than 1.
 ````
@@ -90,7 +90,7 @@ var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 bot.dialog('/', basicQnAMakerDialog);
 ````
 
-One can also specify their custom logic and add their own feedbackLib. [QnAMakerWithWithCustomTools](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/Node/samples/QnAMakerWithWithCustomTools) demonstrates how to achieve that. CustomQnAMakerTools.js is an example of how to customize the feedbackLib. Note that, you can also turn off the additional call to QnA Maker service for recording the feedback by just calling endDialog() instead of endDialogWithResult().
+One can also specify their custom logic and add their own feedbackLib. [QnAMakerWithWithCustomTools](QnAMakerWithWithCustomTools) demonstrates how to achieve that. CustomQnAMakerTools.js is an example of how to customize the feedbackLib. Note that, you can also turn off the additional call to QnA Maker service for recording the feedback by just calling endDialog() instead of endDialogWithResult().
 
 ````
 function CustomQnAMakerTools() {
@@ -118,7 +118,7 @@ function CustomQnAMakerTools() {
 ````
 
 #### QnA bot with function overrides for decorating responses and custom logging
-[QnAMakerWithFunctionOverrides](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/Node/samples/QnAMakerWithFunctionOverrides) demonstrates a QnA bot, where the default methods are overridden to add some custom logic. One can override the 'respondFromQnAMakerResult' method and customize that as needed. In this example, the indexed question present in the QnA Maker knowledge base is also added whenever there is a confident match and the dialog returns the best matched answer. 
+[QnAMakerWithFunctionOverrides](QnAMakerWithFunctionOverrides) demonstrates a QnA bot, where the default methods are overridden to add some custom logic. One can override the 'respondFromQnAMakerResult' method and customize that as needed. In this example, the indexed question present in the QnA Maker knowledge base is also added whenever there is a confident match and the dialog returns the best matched answer. 
 ````
 basicQnAMakerDialog.respondFromQnAMakerResult = function(session, qnaMakerResult){
 	var result = qnaMakerResult;
@@ -141,7 +141,7 @@ basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
 ````
 
 #### QnA + LUIS bot
-[QnAWithLUIS](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/intentDialog/Node/samples/QnAWithLUIS) demonstrates a bot using LUIS and QnA Maker. Both LUIS and QnA recognizers are first set up.
+[QnAWithLUIS](QnAWithLUIS) demonstrates a bot using LUIS and QnA Maker. Both LUIS and QnA recognizers are first set up.
 ````
 var qnarecognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 

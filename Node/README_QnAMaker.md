@@ -1,7 +1,7 @@
 # QnA Maker Dialog for Microsoft Bot Framework
 
 ## Overview
-The following examples demonstrate how to use the QnA Maker Dialog your Microsoft Bot Framework bot in Node.js. 
+The following examples demonstrate how to use the QnA Maker Dialog with your Microsoft Bot Framework bot in Node.js.
 
 ## Prerequisites
 You should create a knowledge base at [QnA Maker](https://qnamaker.ai). This is a free tool under cognitive services with a limit of 10,000 transactions per month, 10 per minute.
@@ -24,19 +24,21 @@ The example extends the QnAMakerDialog, and calls it with the required parameter
 
 ```js
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-	knowledgeBaseId: 'set your kbid here', 
+	knowledgeBaseId: 'set your kbid here',
 	subscriptionKey: 'set your subscription key here'
 });
 
-var BasicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({ 
+var BasicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 	recognizers: [recognizer],
 	defaultMessage: 'No good match in FAQ.',
 	qnaThreshold: 0.5
 });
 ```
 
-## Sample Bot
-You can find a sample bot that uses the QnAMakerDialog [here](https://github.com/Microsoft/BotBuilder-CognitiveServices/blob/master/Node/samples/QnAMakerSimpleBot/app.js)
+## Sample Bots
+You can find a simple sample bot that uses the QnAMakerDialog [here](samples/QnAMaker/QnAMakerSimpleBot/app.js).
+
+A list of more advanced samples can be found [here](samples/QnAMaker/README.md).
 
 ## More Information
 Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and QnA Maker:

@@ -31,7 +31,7 @@ You can find a simple sample bot that uses LUIS Action Binding [here](samples/Lu
 A full description of all available samples can be found [here](samples/LuisActionBinding/README.md).
 
 ## More Information
-Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and QnA Maker:
+Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and LUIS:
 
 * [Microsoft Bot Framework Overview](https://docs.botframework.com/en-us/)
 * [Microsoft Bot Framework Bot Builder SDK](https://github.com/Microsoft/BotBuilder)

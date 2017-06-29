@@ -143,7 +143,7 @@ function evaluate(modelUrl, actions, currentActionModel, userInput, onContextCre
                                 var newActionName = newAction.friendlyName || newAction.intentName;
                                 actionModel.contextSwitchPrompt = util.format('Do you want to discard the current action \'%s\' and start the with \'%s\' action?', currentActionName, newActionName);
 
-                                // return and wait for context switch confirmation 
+                                // return and wait for context switch confirmation
                                 return resolve(actionModel);
 
                             } else {
@@ -301,7 +301,7 @@ function createBotLibrary(modelUrl, actions, options) {
 
                     case Status.Fulfilled:
                         // Action fulfilled
-                        // TODO: Allow external handler
+                        // Cleanup and invoke reply handler (use default if none was defined)
                         delete session.privateConversationData['luisaction.model'];
                         fulfillReplyHandler(session, actionModel);
                         break;

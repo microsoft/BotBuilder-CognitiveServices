@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
     using Newtonsoft.Json;
 
     // This sample were added to showcase support to Custom List Entities

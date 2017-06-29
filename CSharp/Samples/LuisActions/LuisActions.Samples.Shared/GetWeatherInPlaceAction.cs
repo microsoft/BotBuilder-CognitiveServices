@@ -4,7 +4,7 @@
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
     using Models;
     using Newtonsoft.Json.Linq;
 

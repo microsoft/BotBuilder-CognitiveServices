@@ -1,7 +1,7 @@
 ﻿namespace LuisActions.Samples.Web.Models
 {
     using System.Collections.Generic;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     public class ActionScaffoldViewModel
     {

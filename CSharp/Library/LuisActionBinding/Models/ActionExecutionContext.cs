@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Cognitive.LUIS.ActionBinding
+﻿namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     public class ActionExecutionContext
     {

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Microsoft.Cognitive.LUIS.ActionBinding")]
+[assembly: AssemblyTitle("Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Microsoft.Cognitive.LUIS.ActionBinding")]
+[assembly: AssemblyProduct("Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

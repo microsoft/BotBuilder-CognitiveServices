@@ -2,7 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     [Serializable]
     public abstract class GetDataFromPlaceBaseAction : BaseLuisAction

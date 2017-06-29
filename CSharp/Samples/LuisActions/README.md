@@ -1,6 +1,6 @@
 # LUIS Action Binding Sample
 
-A sample that contains a core implementation for doing LUIS Action Binding using the [Microsoft.Cognitive.LUIS.ActionBinding](Microsoft.Cognitive.LUIS.ActionBinding) framework in order to handle LUIS intents taking a service result as input. In addition, the solution contains sample Actions ([LuisActions.Samples.Shared](LuisActions.Samples.Shared)) that are commonly shared, and shows how to integrate them in a console, a bot and a ASP.NET MVC applications.
+A sample that contains a core implementation for doing LUIS Action Binding using the [Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding) framework in order to handle LUIS intents taking a service result as input. In addition, the solution contains sample Actions ([LuisActions.Samples.Shared](LuisActions.Samples.Shared)) that are commonly shared, and shows how to integrate them in a console, a bot and a ASP.NET MVC applications.
 
 [![Deploy to Azure][Deploy Button]][Deploy CSharp/LUISActionBinding]
 
@@ -133,9 +133,9 @@ Below is a table describined the relations between the intents and entities reco
 
 You can find the JSON file to recreate the app into your own subscription here: [LUIS_MODEL.json](../LUIS_MODEL.json).
 
-#### Microsoft.Cognitive.LUIS.ActionBinding project
+#### Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding project
 
-At this project you can find the core stuff to implement LUIS action binding and react to LUIS intents within your own apps. Each LUIS action should implement an [ILuisAction](Microsoft.Cognitive.LUIS.ActionBinding/ILuisAction.cs) interface which is the basic contract for action binding implementation that are recognized by the [LuisActionResolver](Microsoft.Cognitive.LUIS.ActionBinding/LuisActionResolver.cs) when an intent should be handled and fulfilled.
+At this project you can find the core stuff to implement LUIS action binding and react to LUIS intents within your own apps. Each LUIS action should implement an [ILuisAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/ILuisAction.cs) interface which is the basic contract for action binding implementation that are recognized by the [LuisActionResolver](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/LuisActionResolver.cs) when an intent should be handled and fulfilled.
 
 ````C#
 public interface ILuisAction
@@ -146,7 +146,7 @@ public interface ILuisAction
 }
 ````
 
-There is an abstract [BaseLuisAction](Microsoft.Cognitive.LUIS.ActionBinding/BaseLuisAction.cs) base class within the project which provides an implementation for the [ILuisAction.IsValid](Microsoft.Cognitive.LUIS.ActionBinding/BaseLuisAction.cs#L14-L33) method which provides validation for the model defined by the action, relying on Data Annotations.
+There is an abstract [BaseLuisAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/BaseLuisAction.cs) base class within the project which provides an implementation for the [ILuisAction.IsValid](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/BaseLuisAction.cs#L14-L33) method which provides validation for the model defined by the action, relying on Data Annotations.
 
 ````C#
 [Serializable]
@@ -172,7 +172,7 @@ public abstract class BaseLuisAction : ILuisAction
 }
 ````
 
-There is also another pair of interface and abstract class which can be used to implement contextual actions. This interface extends the previously shown `ILuisAction` interface, but has a `Context` member. The interface for defining contextual actions is called [ILuisContextualAction](Microsoft.Cognitive.LUIS.ActionBinding/ILuisContextualAction.cs) and it is shown below:
+There is also another pair of interface and abstract class which can be used to implement contextual actions. This interface extends the previously shown `ILuisAction` interface, but has a `Context` member. The interface for defining contextual actions is called [ILuisContextualAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/ILuisContextualAction.cs) and it is shown below:
 
 ````C#
 public interface ILuisContextualAction<T> : ILuisAction where T : ILuisAction
@@ -181,7 +181,7 @@ public interface ILuisContextualAction<T> : ILuisAction where T : ILuisAction
 }
 ````
 
-The abstract class in this case is [BaseLuisContextualAction](Microsoft.Cognitive.LUIS.ActionBinding/BaseLuisContextualAction.cs) and just provides an implementation for the `Context` member of the interface.
+The abstract class in this case is [BaseLuisContextualAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/BaseLuisContextualAction.cs) and just provides an implementation for the `Context` member of the interface.
 
 ````C#
 [Serializable]
@@ -191,7 +191,7 @@ public abstract class BaseLuisContextualAction<T> : BaseLuisAction, ILuisContext
 }
 ````
 
-An attribute named [LuisActionBindingAttribute](Microsoft.Cognitive.LUIS.ActionBinding/Attributes/LuisActionBindingAttribute.cs) is used to bind your actions to intents while defining action behavior in different scenarios, and the [LuisActionResolver.ResolveActionFromLuisIntent](Microsoft.Cognitive.LUIS.ActionBinding/LuisActionResolver.cs#L270-L312) uses it to get the appropiate type for an intent contained within the `LuisResult` used as input, and return the appropiate instance for it with the action model property values (that map to entities) resolved.
+An attribute named [LuisActionBindingAttribute](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Attributes/LuisActionBindingAttribute.cs) is used to bind your actions to intents while defining action behavior in different scenarios, and the [LuisActionResolver.ResolveActionFromLuisIntent](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/LuisActionResolver.cs#L270-L312) uses it to get the appropiate type for an intent contained within the `LuisResult` used as input, and return the appropiate instance for it with the action model property values (that map to entities) resolved.
 
 ````C#
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
@@ -230,7 +230,7 @@ public class LuisActionBindingAttribute : Attribute
 |FriendlyName|The friendly name is used to be displayed in some cases, as for example when you are switching from one action to another a prompt might ask you to confirm the switch and the friendly names of the actions are being shown in the confirmation message|
 |IntentName|Is the intent to which this action maps to|
 
-There is also another attribute which can be used to map action members to entities recognized by LUIS in several ways. The attribute [LuisActionBindingParamAttribute](Microsoft.Cognitive.LUIS.ActionBinding/Attributes/LuisActionBindingParamAttribute.cs) has the following implementation and members:
+There is also another attribute which can be used to map action members to entities recognized by LUIS in several ways. The attribute [LuisActionBindingParamAttribute](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Attributes/LuisActionBindingParamAttribute.cs) has the following implementation and members:
 
 ````C#
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
@@ -264,7 +264,7 @@ var result = await myAction.FulfillAsync();
 
 As you see the `LuisActionResolver` is being constructed using an assembly instance as input. That assembly instance will be used to lookup for all the types which have `LuisActionBindingAttribute` attributes decorating them. Then, the `ResolveActionFromLuisIntent` will get an `ILuisAction` instance (if there is one that maps the intent targeted within the `luisResult` argument), and will assign the entities found by LUIS service to your model properties.
 
-Within the [ILuisAction.FulfillAsync](Microsoft.Cognitive.LUIS.ActionBinding/ILuisAction.cs#L9) you do whatever it is required to fulfill the intent returned from LUIS service, and provide a meaningful result.
+Within the [ILuisAction.FulfillAsync](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/ILuisAction.cs#L9) you do whatever it is required to fulfill the intent returned from LUIS service, and provide a meaningful result.
 
 In addition, the `LuisActionResolver` class has lot of static helper methods that are being used within the framework to implement the behavior for the three scenarios depicted at the beginning, but as they are public, you can use it within your own implementation as well (as you can see in the [console sample](LuisActions.Samples.Console/)).
 
@@ -287,7 +287,7 @@ These helper methods are:
 
 At this project you can find samples on how to implement `ILuisAction` interface for the [intents provisioned](#provisioned-luis-app) within the sample LUIS service app.
 
-As an example you can see the [FindHotelsAction](LuisActions.Samples.Shared/FindHotelsAction.cs) which corresponds to the `FindHotels` intent mentioned before. Within the implementation you can see it is inheriting from [BaseLuisAction](LuisActions.Samples.Shared/FindHotelsAction.cs#L10) in order to use the implementation of the [ILuisAction.IsValid](Microsoft.Cognitive.LUIS.ActionBinding/BaseLuisAction.cs#L14-L33) method. In addition, the class is decorated with the [LuisActionBindingAttribute](LuisActions.Samples.Shared/FindHotelsAction.cs#L9) and it has [5 properties](LuisActions.Samples.Shared/FindHotelsAction.cs#L12-L27) which map to recognizable LUIS entities (as you can see, from the data annotations used there, some are required while others are not). The [ILuisAction.FulfillAsync](LuisActions.Samples.Shared/FindHotelsAction.cs#L29-L32) implementation in this case is a mock just returning a text saying "no hotels were found", but it is here where you would call a booking service in order to find available rooms to fulfill the user's request.
+As an example you can see the [FindHotelsAction](LuisActions.Samples.Shared/FindHotelsAction.cs) which corresponds to the `FindHotels` intent mentioned before. Within the implementation you can see it is inheriting from [BaseLuisAction](LuisActions.Samples.Shared/FindHotelsAction.cs#L10) in order to use the implementation of the [ILuisAction.IsValid](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/BaseLuisAction.cs#L14-L33) method. In addition, the class is decorated with the [LuisActionBindingAttribute](LuisActions.Samples.Shared/FindHotelsAction.cs#L9) and it has [5 properties](LuisActions.Samples.Shared/FindHotelsAction.cs#L12-L27) which map to recognizable LUIS entities (as you can see, from the data annotations used there, some are required while others are not). The [ILuisAction.FulfillAsync](LuisActions.Samples.Shared/FindHotelsAction.cs#L29-L32) implementation in this case is a mock just returning a text saying "no hotels were found", but it is here where you would call a booking service in order to find available rooms to fulfill the user's request.
 
 ````C#
 [Serializable]
@@ -349,7 +349,7 @@ public class FindHotelsAction_ChangeLocation : BaseLuisContextualAction<FindHote
 }
 ````
 
-As you can see first the action is inheriting from the [BaseLuisContextualAction](Microsoft.Cognitive.LUIS.ActionBinding/BaseLuisContextualAction.cs) class, which implements the [ILuisContextualAction](Microsoft.Cognitive.LUIS.ActionBinding/ILuisContextualAction.cs) interface (this is a mandatory requisite to define a contextual action). More precisely the action requires a `FindHotelsAction` as context to be meaningful (declared in the generic argument of the base class). The next think you should observe is the `FulfillAsync` method, where the action is checking that a valid context is provided within the instance and then it updates the `Place` property on it.
+As you can see first the action is inheriting from the [BaseLuisContextualAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/BaseLuisContextualAction.cs) class, which implements the [ILuisContextualAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/ILuisContextualAction.cs) interface (this is a mandatory requisite to define a contextual action). More precisely the action requires a `FindHotelsAction` as context to be meaningful (declared in the generic argument of the base class). The next think you should observe is the `FulfillAsync` method, where the action is checking that a valid context is provided within the instance and then it updates the `Place` property on it.
 
 Other samples within the project follow the same logic, nevertheless if you take a look at [GetWeatherInPlaceAction](LuisActions.Samples.Shared/GetWeatherInPlaceAction.cs#L18-L40) or [FindAirportByCodeAction](LuisActions.Samples.Shared/FindAirportByCodeAction.cs#L22-L49) you will see fulfillments that actually have more interesting handling implemented (ie. not mocked).
 
@@ -361,7 +361,7 @@ At this project you can see how the action samples are used within a bot applica
 
 The key class here is the [RootDialog](LuisActions.Samples.Bot/RootDialog.cs), which [inherits from LuisActionDialog](LuisActions.Samples.Bot/RootDialog.cs#L15).
 
-The [LuisActionDialog](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs) has been created in order to easily integrate `LuisIntentAttribute` attributes at your intent handler methods within your inherited dialog, with the `ILuisAction` implementations you might have (mapping those intents), getting the appropiate action fulfillment result for a particular user's request and sending it back to the intent handler after being resolved. For this, the `LuisActionDialog` defines [new signatures](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L14-L16) for these handlers, and as said, the dialog obtains the action linked to the intent by using the `LuisActionBindingAttribute.IntentName` decorating your implemented `ILuisAction` classes, and calls the intent handler with the object you return at the `FulfillAsync` method of your action.
+The [LuisActionDialog](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs) has been created in order to easily integrate `LuisIntentAttribute` attributes at your intent handler methods within your inherited dialog, with the `ILuisAction` implementations you might have (mapping those intents), getting the appropiate action fulfillment result for a particular user's request and sending it back to the intent handler after being resolved. For this, the `LuisActionDialog` defines [new signatures](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L14-L16) for these handlers, and as said, the dialog obtains the action linked to the intent by using the `LuisActionBindingAttribute.IntentName` decorating your implemented `ILuisAction` classes, and calls the intent handler with the object you return at the `FulfillAsync` method of your action.
 
 ````C#
 public delegate Task LuisActionHandler(IDialogContext context, object actionResult);
@@ -369,7 +369,7 @@ public delegate Task LuisActionHandler(IDialogContext context, object actionResu
 public delegate Task LuisActionActivityHandler(IDialogContext context, IAwaitable<IMessageActivity> message, object actionResult);
 ````
 
-As you can see the first `LuisActionDialog` [constructor](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L25-L27) receives a list of assemblies where it should lookup for `ILuisAction` implementations decorated with the `LuisActionBindingAttribute`, as well as several `ILuisService` instances that will be used to resolve the user's intent.
+As you can see the first `LuisActionDialog` [constructor](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L25-L27) receives a list of assemblies where it should lookup for `ILuisAction` implementations decorated with the `LuisActionBindingAttribute`, as well as several `ILuisService` instances that will be used to resolve the user's intent.
 
 ````C#
 public LuisActionDialog(IEnumerable<Assembly> assemblies, params ILuisService[] services) : this(assemblies, null, services)
@@ -377,7 +377,7 @@ public LuisActionDialog(IEnumerable<Assembly> assemblies, params ILuisService[] 
 }
 ````
 
-The second [constructor](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L29-L39) receives, in addition to the arguments shown before, an `Action<ILuisAction, object>` which will be used on the scenario #3 when creating the parent contexts for a contextual action that can be executed from scratch. The developer can use this callback to *hydrate* back the parent context within the action chain in order to continue or update an already processed context.
+The second [constructor](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L29-L39) receives, in addition to the arguments shown before, an `Action<ILuisAction, object>` which will be used on the scenario #3 when creating the parent contexts for a contextual action that can be executed from scratch. The developer can use this callback to *hydrate* back the parent context within the action chain in order to continue or update an already processed context.
 
 ````C#
 public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, object> onContextCreation, params ILuisService[] services) : base(services)
@@ -393,7 +393,7 @@ public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, ob
 }
 ````
 
-In addition, the dialog has a key override for the [MessageReceived](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L#L41-L97) protected method in order to use our [LuisActionResolver](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L62) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
+In addition, the dialog has a key override for the [MessageReceived](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L#L41-L97) protected method in order to use our [LuisActionResolver](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L62) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
 
 ````C#
 protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
@@ -455,7 +455,7 @@ protected override async Task MessageReceived(IDialogContext context, IAwaitable
 }
 ````
 
-One of the focus of action binding models is resolving the required missing values by just interacting with the user, with no need to call LUIS service any further after the first call. This is why there is a custom [LuisActionMissingEntitiesDialog](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L202-L387) implementation to resolve missing mandatory entities (the default child used by `LuisDialog` calls LUIS service to validate each provided missing value). If you check the [MessageReceivedAsync](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L252-L334) method, it calls itself again and again while there are still [invalid values](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L325-L329) at the action model, otherwise it returns the [updated ILuisAction](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L331-L333) in order to get the fulfillment result and dispatch it to the proper intent handler method at the parent.
+One of the focus of action binding models is resolving the required missing values by just interacting with the user, with no need to call LUIS service any further after the first call. This is why there is a custom [LuisActionMissingEntitiesDialog](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L202-L387) implementation to resolve missing mandatory entities (the default child used by `LuisDialog` calls LUIS service to validate each provided missing value). If you check the [MessageReceivedAsync](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L252-L334) method, it calls itself again and again while there are still [invalid values](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L325-L329) at the action model, otherwise it returns the [updated ILuisAction](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L331-L333) in order to get the fulfillment result and dispatch it to the proper intent handler method at the parent.
 
 ````C#
 protected virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
@@ -543,7 +543,7 @@ protected virtual async Task MessageReceivedAsync(IDialogContext context, IAwait
 }
 ````
 
-In addition, it is in the code within these classes where the scenarios described in the beginning of this document are being analyzed and triggered. You can see the [code for scenario #1 here](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L293-L321) (switching from intent to intent), the [code for scenario#2 here](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L277-L286) (trigger a contextual action within a parent context) and the [code for scenario #3 here](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L66-L83) (trigger a contextual action from scratch). There is also [code here](Microsoft.Cognitive.LUIS.ActionBinding/Bot/LuisActionDialog.cs#L287-L292) to validate when an action trigger/process is not valid in the current context.
+In addition, it is in the code within these classes where the scenarios described in the beginning of this document are being analyzed and triggered. You can see the [code for scenario #1 here](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L293-L321) (switching from intent to intent), the [code for scenario#2 here](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L277-L286) (trigger a contextual action within a parent context) and the [code for scenario #3 here](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L66-L83) (trigger a contextual action from scratch). There is also [code here](Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding/Bot/LuisActionDialog.cs#L287-L292) to validate when an action trigger/process is not valid in the current context.
 
 Back to the [RootDialog](LuisActions.Samples.Bot/RootDialog.cs) at Bot sample, we can see first at the constructor that we are using a custom action as a callback to update the contexts in the execution chain when a context creation is happening due to triggering scenario #3. There, we are just [handling the `FindHotelsAction` context](LuisActions.Samples.Bot/RootDialog.cs#L19-L38) as a sample and simply setting the checkin/checkout date to one night at the action context, but you can use a similar approach to do more complex stuff like getting a booking reference from a booking system and so on.
 

@@ -225,9 +225,9 @@
       <Project>{95992BB5-5338-4192-A86E-5710AB641E68}</Project>
       <Name>LuisActions.Samples.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\LuisActionBinding\Microsoft.Cognitive.LUIS.ActionBinding.csproj">
+    <ProjectReference Include="..\..\..\Library\LuisActionBinding\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.csproj">
       <Project>{abdf486d-cbf1-43a7-9044-ca46b5ab2a88}</Project>
-      <Name>Microsoft.Cognitive.LUIS.ActionBinding</Name>
+      <Name>Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

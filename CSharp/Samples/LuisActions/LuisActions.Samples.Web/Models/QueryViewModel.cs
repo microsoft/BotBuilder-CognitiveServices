@@ -1,7 +1,7 @@
 ﻿namespace LuisActions.Samples.Web.Models
 {
     using System.ComponentModel.DataAnnotations;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     public class QueryViewModel
     {

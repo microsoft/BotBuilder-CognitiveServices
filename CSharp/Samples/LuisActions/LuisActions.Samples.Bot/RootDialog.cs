@@ -7,7 +7,7 @@
     using Microsoft.Bot.Builder.Dialogs;
     using Microsoft.Bot.Builder.Luis;
     using Microsoft.Bot.Connector;
-    using Microsoft.Cognitive.LUIS.ActionBinding.Bot;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot;
     using Samples;
     using Samples.Models;
 

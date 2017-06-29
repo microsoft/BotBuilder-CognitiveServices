@@ -8,7 +8,7 @@
     using System.Xml.Linq;
     using System.Xml.XPath;
     using Ionic.Zip;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
     using Models;
 
     [Serializable]

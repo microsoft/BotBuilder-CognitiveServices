@@ -3,7 +3,7 @@
     using System;
     using System.Web;
     using System.Web.Mvc;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     public class LuisActionModelBinder : DefaultModelBinder
     {

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Cognitive.LUIS.ActionBinding
+﻿namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     // TODO: add missing types
     public class BuiltInEncyclopediaTypes

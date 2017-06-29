@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     [Serializable]
     [LuisActionBinding("TimeInPlace", FriendlyName = "Get the Time in a location")]

@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
 
     [Serializable]
     [LuisActionBinding("FindHotels-ChangeCheckout", FriendlyName = "Change the hotel checkout date", CanExecuteWithNoContext = false)]

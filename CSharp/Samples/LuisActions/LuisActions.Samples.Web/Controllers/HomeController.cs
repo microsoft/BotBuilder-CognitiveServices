@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Microsoft.Bot.Builder.Luis;
-    using Microsoft.Cognitive.LUIS.ActionBinding;
+    using Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding;
     using Models;
     using Samples;
 

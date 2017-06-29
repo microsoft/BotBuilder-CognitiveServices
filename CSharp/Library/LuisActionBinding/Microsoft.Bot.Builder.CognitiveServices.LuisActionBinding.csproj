@@ -7,8 +7,8 @@
     <ProjectGuid>{ABDF486D-CBF1-43A7-9044-CA46B5AB2A88}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.Cognitive.LUIS.ActionBinding</RootNamespace>
-    <AssemblyName>Microsoft.Cognitive.LUIS.ActionBinding</AssemblyName>
+    <RootNamespace>Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding</RootNamespace>
+    <AssemblyName>Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

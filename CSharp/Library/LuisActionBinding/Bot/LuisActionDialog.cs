@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Cognitive.LUIS.ActionBinding.Bot
+﻿namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 {
     using System;
     using System.Collections.Generic;

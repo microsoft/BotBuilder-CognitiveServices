@@ -1,6 +1,6 @@
 # [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services) control for [Microsoft Bot Builder](https://github.com/microsoft/botbuilder)
 
-The cognitive services control makes consuming different Microsoft cognitive services easy for bots developed using [Microsoft Bot Builder](https://github.com/microsoft/botbuilder) SDK. The control is available for [C#](https://www.nuget.org/packages/Microsoft.Bot.Builder/) and [Node.js](https://www.npmjs.com/package/botbuilder) SDKs.
+The cognitive services control makes consuming different Microsoft Cognitive Services easy for bots developed using [Microsoft Bot Builder](https://github.com/microsoft/botbuilder) SDK. The control is available for [C#](https://www.nuget.org/packages/Microsoft.Bot.Builder/) and [Node.js](https://www.npmjs.com/package/botbuilder) SDKs.
 
 Currently the control has support for the following cognitive services:
 

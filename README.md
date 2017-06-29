@@ -17,3 +17,4 @@ Read these resources for more information about the Microsoft Bot Framework, Bot
 * [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
 * [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services)
 * [QnA Maker](https://qnamaker.ai/)
+* [LUIS.ai](https://luis.ai/)

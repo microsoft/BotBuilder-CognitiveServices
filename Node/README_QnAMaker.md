@@ -4,7 +4,7 @@
 The following examples demonstrate how to use the QnA Maker Dialog with your Microsoft Bot Framework bot in Node.js.
 
 ## Prerequisites
-You should create a knowledge base at [QnA Maker](https://qnamaker.ai). This is a free tool under cognitive services with a limit of 10,000 transactions per month, 10 per minute.
+You should create a knowledge base at [QnA Maker](https://qnamaker.ai). This is a free tool under Cognitive Services with a limit of 10,000 transactions per month, 10 per minute.
 
 ## Code Highlights
 

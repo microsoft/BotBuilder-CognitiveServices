@@ -118,7 +118,7 @@ Below is a table describined the relations between the intents and entities reco
 |TimeInPlace|Place|What is the time in Madrid?|
 |WeatherInPlace|Place|Tell me the weather in Buenos Aires|
 
-You can find the JSON file to recreate the app into your own subscription here: [LUIS_MODEL.json](../LUIS_MODEL.json).
+You can find the JSON file to recreate the app into your own subscription here: [LUIS_MODEL.json](LUIS_MODEL.json).
 
 #### Defining a LUIS Action Binding
 
@@ -148,7 +148,7 @@ In this module (located in the [lib folder](../../lib/LuisActionBinding.js)) you
 
    - **builtInType** *(string)* - (Optional)
 
-     This is optional and is used to help identify the entity that should match to this parameter. See [LuisActions.BuiltInTypes](core/builtin.js) for valid options.
+     This is optional and is used to help identify the entity that should match to this parameter. See [LuisBuiltInTypes](../../lib/LuisBuiltInTypes.js) for valid options.
 
  - **fulfill** *(function)*
 
@@ -254,7 +254,7 @@ Next, you will see how to integrate Action Bindings to your application.
 
 The framework provides an easy hook for integrating Action Binding within a Bot built using BotBuilder (as you'll see in the next section), but a low-level construct is offered that can be used programatically with any application type. The Console and Web application samples makes use of this building block.
 
-This option is provided by the [`LuisAction.evaluate`](core/index.js#L35) method and has the following signature:
+This option is provided by the [`LuisAction.evaluate`](../../src/LuisActionBinding.js#L35) method and has the following signature:
 
 ````TypeScript
 function evaluate(
@@ -266,7 +266,7 @@ function evaluate(
     : PromiseLike<IActionModel>;
 ````
 
-> NOTE: You can check the [TypeScript bindings](core/index.d.ts) as reference.
+> NOTE: You can check the [TypeScript bindings](../../src/LuisActionBinding.d.ts) as reference.
 
 The input parameters are:
 
@@ -280,7 +280,7 @@ The returned Promise resolves to an `IActionModel` (just `actionModel` from now 
 
 This `IActionModel` object its a plain object that has the following fields:
 
- - `status` describes the Action status (see [ActionBinding.Status](core/index.js#L9-L12)).
+ - `status` describes the Action status (see [ActionBinding.Status](../../src/LuisActionBinding.js#L9-L12)).
  - `intentName` is the matched intent name. This is later used to locate the action definition again.
  - `result` is the result object when the action status is `Fulfilled`.
  - `userInput` is the current or last input string.
@@ -307,7 +307,7 @@ The Console sample has a [custom handler](console/app.js#L93-L122) that re-hydra
 
 In the [bot/app.js](bot/app.js) you can see how the Action Bindings are used within a bot application.
 
-The key thing here is creating an `IntentDialog` with a `LuisRecognizer`, and bind the Actions array to the bot and dialog using the [`bindToBotDialog`](core/index.js#L181-L208) helper function. Here's a simplified version:
+The key thing here is creating an `IntentDialog` with a `LuisRecognizer`, and bind the Actions array to the bot and dialog using the [`bindToBotDialog`](../../src/LuisActionBinding.js#L181-L208) helper function. Here's a simplified version:
 
 ````JavaScript
 var LuisModelUrl = process.env.LUIS_MODEL_URL;
@@ -330,16 +330,16 @@ var SampleActions = require('../all');
 LuisActions.bindToBotDialog(bot, intentDialog, LuisModelUrl, SampleActions);
 ````
 
-The [`bindToBotDialog`](core/index.js#L181-L208) function registers each Action Binding with the IntentDialog, using the action's `intentName`. Internally, it uses the dialog's [`matches()`](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.intentdialog.html#matches) function.
+The [`bindToBotDialog`](../../src/LuisActionBinding.js#L181-L208) function registers each Action Binding with the IntentDialog, using the action's `intentName`. Internally, it uses the dialog's [`matches()`](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.intentdialog.html#matches) function.
 
-The function also registers with the bot a new BotBuilder library that contains a single dialog, named [`Evaluate`](core/index.js#L216).
-Then, it uses the internal [`createBotAction`](core/index.js#L320) function to route incomming messages with matching intents to the [`Evaluate`](core/index.js#L216) dialog.
+The function also registers with the bot a new BotBuilder library that contains a single dialog, named [`Evaluate`](../../src/LuisActionBinding.js#L216).
+Then, it uses the internal [`createBotAction`](../../src/LuisActionBinding.js#L320) function to route incomming messages with matching intents to the [`Evaluate`](../../src/LuisActionBinding.js#L216) dialog.
 
 The `Evaluate` dialog extracts the entities from the [LUIS Result](https://docs.botframework.com/en-us/node/builder/chat-reference/interfaces/_botbuilder_d_.iintentrecognizerresult.html), maps them to parameters, validates the parameter values and, if possible, fulfills the action function, among other things.
 
-When validation does not pass, [prompt messages](core/index.js#L283-L293) are presented to the user to provide each of the missing or invalid parameters and continues until validation passes. Then the [fulfill function is invoked](core/index.js#L302-L307), passing all validated parameters.
+When validation does not pass, [prompt messages](../../src/LuisActionBinding.js#L283-L293) are presented to the user to provide each of the missing or invalid parameters and continues until validation passes. Then the [fulfill function is invoked](../../src/LuisActionBinding.js#L302-L307), passing all validated parameters.
 
-The [`bindToBotDialog`](core/index.js#L181-L208) function accepts an optional set of arguments for customizing some of its behavior, as seen in the [bindToBotDialog call](bot/app.js#L26-L30). The optional set of arguments are:
+The [`bindToBotDialog`](../../src/LuisActionBinding.js#L181-L208) function accepts an optional set of arguments for customizing some of its behavior, as seen in the [bindToBotDialog call](bot/app.js#L26-L30). The optional set of arguments are:
 
 - `defaultReply`: [Optional] Defined as a function that accepts a `session` object. This function is invoked when an intent is detected but not mapped to an action and can be used to reply with a custom message or trigger custom logic. An example is the [DefaultReplyHandler function](bot/app.js#L32-L36).
 
@@ -367,7 +367,7 @@ The first visit to the web page will display a simple query input. This is handl
 
 Once the user fills in a query like `How is the weather in Seattle`, the form will POST to the same address. The request is then handled by the [`POST /`](web/routes/index.js#L18) route:
 
-1. On the first POST, the handler will call the tryEvaluate function, which acts as a wrapper for the [`LuisAction.evaluate`](core/index.js#L35) low-level function. The `evaluate` function returns a Promise that resolves to an `actionModel`. This object has a `status` field (see possible values in [Status definition](core/index.js#L9-L12)) and the execution that follows depends on this value:
+1. On the first POST, the handler will call the tryEvaluate function, which acts as a wrapper for the [`LuisAction.evaluate`](../../src/LuisActionBinding.js#L35) low-level function. The `evaluate` function returns a Promise that resolves to an `actionModel`. This object has a `status` field (see possible values in [Status definition](../../src/LuisActionBinding.js#L9-L12)) and the execution that follows depends on this value:
 
     - `Status.NoActionRecognized`
 
@@ -391,10 +391,10 @@ In the [Console sample](console/app.js) you can see how the Action samples are u
 
 > NOTE: Use `node app.js` to run the application from the `console` folder.
 
-The sample follows a similar approach to the web application, relying on the [`LuisAction.evaluate`](core/index.js#L35) function for the heavy lifting.
+The sample follows a similar approach to the web application, relying on the [`LuisAction.evaluate`](../../src/LuisActionBinding.js#L35) function for the heavy lifting.
 
 1. The console application will first ask the user to input a query.
-2. The query is then analized with [`LuisAction.evaluate`](core/index.js#L35) function and a Promise that resolves to an `actionModel` is returned. The next steps depends on the `status` field value:
+2. The query is then analized with [`LuisAction.evaluate`](../../src/LuisActionBinding.js#L35) function and a Promise that resolves to an `actionModel` is returned. The next steps depends on the `status` field value:
 
     - `Status.NoActionRecognized`
 

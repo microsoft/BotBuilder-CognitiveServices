@@ -46,7 +46,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QnAMakerSampleBot", "Sample
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{12D94AB2-5FD8-4450-8D42-46FB636A2A7E}"
 	ProjectSection(SolutionItems) = preProject
-		README _QnAMaker.md = README _QnAMaker.md
+		README.md = README.md
+		README_LuisActionBinding.md = README_LuisActionBinding.md
+		README_QnAMaker.md = README_QnAMaker.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding", "Library\LuisActionBinding\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.csproj", "{ABDF486D-CBF1-43A7-9044-CA46B5AB2A88}"

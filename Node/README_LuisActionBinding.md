@@ -21,10 +21,6 @@ The framework for client side Action Binding supports only one action per intent
 
 As said, the framework provides contracts to allow defining your actions at client side, a way to bind them to LUIS intents, and additional objects that allows validating and filling mandatory missing entities before you can proceed with the action fulfillment in order to complete the flow.
 
-### Framework Supported Scenarios
-
-The framework supports three main scenarios which are described below, but it also provides tools that you can use to implement or support your custom scenarios within your own apps.
-
 ## Samples
 You can find a simple sample bot that uses LUIS Action Binding [here](samples/LuisActionBinding/bot/app.js).
 
@@ -36,6 +32,6 @@ Read these resources for more information about the Microsoft Bot Framework, Bot
 * [Microsoft Bot Framework Overview](https://docs.botframework.com/en-us/)
 * [Microsoft Bot Framework Bot Builder SDK](https://github.com/Microsoft/BotBuilder)
 * [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
-* [Understanding Natural Language](https://docs.botframework.com/en-us/node/builder/guides/understanding-natural-language/)
+* [Understanding Natural Language](https://docs.microsoft.com/en-us/bot-framework/cognitive-services-bot-intelligence-overview#language-understanding)
 * [LUIS Help Docs](https://www.luis.ai/Help/)
 * [Cognitive Services Documentation](https://www.microsoft.com/cognitive-services/en-us/luis-api/documentation/home)

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "siteName": {
-      "defaultValue": "BotBuilder-Samples",
+      "defaultValue": "BotBuilder-CognitiveServices-LuisActions",
       "type": "string"
     },
     "hostingPlanName": {
@@ -39,7 +39,7 @@
     },
     "Project": {
       "type": "string",
-      "defaultValue": "CSharp/Blog-LUISActionBinding/LuisActions.Samples.Bot"
+      "defaultValue": "CSharp/Samples/LuisActions/LuisActions.Samples.Bot"
     },
     "MicrosoftAppId": {
       "type": "string"

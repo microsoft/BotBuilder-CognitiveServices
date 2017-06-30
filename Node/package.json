@@ -1,6 +1,6 @@
 {
   "name": "botbuilder-cognitiveservices",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Cognitive Services extensions for Microsoft Bot Builder.",
   "main": "./lib/botbuilder-cognitiveservices.js",
   "typings": "./lib/botbuilder-cognitiveservices.d.ts",

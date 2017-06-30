@@ -93,7 +93,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 if (tasks.Any())
                 {
                     var sendDefaultMessageAndWait = true;
-                    qnaMakerResults = tasks.First(x => x.Result.ServiceCfg != null).Result;
+                    qnaMakerResults = tasks.FirstOrDefault(x => x.Result.ServiceCfg != null)?.Result;
                     if (tasks.Count(x => x.Result.Answers?.Count > 0) > 0)
                     {
                         var maxValue = tasks.Max(x => x.Result.Answers[0].Score);

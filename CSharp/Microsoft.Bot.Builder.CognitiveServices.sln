@@ -11,6 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QnAMaker", "QnAMaker", "{AC
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{F8F3BE81-DC5E-4F9A-ACAA-18C3BF1409BB}"
+	ProjectSection(SolutionItems) = preProject
+		Library\Microsoft.Bot.Builder.CognitiveServices.nuspec = Library\Microsoft.Bot.Builder.CognitiveServices.nuspec
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0F8D5A75-7EB6-45AC-AB20-ED1DD8E3EEAA}"
 EndProject

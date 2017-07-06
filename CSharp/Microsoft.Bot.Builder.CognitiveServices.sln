@@ -69,6 +69,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuisActions.Samples.Web", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bot.Builder.CognitiveServices.QnAMaker", "Library\QnAMaker\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.csproj", "{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integral", "Integral", "{5F6F1140-6799-445F-AC3E-92D77D38030C}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\Integral\README.md = Samples\Integral\README.md
+		Samples\Integral\Smalltalk.tsv = Samples\Integral\Smalltalk.tsv
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegralSample", "Samples\Integral\IntegralSample.csproj", "{7DEBF432-3A12-4B51-8ADD-3572027B30E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +131,10 @@ Global
 		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEBF432-3A12-4B51-8ADD-3572027B30E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEBF432-3A12-4B51-8ADD-3572027B30E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEBF432-3A12-4B51-8ADD-3572027B30E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEBF432-3A12-4B51-8ADD-3572027B30E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,5 +154,7 @@ Global
 		{95992BB5-5338-4192-A86E-5710AB641E68} = {52BDA07D-C196-449E-8D86-8A65649760C5}
 		{E3E90614-BE03-4CBF-8730-154EA3F5E7EB} = {52BDA07D-C196-449E-8D86-8A65649760C5}
 		{CBFE0D35-D6C2-4B25-A498-CFC474A2C3A5} = {F8F3BE81-DC5E-4F9A-ACAA-18C3BF1409BB}
+		{5F6F1140-6799-445F-AC3E-92D77D38030C} = {356A4EE2-684F-461A-94E0-323782163FF8}
+		{7DEBF432-3A12-4B51-8ADD-3572027B30E5} = {5F6F1140-6799-445F-AC3E-92D77D38030C}
 	EndGlobalSection
 EndGlobal

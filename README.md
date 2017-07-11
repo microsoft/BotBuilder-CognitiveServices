@@ -12,7 +12,7 @@ Currently the control has support for the following cognitive services:
 
 Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and Cognitive service:
 
-* [Microsoft Bot Framework Overview](https://docs.botframework.com/en-us/)
+* [Microsoft Bot Framework Overview](https://docs.microsoft.com/en-us/bot-framework/)
 * [Microsoft Bot Framework Bot Builder SDK](https://github.com/Microsoft/BotBuilder)
 * [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
 * [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services)

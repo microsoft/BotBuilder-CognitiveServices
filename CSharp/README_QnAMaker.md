@@ -52,7 +52,7 @@ You can find a sample bot that uses the QnAMakerDialog [here](https://github.com
 ## More Information
 Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and QnA Maker:
 
-* [Microsoft Bot Framework Overview](https://docs.botframework.com/en-us/)
+* [Microsoft Bot Framework Overview](https://docs.microsoft.com/en-us/bot-framework/resources-links-help)
 * [Microsoft Bot Framework Bot Builder SDK](https://github.com/Microsoft/BotBuilder)
 * [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
 * [QnA Maker Documentation](https://qnamaker.ai/Documentation)

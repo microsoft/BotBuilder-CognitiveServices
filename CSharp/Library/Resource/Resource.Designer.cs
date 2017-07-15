@@ -10,7 +10,8 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
     using System;
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -21,7 +22,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -35,7 +36,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource.Resource", typeof(Resource).Assembly);
@@ -50,7 +51,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -60,11 +61,38 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Did you mean:.
+        /// </summary>
+        public static string answerSelectionPrompt {
+            get {
+                return ResourceManager.GetString("answerSelectionPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No match found!.
         /// </summary>
-        internal static string defaultMessage {
+        public static string defaultMessage {
             get {
                 return ResourceManager.GetString("defaultMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the above..
+        /// </summary>
+        public static string noneOfTheAboveOption {
+            get {
+                return ResourceManager.GetString("noneOfTheAboveOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry! Not able to match any of the options..
+        /// </summary>
+        public static string tooManyAttempts {
+            get {
+                return ResourceManager.GetString("tooManyAttempts", resourceCulture);
             }
         }
     }

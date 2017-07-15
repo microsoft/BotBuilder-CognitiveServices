@@ -32,9 +32,31 @@
 //
 
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
+    [Serializable]
+    public class QnAMakerResults
+    {
+        public QnAMakerResults() { }
+
+        public QnAMakerResults(List<QnAMakerResult> qnaMakerResults)
+        {
+            Answers = qnaMakerResults;
+        }
+
+        [JsonProperty(PropertyName = "answers")]
+        public List<QnAMakerResult> Answers { get; set; }
+
+        /// <summary>
+        /// Internal member with instance used to configure the service that returned this result.
+        /// </summary>
+        internal QnAMakerAttribute ServiceCfg { get; set; }
+    }
+
+    [Serializable]
     public class QnAMakerResult
     {
         /// <summary>
@@ -45,11 +67,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <summary>
         /// Initializes a new instance of the QnAResult class.
         /// </summary>
-        public QnAMakerResult(string answer, double score)
+        public QnAMakerResult(string answer, List<string> questions, double score)
         {
             Answer = answer;
+            Questions = questions;
             Score = score;
         }
+
+        /// <summary>
+        /// The list of questions indexed in the QnA Service for the given answer.
+        /// </summary>
+        [JsonProperty(PropertyName = "questions")]
+        public List<string> Questions { get; set; }
 
         /// <summary>
         /// The top answer found in the QnA Service.
@@ -62,10 +91,5 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// </summary>
         [JsonProperty(PropertyName = "score")]
         public double Score { get; set; }
-
-        /// <summary>
-        /// Internal member with instance used to configure the service that returned this result.
-        /// </summary>
-        internal QnAMakerAttribute ServiceCfg { get; set; }
     }
 }

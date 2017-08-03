@@ -76,7 +76,7 @@
         </member>
         <member name="P:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerResults.ServiceCfg">
             <summary>
-            Internal member with instance used to configure the service that returned this result.
+            Public member with instance used to configure the service that returned this result.
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerResult.#ctor">

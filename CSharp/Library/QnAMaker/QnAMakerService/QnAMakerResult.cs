@@ -51,9 +51,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public List<QnAMakerResult> Answers { get; set; }
 
         /// <summary>
-        /// Internal member with instance used to configure the service that returned this result.
+        /// Public member with instance used to configure the service that returned this result.
         /// </summary>
-        internal QnAMakerAttribute ServiceCfg { get; set; }
+        public QnAMakerAttribute ServiceCfg { get; set; }
     }
 
     [Serializable]

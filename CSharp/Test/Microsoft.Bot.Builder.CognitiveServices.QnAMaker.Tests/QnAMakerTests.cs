@@ -67,6 +67,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Tests
             QnAMakerResults qnaResults1 =
                 JsonConvert.DeserializeObject<QnAMakerResults>(
                     "{\"answers\":[{\"answer\":\"Test answer 1.1\",\"questions\":[\"Test question 1.1\",\"Test alternate phrase 1.1\"],\"score\":88.5},{\"answer\":\"Test answer 1.2\",\"questions\":[\"Test question 1.2\",\"Test alternate phrase 1.2\"],\"score\":58.3},{\"answer\":\"Test answer 1.3\",\"questions\":[\"Test question 1.3\",\"Test alternate phrase 1.3\"],\"score\":42.7}]}");
+            qnaResults1.ServiceCfg = new QnAMakerAttribute("testSubscriptionKey", "testKnowledgebaseId", "default message");
             string expectedResponse1 =
                 "Test answer 1.1";
             Mock<IQnAService> qnaServiceMock1 = new Mock<IQnAService>();
@@ -75,6 +76,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Tests
             QnAMakerResults qnaResults2 =
                 JsonConvert.DeserializeObject<QnAMakerResults>(
                     "{\"answers\":[{\"answer\":\"Test answer 2.1\",\"questions\":[\"Test question 2.1\",\"Test alternate phrase 2.1\"],\"score\":98.5},{\"answer\":\"Test answer 2.2\",\"questions\":[\"Test question 2.2\",\"Test alternate phrase 2.2\"],\"score\":78.3},{\"answer\":\"Test answer 2.3\",\"questions\":[\"Test question 2.3\",\"Test alternate phrase 2.3\"],\"score\":40.5}]}");
+            qnaResults2.ServiceCfg = new QnAMakerAttribute("testSubscriptionKey", "testKnowledgebaseId", "default message");
             string expectedResponse2 =
                 "Test answer 2.1";
             Mock<IQnAService> qnaServiceMock2 = new Mock<IQnAService>();

@@ -56,6 +56,9 @@ var QnAMakerRecognizer = (function () {
                                 result.answers.forEach(function (ans) {
                                     ans.score /= 100;
                                     ans.answer = htmlentities.decode(ans.answer);
+                                    if (ans.questions && ans.questions.length > 0) {
+                                        ans.questions = ans.questions.map(function (q) { return htmlentities.decode(q); });
+                                    }
                                     var answerEntity = {
                                         score: ans.score,
                                         entity: ans.answer,

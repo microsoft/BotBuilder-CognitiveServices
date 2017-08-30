@@ -120,6 +120,9 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                                     result.answers.forEach((ans) => {
                                         ans.score /= 100;
                                         ans.answer = htmlentities.decode(ans.answer);
+                                        if (ans.questions && ans.questions.length > 0) {
+                                            ans.questions = ans.questions.map((q: string) => htmlentities.decode(q));
+                                        }
                                         var answerEntity = {
                                             score: ans.score,
                                             entity: ans.answer,

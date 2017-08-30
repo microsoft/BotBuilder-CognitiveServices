@@ -114,21 +114,25 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                     var result: IQnAMakerResults;
                     try {
                         if (!error) {
-                            var answerEntities: builder.IEntity[] = [];
-                            if(result.answers !== null && result.answers.length > 0){
-                                result.answers.forEach((ans) => {
-                                    ans.score /= 100;
-                                    ans.answer = htmlentities.decode(ans.answer);
-                                    var answerEntity = {
-                                        score: ans.score,
-                                        entity: ans.answer,
-                                        type: 'answer'
-                                    }
-                                    answerEntities.push(answerEntity as builder.IEntity);
-                                });
-                                result.score = result.answers[0].score;
-                                result.entities = answerEntities;
-                                result.intent = intentName;
+                            if (response.statusCode === 200) {
+                                var answerEntities: builder.IEntity[] = [];
+                                if(result.answers && result.answers.length > 0){
+                                    result.answers.forEach((ans) => {
+                                        ans.score /= 100;
+                                        ans.answer = htmlentities.decode(ans.answer);
+                                        var answerEntity = {
+                                            score: ans.score,
+                                            entity: ans.answer,
+                                            type: 'answer'
+                                        }
+                                        answerEntities.push(answerEntity as builder.IEntity);
+                                    });
+                                    result.score = result.answers[0].score;
+                                    result.entities = answerEntities;
+                                    result.intent = intentName;
+                                }
+                            } else {
+                                error = new Error(`QnA request returned a ${response.statusCode} code with body: ${result}`);
                             }
                         }
                     } catch (e) {

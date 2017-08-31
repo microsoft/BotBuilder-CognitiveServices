@@ -31,15 +31,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Internals.Fibers;
-using System.Reflection;
+using Microsoft.Bot.Connector;
+using System;
 using System.Linq;
-using System.Web;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
@@ -47,7 +45,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     /// A dialog specialized to handle QnA response from QnA Maker.
     /// </summary>
     [Serializable]
-    public class QnAMakerDialog : IDialog<IMessageActivity>
+    public class QnAMakerDialog : IDialog<object>
     {
         protected readonly IQnAService[] services;
         private QnAMakerResults qnaMakerResults;
@@ -76,7 +74,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             SetField.NotNull(out this.services, nameof(services), services);
         }
 
-        async Task IDialog<IMessageActivity>.StartAsync(IDialogContext context)
+        public virtual async Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
         }
@@ -202,7 +200,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
-            context.Done(true);
+            context.Done(IsConfidentAnswer(result));
         }
     }
 }

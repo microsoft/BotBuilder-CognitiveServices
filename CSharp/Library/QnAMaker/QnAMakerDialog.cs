@@ -74,7 +74,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             SetField.NotNull(out this.services, nameof(services), services);
         }
 
-        public virtual async Task StartAsync(IDialogContext context)
+        async Task IDialog<object>.StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
         }

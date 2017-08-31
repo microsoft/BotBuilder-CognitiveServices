@@ -49,12 +49,17 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     [Serializable]
     public class QnAMakerDialog : IDialog<IMessageActivity>
     {
+        /// <summary>The QnA Maker services to send user queries to</summary>
         protected readonly IQnAService[] services;
         private QnAMakerResults qnaMakerResults;
         private FeedbackRecord feedbackRecord;
         private const double QnAMakerHighConfidenceScoreThreshold = 0.99;
         private const double QnAMakerHighConfidenceDeltaThreshold = 0.20;
 
+        /// <summary>
+        /// Makes the services from attributes.
+        /// </summary>
+        /// <returns></returns>
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -76,15 +81,28 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             SetField.NotNull(out this.services, nameof(services), services);
         }
 
+        /// <summary>
+        /// The start of the code that represents the conversational dialog.
+        /// </summary>
+        /// <param name="context">The dialog context.</param>
+        /// <returns>
+        /// A task that represents the dialog start.
+        /// </returns>
         async Task IDialog<IMessageActivity>.StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
         }
 
+        /// <summary>
+        /// Processes the query from the user to each QnA Maker service for the instance. Determines which one has the highest score and uses that as the answer
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="argument">The argument.</param>
+        /// <returns></returns>
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-            
+
             if (message != null && !string.IsNullOrEmpty(message.Text))
             {
                 var tasks = this.services.Select(s => s.QueryServiceAsync(message.Text)).ToArray();
@@ -125,6 +143,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             }
         }
 
+        /// <summary>
+        /// Determines whether [is confident answer] [the specified qna maker results].
+        /// </summary>
+        /// <param name="qnaMakerResults">The qna maker results.</param>
+        /// <returns>
+        ///   <c>true</c> if [is confident answer] [the specified qna maker results]; otherwise, <c>false</c>.
+        /// </returns>
         protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)
         {
             if (qnaMakerResults.Answers.Count <= 1 || qnaMakerResults.Answers.First().Score >= QnAMakerHighConfidenceScoreThreshold)
@@ -181,10 +206,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             await this.DefaultWaitNextMessageAsync(context, context.Activity.AsMessageActivity(), qnaMakerResults);
         }
 
+        /// <summary>
+        /// Qns a feedback step asynchronous.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="qnaMakerResults">The qna maker results.</param>
+        /// <returns></returns>
         protected virtual async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)
         {
             var qnaList = qnaMakerResults.Answers;
-            var questions = qnaList.Select(x => x.Questions[0]).Concat(new[] {Resource.Resource.noneOfTheAboveOption}).ToArray();
+            var questions = qnaList.Select(x => x.Questions[0]).Concat(new[] { Resource.Resource.noneOfTheAboveOption }).ToArray();
 
             PromptOptions<string> promptOptions = new PromptOptions<string>(
                 prompt: Resource.Resource.answerSelectionPrompt,
@@ -195,11 +226,25 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             PromptDialog.Choice(context: context, resume: ResumeAndPostAnswer, promptOptions: promptOptions);
         }
 
+        /// <summary>
+        /// Responds from a QnA Maker result. Checks score for threshold requirement and returns the corresponding answer (Default message if below threshold)
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
         protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
             await context.PostAsync(result.Answers.First().Answer);
         }
 
+        /// <summary>
+        /// Defaults the wait next message asynchronous.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
         protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
             context.Done(true);

@@ -55,6 +55,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         private const double QnAMakerHighConfidenceScoreThreshold = 0.99;
         private const double QnAMakerHighConfidenceDeltaThreshold = 0.20;
 
+
+        /// <summary>
+        /// A welcome prompt, prior to asking the question
+        /// </summary>
+        public virtual string Prompt { get; }
+
         public IQnAService[] MakeServicesFromAttributes()
         {
             var type = this.GetType();
@@ -78,6 +84,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         async Task IDialog<IMessageActivity>.StartAsync(IDialogContext context)
         {
+            if (!string.IsNullOrEmpty(Prompt))
+            {
+                await context.PostAsync(Prompt);
+            }
+
             context.Wait(MessageReceivedAsync);
         }
 

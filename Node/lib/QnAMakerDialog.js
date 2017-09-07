@@ -80,9 +80,14 @@ var QnAMakerDialog = (function (_super) {
             }
         }
         else {
-            session.send(noMatchMessage);
-            this.defaultWaitNextMessage(session, qnaMakerResult);
+            this.noMatch(session, noMatchMessage, qnaMakerResult);
         }
+    };
+    QnAMakerDialog.prototype.noMatch(session, noMatchMessage, qnaMakerResult)
+    {
+        session.send(noMatchMessage);
+        this.defaultWaitNextMessage(session, qnaMakerResult);
+
     };
     QnAMakerDialog.prototype.qnaFeedbackStep = function (session, qnaMakerResult) {
         this.qnaMakerTools.answerSelector(session, qnaMakerResult);

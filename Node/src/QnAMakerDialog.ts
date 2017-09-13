@@ -116,12 +116,12 @@ export class QnAMakerDialog extends builder.Dialog {
         else {
             this.noMatch(session, noMatchMessage, qnaMakerResult);
         }
-    };
+    }
 
     public noMatch(session: builder.Session, noMatchMessage: string, qnaMakerResult: IQnAMakerResults) : void {
         session.send(noMatchMessage);
         this.defaultWaitNextMessage(session, qnaMakerResult);
-    };
+    }
 
     public qnaFeedbackStep(session: builder.Session, qnaMakerResult: IQnAMakerResults) : void {
         this.qnaMakerTools.answerSelector(session, qnaMakerResult);

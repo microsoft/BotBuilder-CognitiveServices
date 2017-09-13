@@ -36,21 +36,21 @@ var QnAMakerRecognizer = (function () {
     };
     QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, intentName, callback) {
         try {
-            var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
                 url: kbUrl,
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Ocp-Apim-Subscription-Key': ocpApimSubscriptionKey
                 },
-                body: postBody
-            }, function (error, response, body) {
+                json: {
+                    question: utterance,
+                    top: top
+                }
+            }, function (error, response, result) {
                 var result;
                 try {
                     if (!error) {
                         if (response.statusCode === 200) {
-                            result = JSON.parse(body);
                             var answerEntities = [];
                             if (result.answers && result.answers.length > 0) {
                                 result.answers.forEach(function (ans) {
@@ -72,7 +72,7 @@ var QnAMakerRecognizer = (function () {
                             }
                         }
                         else {
-                            error = new Error(body);
+                            error = new Error("QnA request returned a " + response.statusCode + " code with body: " + result);
                         }
                     }
                 }

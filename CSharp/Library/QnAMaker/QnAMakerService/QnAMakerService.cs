@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 // 
@@ -33,11 +33,11 @@
 
 using System;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Newtonsoft.Json;
-using System.Net;
 using System.Text;
+using System.Web;
+using System.Net.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -114,7 +114,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             knowledgebaseId = this.qnaInfo.KnowledgebaseId;
             subscriptionKey = this.qnaInfo.SubscriptionKey;
             var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/train");
-            var feedbackRecord = new FeedbackRecord {UserId = userId, UserQuestion = userQuery, KbQuestion = kbQuestion, KbAnswer = kbAnswer};
+            var feedbackRecord = new FeedbackRecord { UserId = userId, UserQuestion = userQuery, KbQuestion = kbQuestion, KbAnswer = kbAnswer };
             var feedbackRecords = new List<FeedbackRecord>();
             feedbackRecords.Add(feedbackRecord);
             postBody = new QnAMakerTrainingRequestBody { KnowledgeBaseId = knowledgebaseId, FeedbackRecords = feedbackRecords };
@@ -123,18 +123,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         async Task<QnAMakerResults> IQnAService.QueryServiceAsync(Uri uri, QnAMakerRequestBody postBody, string subscriptionKey)
         {
-            string json;
-            
-            using (WebClient client = new WebClient())
-            {
-                //Set the encoding to UTF8
-                client.Encoding = Encoding.UTF8;
+            string json = string.Empty;
 
+            using (HttpClient client = new HttpClient())
+            {
                 //Add the subscription key header
-                client.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-                client.Headers.Add("Content-Type", "application/json");
-                
-                json = client.UploadString(uri, JsonConvert.SerializeObject(postBody));
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
+
+                var response = await client.PostAsync(uri, new StringContent(JsonConvert.SerializeObject(postBody), Encoding.UTF8, "application/json"));
+                if (response != null && response.Content != null)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                }
             }
 
             try
@@ -170,19 +170,31 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             try
             {
-                string json;
-                using (WebClient client = new WebClient())
+                string json = string.Empty;
+
+                using (HttpClient client = new HttpClient())
                 {
-                    //Set the encoding to UTF8
-                    client.Encoding = Encoding.UTF8;
+                    var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri)
+                                      {
+                                          Content =
+                                              new StringContent(
+                                              JsonConvert
+                                              .SerializeObject(
+                                                  postBody),
+                                              Encoding.UTF8,
+                                              "application/json")
+                                      };
 
                     //Add the subscription key header
-                    client.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-                    client.Headers.Add("Content-Type", "application/json");
+                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
 
-                    json = client.UploadString(uri, "PATCH", JsonConvert.SerializeObject(postBody));
+                    var response = await client.SendAsync(request);
+                    if (response != null && response.Content != null)
+                    {
+                        json = await response.Content.ReadAsStringAsync();
+                    }
                 }
-
+            
                 return true;
             }
             catch

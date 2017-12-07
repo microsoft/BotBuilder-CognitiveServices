@@ -31,13 +31,13 @@ You'll need these two values to configure the LuisDialog through the LuisModel a
 1. Application ID
 
     In the LUIS application's dashboard, you can copy the App ID from the address bar.
-    
+
     ![App Settings](images/prereqs-appid.png)
-    
+
 2. Subscription Key
 
     In the [My keys page](https://www.luis.ai/home/keys), copy the Programmatic API Key.
-    
+
     ![Programmatic API Key](images/prereqs-apikey.png)
 
 ### What is LUIS Action Binding?
@@ -146,7 +146,7 @@ public interface ILuisAction
 }
 ````
 
-There is an abstract [BaseLuisAction](../../Library/LuisActionBinding/BaseLuisAction.cs) base class within the project which provides an implementation for the [ILuisAction.IsValid](../../Library/LuisActionBinding/BaseLuisAction.cs#L47-L66) method which provides validation for the model defined by the action, relying on Data Annotations.
+There is an abstract [BaseLuisAction](../../Library/LuisActionBinding/BaseLuisAction.cs) base class within the project which provides an implementation for the [ILuisAction.IsValid](../../Library/LuisActionBinding/BaseLuisAction.cs#L59-L78) method which provides validation for the model defined by the action, relying on Data Annotations.
 
 ````C#
 [Serializable]
@@ -191,7 +191,7 @@ public abstract class BaseLuisContextualAction<T> : BaseLuisAction, ILuisContext
 }
 ````
 
-An attribute named [LuisActionBindingAttribute](../../Library/LuisActionBinding/Attributes/LuisActionBindingAttribute.cs) is used to bind your actions to intents while defining action behavior in different scenarios, and the [LuisActionResolver.ResolveActionFromLuisIntent](../../Library/LuisActionBinding/LuisActionResolver.cs#L304-346) uses it to get the appropiate type for an intent contained within the `LuisResult` used as input, and return the appropiate instance for it with the action model property values (that map to entities) resolved.
+An attribute named [LuisActionBindingAttribute](../../Library/LuisActionBinding/Attributes/LuisActionBindingAttribute.cs) is used to bind your actions to intents while defining action behavior in different scenarios, and the [LuisActionResolver.ResolveActionFromLuisIntent](../../Library/LuisActionBinding/LuisActionResolver.cs#L359-370) uses it to get the appropiate type for an intent contained within the `LuisResult` used as input, and return the appropiate instance for it with the action model property values (that map to entities) resolved.
 
 ````C#
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
@@ -264,7 +264,7 @@ var result = await myAction.FulfillAsync();
 
 As you see the `LuisActionResolver` is being constructed using an assembly instance as input. That assembly instance will be used to lookup for all the types which have `LuisActionBindingAttribute` attributes decorating them. Then, the `ResolveActionFromLuisIntent` will get an `ILuisAction` instance (if there is one that maps the intent targeted within the `luisResult` argument), and will assign the entities found by LUIS service to your model properties.
 
-Within the [ILuisAction.FulfillAsync](../../Library/LuisActionBinding/ILuisAction.cs#L42) you do whatever it is required to fulfill the intent returned from LUIS service, and provide a meaningful result.
+Within the [ILuisAction.FulfillAsync](../../Library/LuisActionBinding/ILuisAction.cs#L49) you do whatever it is required to fulfill the intent returned from LUIS service, and provide a meaningful result.
 
 In addition, the `LuisActionResolver` class has lot of static helper methods that are being used within the framework to implement the behavior for the three scenarios depicted at the beginning, but as they are public, you can use it within your own implementation as well (as you can see in the [console sample](LuisActions.Samples.Console/)).
 
@@ -287,7 +287,7 @@ These helper methods are:
 
 At this project you can find samples on how to implement `ILuisAction` interface for the [intents provisioned](#provisioned-luis-app) within the sample LUIS service app.
 
-As an example you can see the [FindHotelsAction](LuisActions.Samples.Shared/FindHotelsAction.cs) which corresponds to the `FindHotels` intent mentioned before. Within the implementation you can see it is inheriting from [BaseLuisAction](LuisActions.Samples.Shared/FindHotelsAction.cs#L10) in order to use the implementation of the [ILuisAction.IsValid](../../Library/LuisActionBinding/BaseLuisAction.cs#L47-L66) method. In addition, the class is decorated with the [LuisActionBindingAttribute](LuisActions.Samples.Shared/FindHotelsAction.cs#L9) and it has [5 properties](LuisActions.Samples.Shared/FindHotelsAction.cs#L12-L27) which map to recognizable LUIS entities (as you can see, from the data annotations used there, some are required while others are not). The [ILuisAction.FulfillAsync](LuisActions.Samples.Shared/FindHotelsAction.cs#L29-L32) implementation in this case is a mock just returning a text saying "no hotels were found", but it is here where you would call a booking service in order to find available rooms to fulfill the user's request.
+As an example you can see the [FindHotelsAction](LuisActions.Samples.Shared/FindHotelsAction.cs) which corresponds to the `FindHotels` intent mentioned before. Within the implementation you can see it is inheriting from [BaseLuisAction](LuisActions.Samples.Shared/FindHotelsAction.cs#L10) in order to use the implementation of the [ILuisAction.IsValid](../../Library/LuisActionBinding/BaseLuisAction.cs#L59-L78) method. In addition, the class is decorated with the [LuisActionBindingAttribute](LuisActions.Samples.Shared/FindHotelsAction.cs#L9) and it has [5 properties](LuisActions.Samples.Shared/FindHotelsAction.cs#L12-L27) which map to recognizable LUIS entities (as you can see, from the data annotations used there, some are required while others are not). The [ILuisAction.FulfillAsync](LuisActions.Samples.Shared/FindHotelsAction.cs#L29-L32) implementation in this case is a mock just returning a text saying "no hotels were found", but it is here where you would call a booking service in order to find available rooms to fulfill the user's request.
 
 ````C#
 [Serializable]
@@ -361,7 +361,7 @@ At this project you can see how the action samples are used within a bot applica
 
 The key class here is the [RootDialog](LuisActions.Samples.Bot/RootDialog.cs), which [inherits from LuisActionDialog](LuisActions.Samples.Bot/RootDialog.cs#L15).
 
-The [LuisActionDialog](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs) has been created in order to easily integrate `LuisIntentAttribute` attributes at your intent handler methods within your inherited dialog, with the `ILuisAction` implementations you might have (mapping those intents), getting the appropiate action fulfillment result for a particular user's request and sending it back to the intent handler after being resolved. For this, the `LuisActionDialog` defines [new signatures](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L47-L49) for these handlers, and as said, the dialog obtains the action linked to the intent by using the `LuisActionBindingAttribute.IntentName` decorating your implemented `ILuisAction` classes, and calls the intent handler with the object you return at the `FulfillAsync` method of your action.
+The [LuisActionDialog](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs) has been created in order to easily integrate `LuisIntentAttribute` attributes at your intent handler methods within your inherited dialog, with the `ILuisAction` implementations you might have (mapping those intents), getting the appropiate action fulfillment result for a particular user's request and sending it back to the intent handler after being resolved. For this, the `LuisActionDialog` defines [new signatures](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L47-L62) for these handlers, and as said, the dialog obtains the action linked to the intent by using the `LuisActionBindingAttribute.IntentName` decorating your implemented `ILuisAction` classes, and calls the intent handler with the object you return at the `FulfillAsync` method of your action.
 
 ````C#
 public delegate Task LuisActionHandler(IDialogContext context, object actionResult);
@@ -369,7 +369,7 @@ public delegate Task LuisActionHandler(IDialogContext context, object actionResu
 public delegate Task LuisActionActivityHandler(IDialogContext context, IAwaitable<IMessageActivity> message, object actionResult);
 ````
 
-As you can see the first `LuisActionDialog` [constructor](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L58-L60) receives a list of assemblies where it should lookup for `ILuisAction` implementations decorated with the `LuisActionBindingAttribute`, as well as several `ILuisService` instances that will be used to resolve the user's intent.
+As you can see the first `LuisActionDialog` [constructor](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L80-L82) receives a list of assemblies where it should lookup for `ILuisAction` implementations decorated with the `LuisActionBindingAttribute`, as well as several `ILuisService` instances that will be used to resolve the user's intent.
 
 ````C#
 public LuisActionDialog(IEnumerable<Assembly> assemblies, params ILuisService[] services) : this(assemblies, null, services)
@@ -377,7 +377,7 @@ public LuisActionDialog(IEnumerable<Assembly> assemblies, params ILuisService[] 
 }
 ````
 
-The second [constructor](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L62-L72) receives, in addition to the arguments shown before, an `Action<ILuisAction, object>` which will be used on the scenario #3 when creating the parent contexts for a contextual action that can be executed from scratch. The developer can use this callback to *hydrate* back the parent context within the action chain in order to continue or update an already processed context.
+The second [constructor](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L90-L100) receives, in addition to the arguments shown before, an `Action<ILuisAction, object>` which will be used on the scenario #3 when creating the parent contexts for a contextual action that can be executed from scratch. The developer can use this callback to *hydrate* back the parent context within the action chain in order to continue or update an already processed context.
 
 ````C#
 public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, object> onContextCreation, params ILuisService[] services) : base(services)
@@ -393,7 +393,7 @@ public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, ob
 }
 ````
 
-In addition, the dialog has a key override for the [MessageReceived](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L#L74-L130) protected method in order to use our [LuisActionResolver](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L95) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
+In addition, the dialog has a key override for the [MessageReceived](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L#L102-L158) protected method in order to use our [LuisActionResolver](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L123) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
 
 ````C#
 protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
@@ -455,7 +455,7 @@ protected override async Task MessageReceived(IDialogContext context, IAwaitable
 }
 ````
 
-One of the focus of action binding models is resolving the required missing values by just interacting with the user, with no need to call LUIS service any further after the first call. This is why there is a custom [LuisActionMissingEntitiesDialog](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L235-L420) implementation to resolve missing mandatory entities (the default child used by `LuisDialog` calls LUIS service to validate each provided missing value). If you check the [MessageReceivedAsync](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L285-L367) method, it calls itself again and again while there are still [invalid values](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L358-L362) at the action model, otherwise it returns the [updated ILuisAction](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L364-L366) in order to get the fulfillment result and dispatch it to the proper intent handler method at the parent.
+One of the focus of action binding models is resolving the required missing values by just interacting with the user, with no need to call LUIS service any further after the first call. This is why there is a custom [LuisActionMissingEntitiesDialog](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L264-L448) implementation to resolve missing mandatory entities (the default child used by `LuisDialog` calls LUIS service to validate each provided missing value). If you check the [MessageReceivedAsync](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L313-L395) method, it calls itself again and again while there are still [invalid values](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L386-L390) at the action model, otherwise it returns the [updated ILuisAction](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L393) in order to get the fulfillment result and dispatch it to the proper intent handler method at the parent.
 
 ````C#
 protected virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
@@ -543,7 +543,7 @@ protected virtual async Task MessageReceivedAsync(IDialogContext context, IAwait
 }
 ````
 
-In addition, it is in the code within these classes where the scenarios described in the beginning of this document are being analyzed and triggered. You can see the [code for scenario #1 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L326-L354) (switching from intent to intent), the [code for scenario#2 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L310-L319) (trigger a contextual action within a parent context) and the [code for scenario #3 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L99-L116) (trigger a contextual action from scratch). There is also [code here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L320-L325) to validate when an action trigger/process is not valid in the current context.
+In addition, it is in the code within these classes where the scenarios described in the beginning of this document are being analyzed and triggered. You can see the [code for scenario #1 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L354-L382) (switching from intent to intent), the [code for scenario#2 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L338-L347) (trigger a contextual action within a parent context) and the [code for scenario #3 here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L127-L144) (trigger a contextual action from scratch). There is also [code here](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L348-L353) to validate when an action trigger/process is not valid in the current context.
 
 Back to the [RootDialog](LuisActions.Samples.Bot/RootDialog.cs) at Bot sample, we can see first at the constructor that we are using a custom action as a callback to update the contexts in the execution chain when a context creation is happening due to triggering scenario #3. There, we are just [handling the `FindHotelsAction` context](LuisActions.Samples.Bot/RootDialog.cs#L19-L38) as a sample and simply setting the checkin/checkout date to one night at the action context, but you can use a similar approach to do more complex stuff like getting a booking reference from a booking system and so on.
 
@@ -662,7 +662,7 @@ public class LuisActionModelBinder : DefaultModelBinder
     public override object BindModel(ControllerContext controllerContext, ModelBindingContext context)
     {
         HttpRequestBase request = controllerContext.HttpContext.Request;
-        var type = request.Form["LuisActionType"]; 
+        var type = request.Form["LuisActionType"];
         if (!string.IsNullOrWhiteSpace(type))
         {
             var action = Activator.CreateInstance(Type.GetType(type));

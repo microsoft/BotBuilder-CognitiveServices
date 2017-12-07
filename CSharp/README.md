@@ -10,4 +10,4 @@ Currently the control has support for the following cognitive services:
 
 - [LUIS.ai](https://luis.ai): Language Understanding Intelligent Service (LUIS) enables developers to build smart applications that can understand human language and react accordingly to user requests. There are times when you may want to link an intent to an action at client side (e.g.: in your Bot, or web app, or even a console app), with an easy binding logic for it, where you can also resolve complex things in order to fulfill an user's intent.
 
-    **[View LUIS Action Binding documentation](Samples/LuisActionBinding/README.md)**
+    **[View LUIS Action Binding documentation](Samples/LuisActions/README.md)**

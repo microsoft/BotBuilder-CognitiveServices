@@ -44,7 +44,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
     using Microsoft.Bot.Builder.Luis;
     using Microsoft.Bot.Connector;
 
-
     /// <summary>
     /// The handler for a LUIS Action Binding.
     /// </summary>

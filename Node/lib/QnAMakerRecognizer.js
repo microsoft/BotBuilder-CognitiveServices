@@ -36,35 +36,43 @@ var QnAMakerRecognizer = (function () {
     };
     QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, intentName, callback) {
         try {
-            var postBody = '{"question":"' + utterance + '", "top":' + top + '}';
             request({
                 url: kbUrl,
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Ocp-Apim-Subscription-Key': ocpApimSubscriptionKey
                 },
-                body: postBody
-            }, function (error, response, body) {
+                json: {
+                    question: utterance,
+                    top: top
+                }
+            }, function (error, response, result) {
                 var result;
                 try {
                     if (!error) {
-                        result = JSON.parse(body);
-                        var answerEntities = [];
-                        if (result.answers !== null && result.answers.length > 0) {
-                            result.answers.forEach(function (ans) {
-                                ans.score /= 100;
-                                ans.answer = htmlentities.decode(ans.answer);
-                                var answerEntity = {
-                                    score: ans.score,
-                                    entity: ans.answer,
-                                    type: 'answer'
-                                };
-                                answerEntities.push(answerEntity);
-                            });
-                            result.score = result.answers[0].score;
-                            result.entities = answerEntities;
-                            result.intent = intentName;
+                        if (response.statusCode === 200) {
+                            var answerEntities = [];
+                            if (result.answers && result.answers.length > 0) {
+                                result.answers.forEach(function (ans) {
+                                    ans.score /= 100;
+                                    ans.answer = htmlentities.decode(ans.answer);
+                                    if (ans.questions && ans.questions.length > 0) {
+                                        ans.questions = ans.questions.map(function (q) { return htmlentities.decode(q); });
+                                    }
+                                    var answerEntity = {
+                                        score: ans.score,
+                                        entity: ans.answer,
+                                        type: 'answer'
+                                    };
+                                    answerEntities.push(answerEntity);
+                                });
+                                result.score = result.answers[0].score;
+                                result.entities = answerEntities;
+                                result.intent = intentName;
+                            }
+                        }
+                        else {
+                            error = new Error("QnA request returned a " + response.statusCode + " code with body: " + result);
                         }
                     }
                 }

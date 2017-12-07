@@ -33,6 +33,10 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
+    /// <summary>
+    /// LUIS prebuilt Geography types.
+    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+    /// </summary>
     public class BuiltInGeographyTypes
     {
         public const string City = "builtin.geography.city";

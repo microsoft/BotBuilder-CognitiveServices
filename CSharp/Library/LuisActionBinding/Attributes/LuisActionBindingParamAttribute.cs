@@ -35,13 +35,25 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     using System;
 
+    /// <summary>
+    /// Attribute for mapping Action Parameters to extracted LUIS entities.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class LuisActionBindingParamAttribute : Attribute
     {
+        /// <summary>
+        /// The LUIS Custom entity type name.
+        /// </summary>
         public string CustomType { get; set; }
 
+        /// <summary>
+        /// The LUIS Prebuilt entity type name.
+        /// </summary>
         public string BuiltinType { get; set; }
 
+        /// <summary>
+        /// Specificy order when asking user to fill-in parameter values.
+        /// </summary>
         public int Order { get; set; }
     }
 }

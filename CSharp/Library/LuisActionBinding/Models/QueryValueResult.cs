@@ -35,6 +35,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     using System;
 
+    /// <summary>
+    /// Container used to validate if an Action Parameter was validated or a if a Context Switch should occur.
+    /// </summary>
     [Serializable]
     public class QueryValueResult
     {

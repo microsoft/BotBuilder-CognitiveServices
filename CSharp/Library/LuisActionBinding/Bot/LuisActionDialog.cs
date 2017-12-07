@@ -44,10 +44,28 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
     using Microsoft.Bot.Builder.Luis;
     using Microsoft.Bot.Connector;
 
+
+    /// <summary>
+    /// The handler for a LUIS Action Binding.
+    /// </summary>
+    /// <param name="context">The dialog context.</param>
+    /// <param name="actionResult">The action's result object.</param>
+    /// <returns></returns>
     public delegate Task LuisActionHandler(IDialogContext context, object actionResult);
 
+    /// <summary>
+    /// The handler for a LUIS Action Binding.
+    /// </summary>
+    /// <param name="context">The dialog context.</param>
+    /// <param name="message">The dialog message.</param>
+    /// <param name="actionResult">The action's result object.</param>
+    /// <returns></returns>
     public delegate Task LuisActionActivityHandler(IDialogContext context, IAwaitable<IMessageActivity> message, object actionResult);
 
+    /// <summary>
+    /// A dialog specialized to handle Action Binding using LUIS.ai.
+    /// </summary>
+    /// <typeparam name="TResult">The result type. Use Object.</typeparam>
     [Serializable]
     public class LuisActionDialog<TResult> : LuisDialog<TResult>
     {
@@ -55,10 +73,21 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 
         private readonly Action<ILuisAction, object> onContextCreation;
 
+        /// <summary>
+        /// Construct a LuisActionDialog instance.
+        /// </summary>
+        /// <param name="assemblies">List of assemblies where to find Action Bindings Types.</param>
+        /// <param name="services">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
         public LuisActionDialog(IEnumerable<Assembly> assemblies, params ILuisService[] services) : this(assemblies, null, services)
         {
         }
 
+        /// <summary>
+        /// Construct a LuisActionDialog instance.
+        /// </summary>
+        /// <param name="assemblies">List of assemblies where to find Action Bindings Types.</param>
+        /// <param name="onContextCreation">Here you can implement a callback to hydrate action contexts as per request. See LuisActions.Samples.Bot for usage sample.</param>
+        /// <param name="services">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
         public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, object> onContextCreation, params ILuisService[] services) : base(services)
         {
             if (assemblies == null)
@@ -169,7 +198,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 
         internal static class LuisActionDialogHelper
         {
-            public static IEnumerable<KeyValuePair<string, LuisActionActivityHandler>> EnumerateHandlers(object dialog)
+            internal static IEnumerable<KeyValuePair<string, LuisActionActivityHandler>> EnumerateHandlers(object dialog)
             {
                 var type = dialog.GetType();
                 var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);

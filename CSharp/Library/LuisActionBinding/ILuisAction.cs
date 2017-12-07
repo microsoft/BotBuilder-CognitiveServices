@@ -37,10 +37,22 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// Interface of a LUIS Action Binding.
+    /// </summary>
     public interface ILuisAction
     {
+        /// <summary>
+        /// The method to be executed when all required parameters are filled. This method should fulfill or call any external services and return the result.
+        /// </summary>
+        /// <returns>The result of the action execution.</returns>
         Task<object> FulfillAsync();
 
+        /// <summary>
+        /// Validates if the current action's context is valid, based on the Action properties set so far and their validation attributes.
+        /// </summary>
+        /// <param name="validationResults">List of validation errors.</param>
+        /// <returns>True if context is valid, False otherwise.</returns>
         bool IsValid(out ICollection<ValidationResult> results);
     }
 }

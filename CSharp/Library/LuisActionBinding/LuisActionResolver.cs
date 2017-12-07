@@ -44,11 +44,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
     using Microsoft.Bot.Builder.Luis.Models;
     using Newtonsoft.Json.Linq;
 
+    /// <summary>
+    /// Handles retrieving an Action Binding based on the matched intent from the input utterance, validates parameter based on extracted entities.
+    /// </summary>
     [Serializable]
     public class LuisActionResolver
     {
         private readonly IDictionary<string, Type> luisActions;
 
+        /// <summary>
+        /// Construct LuisActionResolver instance.
+        /// </summary>
+        /// <param name="lookupAssemblies">List of assemblies where to find Action Bindings Types.</param>
         public LuisActionResolver(params Assembly[] lookupAssemblies)
         {
             this.luisActions = new Dictionary<string, Type>();
@@ -70,6 +77,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             }
         }
 
+        /// <summary>
+        /// Tries to assign a value to the action's parameter.
+        /// This method runs the proper validation according to the action's parameter definition.
+        /// </summary>
+        /// <param name="action">The current action and context.</param>
+        /// <param name="paramName">The parameter to try to assign.</param>
+        /// <param name="paramValue">The parameter value to assign.</param>
+        /// <returns>True if validation passes and the value was assigned. False if validation or type compatibility fails.</returns>
         public static bool AssignValue(ILuisAction action, string paramName, object paramValue)
         {
             if (action == null)
@@ -90,6 +105,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return AssignValue(action, action.GetType().GetProperty(paramName, BindingFlags.Public | BindingFlags.Instance), paramValue);
         }
 
+        /// <summary>
+        /// Tries to extract intent and entities from the input utterance and validates if the the current parameter should be updated or if a context switch is needed.
+        /// </summary>
+        /// <param name="service">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
+        /// <param name="action">The current action and context.</param>
+        /// <param name="paramName">The parameter to try to assign.</param>
+        /// <param name="paramValue">The parameter value to assign.</param>
+        /// <param name="token">Cancellation Token.</param>
+        /// <param name="entityExtractor">Optional: EntityExtractor to disambiguate multiple values into a single one.</param>
+        /// <returns>Indicates if the Action Parameter was validated (and set) or a if a Context Switch should occur.</returns>
         public static async Task<QueryValueResult> QueryValueFromLuisAsync(
             ILuisService service,
             ILuisAction action,
@@ -145,6 +170,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return new QueryValueResult(true);
         }
 
+        /// <summary>
+        /// Gets the Action definition from an action instance.
+        /// </summary>
+        /// <param name="action">The action instance.</param>
+        /// <returns>The action definition.</returns>
         public static LuisActionBindingAttribute GetActionDefinition(ILuisAction action)
         {
             if (action == null)
@@ -155,6 +185,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return action.GetType().GetCustomAttributes<LuisActionBindingAttribute>(true).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Gets the Action Parameter definition from an action instance and parameter name.
+        /// </summary>
+        /// <param name="action">The action instance.</param>
+        /// <param name="paramName">The current parameter's name.</param>
+        /// <returns>The action parameter definition.</returns>
         public static LuisActionBindingParamAttribute GetParameterDefinition(ILuisAction action, string paramName)
         {
             if (action == null)
@@ -173,6 +209,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return prop.GetCustomAttributes<LuisActionBindingParamAttribute>(true).FirstOrDefault();
         }
 
+        /// <summary>
+        /// If the action is contextual and related to the current context action, set the contextual action to the current context.
+        /// </summary>
+        /// <param name="action">The contextual action to validate.</param>
+        /// <param name="context">The current action context.</param>
+        /// <param name="isContextual">Indicates if the contextual action is related to the current action.</param>
         public static bool IsValidContextualAction(ILuisAction action, ILuisAction context, out bool isContextual)
         {
             if (action == null)
@@ -204,19 +246,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return false;
         }
 
-        public static bool IsContextualAction(ILuisAction action)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return action
-                .GetType()
-                .GetInterfaces()
-                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ILuisContextualAction<>));
-        }
-
+        /// <summary>
+        /// If the action is contextual and related to the current context action, set the contextual action to the current context.
+        /// </summary>
+        /// <param name="action">The contextual action to validate.</param>
+        /// <param name="context">The current action context.</param>
+        /// <param name="isContextual">Indicates if the contextual action is related to the current action.</param>
         public static bool UpdateIfValidContextualAction(ILuisAction action, ILuisAction context, out bool isContextual)
         {
             if (action == null)
@@ -242,6 +277,28 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return LuisActionResolver.IsValidContextualAction(action, actionContext, out isContextual);
         }
 
+        /// <summary>
+        /// Indicates if the action is contextual to another action.
+        /// </summary>
+        /// <param name="action">The contextual action to validate.</param>
+        public static bool IsContextualAction(ILuisAction action)
+        {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            return action
+                .GetType()
+                .GetInterfaces()
+                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ILuisContextualAction<>));
+        }
+
+        /// <summary>
+        /// Indicates if the action can be started, either is not a contextual action or it can create the contextual action directly.
+        /// </summary>
+        /// <param name="action">The action to validate.</param>
+        /// <param name="actionDefinition">The action definition.</param>
         public static bool CanStartWithNoContextAction(ILuisAction action, out LuisActionBindingAttribute actionDefinition)
         {
             if (action == null)
@@ -260,6 +317,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return actionDefinition.CanExecuteWithNoContext;
         }
 
+        /// <summary>
+        /// Builds the action from a contextual action.
+        /// </summary>
+        /// <param name="action">The contextual action.</param>
+        /// <param name="intentName">The LUIS intent name of the parent action.</param>
+        /// <returns>The parent action.</returns>
         public static ILuisAction BuildContextForContextualAction(ILuisAction action, out string intentName)
         {
             if (action == null)
@@ -288,6 +351,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return result;
         }
 
+        /// <summary>
+        /// Returns an action based on the LUIS intent.
+        /// </summary>
+        /// <param name="luisResult">The LUIS Result containing intent and extracted entities.</param>
+        /// <returns>The matched action plus its parameters filled with the extracted entities, or Null if no action was matched.</returns>
         public ILuisAction ResolveActionFromLuisIntent(LuisResult luisResult)
         {
             if (luisResult == null)
@@ -301,6 +369,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             return this.ResolveActionFromLuisIntent(luisResult, out intentName, out unassigned);
         }
 
+        /// <summary>
+        /// Returns an action based on the LUIS intent.
+        /// </summary>
+        /// <param name="luisResult">The LUIS Result containing intent and extracted entities.</param>
+        /// <param name="intentName">The LUIS intent name.</param>
+        /// <param name="intentEntities">The LUIS extracted entities.</param>
+        /// <param name="entityExtractor">Optional: EntityExtractor to disambiguate multiple values into a single one.</param>
+        /// <returns>The matched action plus its parameters filled with the extracted entities, or Null if no action was matched.</returns>
         public ILuisAction ResolveActionFromLuisIntent(
             LuisResult luisResult,
             out string intentName,

@@ -33,18 +33,36 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
+    /// <summary>
+    /// A LUIS Action Binding context.
+    /// </summary>
     public class ActionExecutionContext
     {
+        /// <summary>
+        /// Construct the Action Context.
+        /// </summary>
+        /// <param name="intent">The LUIS Intent name that triggered the action.</param>
+        /// <param name="action">The LUIS Action Binding model that was triggered.</param>
         public ActionExecutionContext(string intent, ILuisAction action)
         {
             this.Intent = intent;
             this.Action = action;
         }
 
+        /// <summary>
+        /// The current LUIS Action Binding model.
+        /// </summary>
         public ILuisAction Action { get; private set; }
 
+
+        /// <summary>
+        /// The LUIS Intent name that triggers this action.
+        /// </summary>
         public string Intent { get; private set; }
 
+        /// <summary>
+        /// Indicates if the action was triggered due to context switching.
+        /// </summary>
         public bool ChangeRootSignaling { get; set; }
     }
 }

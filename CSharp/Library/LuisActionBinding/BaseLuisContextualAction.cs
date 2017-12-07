@@ -35,9 +35,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     using System;
 
+    /// <summary>
+    /// Base class for implementing LUIS Action Bindings that can modify the context of other actions.
+    /// </summary>
+    /// <typeparam name="T">The original action.</typeparam>
     [Serializable]
     public abstract class BaseLuisContextualAction<T> : BaseLuisAction, ILuisContextualAction<T> where T : ILuisAction
     {
+        /// <summary>
+        /// The original action being modified.
+        /// </summary>
         public T Context { get; set; }
     }
 }

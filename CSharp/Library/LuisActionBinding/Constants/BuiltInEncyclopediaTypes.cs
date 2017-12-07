@@ -33,6 +33,10 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
+    /// <summary>
+    /// LUIS prebuilt Encyclopedia types.
+    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+    /// </summary>
     public class BuiltInEncyclopediaTypes
     {
         public const string Person = "builtin.encyclopedia.people.person";

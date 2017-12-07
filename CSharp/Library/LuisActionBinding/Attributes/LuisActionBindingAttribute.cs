@@ -35,9 +35,16 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     using System;
 
+    /// <summary>
+    /// Attribute for defining an LUIS Action Binding.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class LuisActionBindingAttribute : Attribute
     {
+        /// <summary>
+        /// Construct the LUIS Action Binding.
+        /// </summary>
+        /// <param name="intentName">The LUIS Intent name that triggers this action.</param>
         public LuisActionBindingAttribute(string intentName)
         {
             if (string.IsNullOrWhiteSpace(intentName))
@@ -54,12 +61,25 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             this.FriendlyName = this.IntentName;
         }
 
+        /// <summary>
+        /// Indicates if the action can be executed without previous context. This is recommended for sub-actions that can change some variable of the current context.
+        /// Default value is True.
+        /// </summary>
         public bool CanExecuteWithNoContext { get; set; }
 
+        /// <summary>
+        /// Should ask user before switching action and discarding current action's context.
+        /// </summary>
         public bool ConfirmOnSwitchingContext { get; set; }
 
+        /// <summary>
+        /// Text used when asking to switch context.
+        /// </summary>
         public string FriendlyName { get; set; }
 
+        /// <summary>
+        /// The LUIS Intent name that triggers this action.
+        /// </summary>
         public string IntentName { get; private set; }
     }
 }

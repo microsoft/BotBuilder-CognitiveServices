@@ -33,6 +33,10 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
+    /// <summary>
+    /// LUIS prebuilt datetime types.
+    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+    /// </summary>
     public class BuiltInDatetimeTypes
     {
         public const string Date = "builtin.datetime.date";

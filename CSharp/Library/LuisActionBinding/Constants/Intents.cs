@@ -33,6 +33,9 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
+    /// <summary>
+    /// LUIS Default intent names.
+    /// </summary>
     public static class Intents
     {
         public const string None = "None";

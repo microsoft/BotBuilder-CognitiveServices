@@ -35,6 +35,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
     using System;
 
+    /// <summary>
+    /// LUIS prebuilt-in types.
+    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+    /// </summary>
     public static class BuiltInTypes
     {
         public const string Age = "builtin.age";

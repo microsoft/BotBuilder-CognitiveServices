@@ -36,7 +36,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
     using System;
 
     /// <summary>
-    /// Attribute for defining an LUIS Action Binding.
+    /// Attribute for defining a LUIS Action Binding.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class LuisActionBindingAttribute : Attribute

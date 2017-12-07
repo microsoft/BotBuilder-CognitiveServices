@@ -24,6 +24,7 @@
     <file src="QnAMaker\bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.xml" target="lib\net46" />
     <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.dll" target="lib\net46"/>
     <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.pdb" target="lib\net46" />
+    <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.xml" target="lib\net46" />
     <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
     <file src="QnAMaker\bin\release\ar\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\ar"/>
     <file src="QnAMaker\bin\release\en\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\en"/>

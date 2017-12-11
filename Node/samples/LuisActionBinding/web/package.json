@@ -13,6 +13,7 @@
     "lodash": "^4.17.4",
     "morgan": "~1.7.0",
     "pug": "~2.0.0-beta10",
-    "serve-favicon": "~2.3.2"
+    "serve-favicon": "~2.3.2",
+    "botbuilder-cognitiveservices": "file:../../../"
   }
 }

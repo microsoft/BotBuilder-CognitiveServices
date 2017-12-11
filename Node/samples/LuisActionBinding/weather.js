@@ -1,6 +1,6 @@
 var util = require('util');
 var rp = require('request-promise');
-var cognitiveservices = require('../../lib/botbuilder-cognitiveservices');
+var cognitiveservices = require('botbuilder-cognitiveservices');
 
 var ApixuApiKey = process.env.APIXU_API_KEY || 'fcfe74816dd241fca46160635171002';
 

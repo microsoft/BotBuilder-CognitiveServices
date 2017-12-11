@@ -6,7 +6,7 @@ var _ = require('lodash');
 var util = require('util');
 var readline = require('readline');
 
-var LuisActions = require('../../../lib/botbuilder-cognitiveservices').LuisActionBinding;
+var LuisActions = require('botbuilder-cognitiveservices').LuisActionBinding;
 
 var SampleActions = require('../all');
 var SampleActionsModelUrl = process.env.LUIS_MODEL_URL;

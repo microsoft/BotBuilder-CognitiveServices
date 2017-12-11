@@ -1,5 +1,5 @@
 var util = require('util');
-var cognitiveservices = require('../../lib/botbuilder-cognitiveservices');
+var cognitiveservices = require('botbuilder-cognitiveservices');
 
 var FindHotelsAction = {
     intentName: 'FindHotels',

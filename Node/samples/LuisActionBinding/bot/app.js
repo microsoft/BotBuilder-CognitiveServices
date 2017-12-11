@@ -3,7 +3,7 @@ require('dotenv-extended').load({ path: '../.env' });
 var builder = require('botbuilder');
 var restify = require('restify');
 
-var LuisActions = require('../../../lib/botbuilder-cognitiveservices').LuisActionBinding;
+var LuisActions = require('botbuilder-cognitiveservices').LuisActionBinding;
 var SampleActions = require('../all');
 var LuisModelUrl = process.env.LUIS_MODEL_URL;
 

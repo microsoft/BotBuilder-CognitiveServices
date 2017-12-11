@@ -12,11 +12,11 @@
         public string Category { get; set; }
 
         [Required(ErrorMessage = "Please provide the check-in date")]
-        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeTypes.Date, Order = 2)]
+        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeV2Types.Date, Order = 2)]
         public DateTime? Checkin { get; set; }
 
         [Required(ErrorMessage = "Please provide the check-out date")]
-        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeTypes.Date, Order = 3)]
+        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeV2Types.Date, Order = 3)]
         public DateTime? Checkout { get; set; }
 
         [Required(ErrorMessage = "Please provide a location")]

@@ -10,7 +10,7 @@
     public class FindHotelsAction_ChangeCheckin : BaseLuisContextualAction<FindHotelsAction>
     {
         [Required(ErrorMessage = "Please provide the new check-in date")]
-        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeTypes.Date)]
+        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeV2Types.Date)]
         public DateTime? Checkin { get; set; }
 
         public override Task<object> FulfillAsync()

@@ -10,7 +10,7 @@
     public class FindHotelsAction_ChangeCheckout : BaseLuisContextualAction<FindHotelsAction>
     {
         [Required(ErrorMessage = "Please provide the new check-out date")]
-        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeTypes.Date)]
+        [LuisActionBindingParam(BuiltinType = BuiltInDatetimeV2Types.Date)]
         public DateTime? Checkout { get; set; }
 
         public override Task<object> FulfillAsync()

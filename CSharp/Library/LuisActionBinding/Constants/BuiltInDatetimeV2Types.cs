@@ -33,42 +33,59 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 {
-    using System;
-
     /// <summary>
-    /// LUIS prebuilt datetime types.
-    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+    /// LUIS prebuilt datetimeV2 types.
+    /// https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities#builtindatetimev2
     /// </summary>
-    /// <see cref="BuiltInGeographyTypes"/>
-    [Obsolete("DateTime is deprecated. It is replaced by DateTimeV2 (BuiltInDatetimeV2Types).")]
-    public class BuiltInDatetimeTypes
+    public class BuiltInDatetimeV2Types
     {
-        public const string Date = "builtin.datetime.date";
+        public const string Date = "builtin.datetimeV2.date";
 
-        public const string Time = "builtin.datetime.time";
+        public const string Time = "builtin.datetimeV2.time";
 
-        public const string Duration = "builtin.datetime.duration";
+        public const string DateRange = "builtin.datetimeV2.daterange";
 
-        public const string Set = "builtin.datetime.set";
+        public const string TimeRange = "builtin.datetimeV2.timerange";
 
-        public string DateType
+        public const string DateTimeRange = "builtin.datetimeV2.datetimerange";
+
+        public const string Duration = "builtin.datetimeV2.duration";
+
+        public const string Set = "builtin.datetimeV2.se";
+
+        public static string DateType
         {
             get { return Date; }
         }
 
-        public string DurationType
+        public static string TimeType
+        {
+            get { return Time; }
+        }
+
+        public static string DateRangeType
+        {
+            get { return DateRange; }
+        }
+
+        public static string TimeRangeType
+        {
+            get { return TimeRange; }
+        }
+
+        public static string DateTimeRangeType
+        {
+            get { return DateTimeRange; }
+        }
+
+        public static string DurationType
         {
             get { return Duration; }
         }
 
-        public string SetType
+        public static string SetType
         {
             get { return Set; }
-        }
-
-        public string TimeType
-        {
-            get { return Time; }
         }
     }
 }

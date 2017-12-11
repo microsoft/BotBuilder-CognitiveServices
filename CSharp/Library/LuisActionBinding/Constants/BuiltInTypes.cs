@@ -63,7 +63,10 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
 
         private const string SharedPrefix = "builtin.";
 
+        [Obsolete("DateTime is deprecated. It is replaced by DateTimeV2.")]
         public static BuiltInDatetimeTypes Datetime { get; } = new BuiltInDatetimeTypes();
+
+        public static BuiltInDatetimeV2Types DatetimeV2 { get; } = new BuiltInDatetimeV2Types();
 
         public static BuiltInEncyclopediaTypes Encyclopedia { get; } = new BuiltInEncyclopediaTypes();
 

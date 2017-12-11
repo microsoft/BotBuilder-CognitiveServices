@@ -102,6 +102,7 @@
     <Compile Include="BaseLuisContextualAction.cs" />
     <Compile Include="Bot\LuisActionDialog.cs" />
     <Compile Include="Constants\BuiltInDatetimeTypes.cs" />
+    <Compile Include="Constants\BuiltInDatetimeV2Types.cs" />
     <Compile Include="Constants\BuiltInEncyclopediaTypes.cs" />
     <Compile Include="Constants\BuiltInGeographyTypes.cs" />
     <Compile Include="Constants\BuiltInTypes.cs" />

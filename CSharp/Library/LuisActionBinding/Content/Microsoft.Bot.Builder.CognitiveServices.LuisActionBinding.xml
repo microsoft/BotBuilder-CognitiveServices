@@ -6,7 +6,7 @@
     <members>
         <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute">
             <summary>
-            Attribute for defining an LUIS Action Binding.
+            Attribute for defining a LUIS Action Binding.
             </summary>
         </member>
         <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.#ctor(System.String)">
@@ -127,6 +127,13 @@
             <summary>
             LUIS prebuilt datetime types.
             https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+            </summary>
+            <see cref="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInGeographyTypes"/>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInDatetimeV2Types">
+            <summary>
+            LUIS prebuilt datetimeV2 types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities#builtindatetimev2
             </summary>
         </member>
         <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInEncyclopediaTypes">

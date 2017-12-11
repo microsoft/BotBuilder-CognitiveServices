@@ -5,9 +5,9 @@
         "allowJs": true,
         "sourceMap": false,
         "noImplicitAny": true,
-        "outDir": "../built",
+        "outDir": "../lib",
         "noEmitOnError": true,
-        "removeComments": true
+        "noStrictGenericChecks": true
     },
     "exclude": [
         "botbuilder-cognitiveservices.d.ts"

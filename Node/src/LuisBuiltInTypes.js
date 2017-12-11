@@ -42,11 +42,22 @@ var BuiltInTypes = {
     PhoneNumber:            'builtin.phonenumber',
     Temperature:            'builtin.temperature',
     Url:                    'builtin.url',
+
+    // DateTime is deprecated. It is replaced by DateTimeV2
     DateTime: {
         Date:               'builtin.datetime.date',
         Time:               'builtin.datetime.time',
         Duration:           'builtin.datetime.duration',
         Set:                'builtin.datetime.set'
+    },
+    DateTimeV2: {
+        Date:               'builtin.datetimeV2.date',
+        Time:               'builtin.datetimeV2.time',
+        DateRange:          'builtin.datetimeV2.daterange',
+        TimeRange:          'builtin.datetimeV2.timerange',
+        DateTimeRange:      'builtin.datetimeV2.datetimerange',
+        Duration:           'builtin.datetimeV2.duration',
+        Set:                'builtin.datetimeV2.set'
     },
     Encyclopedia: {
         Person:             'builtin.encyclopedia.people.person',

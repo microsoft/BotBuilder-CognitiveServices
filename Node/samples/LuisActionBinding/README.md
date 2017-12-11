@@ -216,12 +216,12 @@ var FindHotelsAction = {
         },
         Checkin: {
             type: 'date',
-            builtInType: LuisActions.BuiltInTypes.DateTime.Date,
+            builtInType: LuisActions.BuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the check-in date'
         },
         Checkout: {
             type: 'date',
-            builtInType: LuisActions.BuiltInTypes.DateTime.Date,
+            builtInType: LuisActions.BuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the check-out date'
         },
         Category: {

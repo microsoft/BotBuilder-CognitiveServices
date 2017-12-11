@@ -350,6 +350,10 @@ function crossMatchEntities(entities) {
                 var resolution = entityWithValue.resolution;
                 entityTarget.entity = resolution[_.keys(resolution)[0]];
             }
+            if (entityTarget && entityTarget.entity && entityTarget.entity instanceof Array) {
+                var first = entityTarget.entity[0];
+                entityTarget.entity = first.value || first;
+            }
             if (entityTarget) {
                 result.push(entityTarget);
             }

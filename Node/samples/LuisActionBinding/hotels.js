@@ -14,12 +14,12 @@ var FindHotelsAction = {
         },
         Checkin: {
             type: 'date',
-            builtInType: cognitiveservices.LuisBuiltInTypes.DateTime.Date,
+            builtInType: cognitiveservices.LuisBuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the check-in date'
         },
         Checkout: {
             type: 'date',
-            builtInType: cognitiveservices.LuisBuiltInTypes.DateTime.Date,
+            builtInType: cognitiveservices.LuisBuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the check-out date'
         },
         Category: {
@@ -68,7 +68,7 @@ var FindHotelsAction_ChangeCheckin = {
     schema: {
         Checkin: {
             type: 'date',
-            builtInType: cognitiveservices.LuisBuiltInTypes.DateTime.Date,
+            builtInType: cognitiveservices.LuisBuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the new check-in date'
         }
     },
@@ -87,7 +87,7 @@ var FindHotelsAction_ChangeCheckout = {
     schema: {
         Checkout: {
             type: 'date',
-            builtInType: cognitiveservices.LuisBuiltInTypes.DateTime.Date,
+            builtInType: cognitiveservices.LuisBuiltInTypes.DateTimeV2.Date,
             validDate: true, message: 'Please provide the new check-out date'
         }
     },

@@ -32,7 +32,7 @@
 //
 
 import * as builder from 'botbuilder';
-import { IQnAMakerResults, IQnAMakerResult } from './QnAMakerRecognizer'; 
+import { IQnAMakerResults, IQnAMakerResult } from './QnAMakerRecognizer';
 
 export interface IQnAMakerTools{
     createLibrary(): builder.Library;
@@ -61,7 +61,7 @@ export class QnAMakerTools implements IQnAMakerTools{
                         if(filteredResult !== null && filteredResult.length > 0){
                             var selectedQnA = filteredResult[0];
                             session.send(selectedQnA.answer);
-                            session.endDialogWithResult(selectedQnA);
+                            session.endDialogWithResult({ response: selectedQnA });
                         }
                     } else {
                         session.send("Sorry! Not able to match any of the options.");

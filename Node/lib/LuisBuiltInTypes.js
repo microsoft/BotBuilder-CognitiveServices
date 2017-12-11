@@ -15,6 +15,15 @@ var BuiltInTypes = {
         Duration: 'builtin.datetime.duration',
         Set: 'builtin.datetime.set'
     },
+    DateTimeV2: {
+        Date: 'builtin.datetimeV2.date',
+        Time: 'builtin.datetimeV2.time',
+        DateRange: 'builtin.datetimeV2.daterange',
+        TimeRange: 'builtin.datetimeV2.timerange',
+        DateTimeRange: 'builtin.datetimeV2.datetimerange',
+        Duration: 'builtin.datetimeV2.duration',
+        Set: 'builtin.datetimeV2.set'
+    },
     Encyclopedia: {
         Person: 'builtin.encyclopedia.people.person',
         Organization: 'builtin.encyclopedia.organization.organization',

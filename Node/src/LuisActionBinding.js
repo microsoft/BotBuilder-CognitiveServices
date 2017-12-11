@@ -518,9 +518,22 @@ function crossMatchEntities(entities) {
         if (matches.length > 1) {
             var entityTarget = matches.find((e) => e.type.indexOf('builtin.') === -1);
             var entityWithValue = matches.find((e) => e.resolution);
+
+            // builtin entity (Obj.resolution)
             if (entityWithValue) {
                 var resolution = entityWithValue.resolution;
+
+                // for builtin.number, age, etc. extract from resolution.value
+                // for builtin.datetimev2. extract resolution.values
                 entityTarget.entity = resolution[_.keys(resolution)[0]];
+            }
+
+            // builtin datetimev2 (Obj.resolution.values[...].value), use only first value
+            if(entityTarget && entityTarget.entity && entityTarget.entity instanceof Array) {
+                var first = entityTarget.entity[0];
+
+                // use value property if found, fallback to returning the full resolution obj
+                entityTarget.entity = first.value || first;
             }
 
             if (entityTarget) {

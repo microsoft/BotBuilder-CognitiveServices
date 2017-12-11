@@ -49,10 +49,20 @@ export namespace DateTime {
     export const Set: string;
 }
 
+export namespace DateTimeV2 {
+    export const Date: string;
+    export const Time: string;
+    export const DateRange: string;
+    export const TimeRange: string;
+    export const DateTimeRange: string;
+    export const Duration: string;
+    export const Set: string;
+}
+
 export namespace Encyclopedia {
-	export const Person: string;
-	export const Organization: string;
-	export const Event: string;
+    export const Person: string;
+    export const Organization: string;
+    export const Event: string;
 }
 
 export namespace Geography {

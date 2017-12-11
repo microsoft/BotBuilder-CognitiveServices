@@ -627,9 +627,30 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
                 // Prioritize resolution
                 if (matchingEntity != null)
                 {
-                    var paramValue = matchingEntity.Resolution != null && matchingEntity.Resolution.Count > 0
-                        ? matchingEntity.Resolution.First().Value
-                        : matchingEntity.Entity;
+                    // TODO: Review this little block
+
+                    object paramValue = null;
+
+                    if (matchingEntity.Resolution != null && matchingEntity.Resolution.Count > 0)
+                    {
+                        var resolutionValue = matchingEntity.Resolution.First().Value;
+                        if(resolutionValue is IList<object>)
+                        {
+                            // multiple resolution values - datetimev2
+                            paramValue = "upssss";
+                        } else
+                        {
+                            // other built-in with single resolution value
+                            paramValue = resolutionValue;
+                        }
+                    }
+                    else
+                    {
+                        paramValue = matchingEntity.Entity;
+                    }
+                    //var paramValue = matchingEntity.Resolution != null && matchingEntity.Resolution.Count > 0
+                    //    ? matchingEntity.Resolution.First().Value
+                    //    : matchingEntity.Entity;
 
                     result &= AssignValue(action, property, paramValue);
                 }

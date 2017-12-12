@@ -290,6 +290,13 @@
             <param name="entityExtractor">Optional: EntityExtractor to disambiguate multiple values into a single one.</param>
             <returns>The matched action plus its parameters filled with the extracted entities, or Null if no action was matched.</returns>
         </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.GetDateTimeValues(Microsoft.Bot.Builder.Luis.Models.EntityRecommendation)">
+            <summary>
+            Get the first datetimeV2 resolution value.
+            </summary>
+            <param name="entity">The EntityRecomendation</param>
+            <returns>A Dictionary with the resolution values Or null.</returns>
+        </member>
         <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext">
             <summary>
             A LUIS Action Binding context.

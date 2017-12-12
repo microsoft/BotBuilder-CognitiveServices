@@ -627,18 +627,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
                 // Prioritize resolution
                 if (matchingEntity != null)
                 {
-                    // TODO: Review this little block
-
                     object paramValue = null;
-
                     if (matchingEntity.Resolution != null && matchingEntity.Resolution.Count > 0)
                     {
                         var resolutionValue = matchingEntity.Resolution.First().Value;
-                        if(resolutionValue is IList<object>)
+                        if (resolutionValue is IList<object>)
                         {
                             // multiple resolution values - datetimev2
-                            paramValue = "upssss";
-                        } else
+                            var dateTimeResolutionValues = GetDateTimeValues(matchingEntity);
+                            paramValue = dateTimeResolutionValues["value"];
+                        }
+
+                        if (paramValue == null)
                         {
                             // other built-in with single resolution value
                             paramValue = resolutionValue;
@@ -648,9 +648,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
                     {
                         paramValue = matchingEntity.Entity;
                     }
-                    //var paramValue = matchingEntity.Resolution != null && matchingEntity.Resolution.Count > 0
-                    //    ? matchingEntity.Resolution.First().Value
-                    //    : matchingEntity.Entity;
 
                     result &= AssignValue(action, property, paramValue);
                 }
@@ -677,6 +674,23 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Get the first datetimeV2 resolution value.
+        /// </summary>
+        /// <param name="entity">The EntityRecomendation</param>
+        /// <returns>A Dictionary with the resolution values Or null.</returns>
+        public static IDictionary<string, object> GetDateTimeValues(EntityRecommendation entity)
+        {
+            if (!entity.Type.StartsWith("builtin.datetimeV2"))
+            {
+                return null;
+            }
+
+            var resolutionValues = (IList<object>)entity.Resolution["values"];
+
+            return (IDictionary<string, object>)resolutionValues[0];
         }
     }
 }

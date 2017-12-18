@@ -35,7 +35,7 @@ Finally, edit the [app.js](app.js#L34) file and update the `LuisModelUrl` variab
 
 #### Where to find the Model URL
 
-In the LUIS application's dashboard, click the "Publish App" button in the right side bar, select an Endpoint Key and then click the "Publish" button. After a couple of moments, you will see a url that makes your models available as a web service.
+In the LUIS application's dashboard, click the "Publish" button in the top bar and click on the "Publish to production slot". From the region list below, select your preferred region and copy the link as-is.
 
 ![Publishing a Model](../LuisActionBinding/images/prereqs-publish.png)
 

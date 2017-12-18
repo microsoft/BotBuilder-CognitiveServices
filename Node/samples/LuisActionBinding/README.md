@@ -12,7 +12,7 @@ The minimum prerequisites to run this sample are:
 #### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](LUIS_MODEL.json) file to your LUIS account.
 
-The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file an import it.
+The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file and import it.
 
 ![Import an Existing Application](images/prereqs-import.png)
 
@@ -22,7 +22,7 @@ Finally, edit the [.env](.env#L6) file and update the `LUIS_MODEL_URL` variable 
 
 #### Where to find the Model URL
 
-In the LUIS application's dashboard, click the "Publish App" button in the right side bar, select an Endpoint Key and then click the "Publish" button. After a couple of moments, you will see a url that makes your models available as a web service.
+In the LUIS application's dashboard, click the "Publish" button in the top bar and click on the "Publish to production slot". From the region list below, select your preferred region and copy the link as-is.
 
 ![Publishing a Model](images/prereqs-publish.png)
 

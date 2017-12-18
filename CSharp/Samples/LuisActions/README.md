@@ -16,7 +16,7 @@ The minimum prerequisites to run this sample are:
 #### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](LUIS_MODEL.json) file to your LUIS account.
 
-The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file an import it.
+The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file and import it.
 
 ![Import an Existing Application](images/prereqs-import.png)
 
@@ -36,7 +36,7 @@ You'll need these two values to configure the LuisDialog through the LuisModel a
 
 2. Subscription Key
 
-    In the [My keys page](https://www.luis.ai/home/keys), copy the Programmatic API Key.
+    In the [User Settings page](https://www.luis.ai/user/settings), copy the Programmatic API Key.
 
     ![Programmatic API Key](images/prereqs-apikey.png)
 

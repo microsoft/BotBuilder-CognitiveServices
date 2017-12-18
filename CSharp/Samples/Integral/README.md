@@ -24,7 +24,7 @@ Now update the `QnAMakerSubscriptionKey` and `QnAMakerKnowledgeBaseId` appSettin
 ### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](../LuisActions/LUIS_MODEL.json) file to your [LUIS account](https://luis.ai/).
 
-The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file an import it.
+The first step to using LUIS is to create or import an application. Go to the home page, www.luis.ai, and log in. After creating your LUIS account you'll be able to Import an Existing Application where can you can select a local copy of the LUIS_MODEL.json file and import it.
 
 ![Import an Existing Application](../LuisActions/images/prereqs-import.png)
 

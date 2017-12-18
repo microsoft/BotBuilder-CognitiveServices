@@ -16,7 +16,7 @@
     {
         public LuisSamplesDialog() : base(
             new Assembly[] { typeof(FindHotelsAction).Assembly },
-            new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"])))
+            new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"])))
         {
         }
 

@@ -139,7 +139,7 @@
         private static async Task RunQuery(string query)
         {
             // Process message
-            var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"]));
+            var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
             var luisResult = await luisService.QueryAsync(query, CancellationToken.None);
 
             // Try to resolve intent to action

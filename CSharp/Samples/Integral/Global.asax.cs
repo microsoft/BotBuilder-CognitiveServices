@@ -38,8 +38,8 @@ namespace IntegralSampleBot
                 builder.RegisterModule(new ReflectionSurrogateModule());
 
                 builder.RegisterModule(new QnAMakerModule(
-                    ConfigurationManager.AppSettings["QnAMaker_SubscriptionId"],
-                    ConfigurationManager.AppSettings["QnAMaker_KnowledgeBaseId"],
+                    ConfigurationManager.AppSettings["QnAMakerSubscriptionKey"],
+                    ConfigurationManager.AppSettings["QnAMakerKnowledgeBaseId"],
                     "I don't understand this right now! Try another query!",
                     0.50));
             });

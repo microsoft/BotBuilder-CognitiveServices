@@ -22,7 +22,7 @@ The first step to using LUIS is to create or import an application. Go to the ho
 
 Once you imported the application you'll need to "train" the model ([Training](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Train-Test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/PublishApp).
 
-Finally, edit the .config files for each sample ([Bot](LuisActions.Samples.Bot/Web.config), [Web](LuisActions.Samples.Web/Web.config), [Console](LuisActions.Samples.Console/App.config)) and update the `LUIS_SubscriptionKey` and `LUIS_ModelId` appSettings with the values corresponding to your Subscription and Application.
+Finally, edit the .config files for each sample ([Bot](LuisActions.Samples.Bot/Web.config), [Web](LuisActions.Samples.Web/Web.config), [Console](LuisActions.Samples.Console/App.config)) and update the `LuisSubscriptionKey` and `LuisApplicationId` appSettings with the values corresponding to your Subscription and Application.
 
 #### Where to find the Application ID and Subscription Key
 
@@ -570,7 +570,7 @@ public RootDialog() : base(
             (action as FindHotelsAction).Checkout = DateTime.Today.AddDays(1);
         }
     },
-    new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"])))
+    new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"])))
 {
 }
 ````
@@ -626,7 +626,7 @@ public async Task<ActionResult> Index(QueryViewModel model)
 {
     if (!model.HasIntent)
     {
-        var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"]));
+        var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
         var luisResult = await luisService.QueryAsync(model.Query, CancellationToken.None);
         var resolver = new LuisActionResolver(typeof(GetTimeInPlaceAction).Assembly);
         var action = resolver.ResolveActionFromLuisIntent(luisResult);
@@ -693,7 +693,7 @@ The triggering method here is the [RunQuery](LuisActions.Samples.Console/Program
 private static async Task RunQuery(string query)
 {
     // Process message
-    var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"]));
+    var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
     var luisResult = await luisService.QueryAsync(query, CancellationToken.None);
 
     // Try to resolve intent to action

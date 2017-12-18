@@ -23,7 +23,7 @@
         {
             if (!model.HasIntent)
             {
-                var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"]));
+                var luisService = new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
                 var luisResult = await luisService.QueryAsync(model.Query, CancellationToken.None);
                 var resolver = new LuisActionResolver(typeof(GetTimeInPlaceAction).Assembly);
                 var action = resolver.ResolveActionFromLuisIntent(luisResult);

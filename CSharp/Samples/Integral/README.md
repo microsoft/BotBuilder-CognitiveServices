@@ -19,7 +19,7 @@ You can obtain these values by publishing the Knowledge base, using *Publish* bu
 
 ![Knowledge Base Published](images/qnamaker-publish.png)
 
-Now update the `QnAMaker_SubscriptionId` and `QnAMaker_KnowledgeBaseId` appSettings in the [Web.config](Web.config#L18-L19).
+Now update the `QnAMakerSubscriptionKey` and `QnAMakerKnowledgeBaseId` appSettings in the [Web.config](Web.config#L18-L19).
 
 ### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](../LuisActions/LUIS_MODEL.json) file to your [LUIS account](https://luis.ai/).
@@ -30,7 +30,7 @@ The first step to using LUIS is to create or import an application. Go to the ho
 
 Once you imported the application you'll need to "train" the model ([Training](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Train-Test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/PublishApp).
 
-Finally, edit the [Web.config](Web.config#L14-L15) and update the `LUIS_SubscriptionKey` and `LUIS_ModelId` appSettings with the values corresponding to your Subscription and Application.
+Finally, edit the [Web.config](Web.config#L14-L15) and update the `LuisSubscriptionKey` and `LuisApplicationId` appSettings with the values corresponding to your Subscription and Application.
 
 ### Code Highlights
 
@@ -40,8 +40,8 @@ Check out how the [`QnAMakerModule` is registered](Global.asax.cs#L18-L22), whic
 
 ````C#
 builder.RegisterModule(new QnAMakerModule(
-    ConfigurationManager.AppSettings["QnAMaker_SubscriptionId"],
-    ConfigurationManager.AppSettings["QnAMaker_KnowledgeBaseId"],
+    ConfigurationManager.AppSettings["QnAMakerSubscriptionKey"],
+    ConfigurationManager.AppSettings["QnAMakerKnowledgeBaseId"],
     "I don't understand this right now! Try another query!",
     0.50));
 ````

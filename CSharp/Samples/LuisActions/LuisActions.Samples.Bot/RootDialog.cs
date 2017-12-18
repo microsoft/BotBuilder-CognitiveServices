@@ -36,7 +36,7 @@
                     (action as FindHotelsAction).Checkout = DateTime.Today.AddDays(1);
                 }
             },
-            new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LUIS_ModelId"], ConfigurationManager.AppSettings["LUIS_SubscriptionKey"])))
+            new LuisService(new LuisModelAttribute(ConfigurationManager.AppSettings["LuisApplicationId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"])))
         {
         }
 

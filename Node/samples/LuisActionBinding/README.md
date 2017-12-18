@@ -339,11 +339,11 @@ The `Evaluate` dialog extracts the entities from the [LUIS Result](https://docs.
 
 When validation does not pass, [prompt messages](../../src/LuisActionBinding.js#L316-L326) are presented to the user to provide each of the missing or invalid parameters and continues until validation passes. Then the [fulfill function is invoked](../../src/LuisActionBinding.js#L335-L340), passing all validated parameters.
 
-The [`bindToBotDialog`](../../src/LuisActionBinding.js#L214-L241) function accepts an optional set of arguments for customizing some of its behavior, as seen in the [bindToBotDialog call](bot/app.js#L26-L30). The optional set of arguments are:
+The [`bindToBotDialog`](../../src/LuisActionBinding.js#L214-L241) function accepts an optional set of arguments for customizing some of its behavior, as seen in the [bindToBotDialog call](bot/app.js#L28-L32). The optional set of arguments are:
 
-- `defaultReply`: [Optional] Defined as a function that accepts a `session` object. This function is invoked when an intent is detected but not mapped to an action and can be used to reply with a custom message or trigger custom logic. An example is the [DefaultReplyHandler function](bot/app.js#L32-L36).
+- `defaultReply`: [Optional] Defined as a function that accepts a `session` object. This function is invoked when an intent is detected but not mapped to an action and can be used to reply with a custom message or trigger custom logic. An example is the [DefaultReplyHandler function](bot/app.js#L34-L38).
 
-- `fulfillReply`: [Optional] Defined as a function that accepts a `session` object and the fulfilled `actionModel`. It can be used to send to the user a customized message with the actionModel's result (e.g.: the result wrapped on a RichCard or AdaptiveCard) or do any further processing (e.g.: telemetry). An example is the [FulfillReplyHandler function](bot/app.js#L38-L41).
+- `fulfillReply`: [Optional] Defined as a function that accepts a `session` object and the fulfilled `actionModel`. It can be used to send to the user a customized message with the actionModel's result (e.g.: the result wrapped on a RichCard or AdaptiveCard) or do any further processing (e.g.: telemetry). An example is the [FulfillReplyHandler function](bot/app.js#L40-L43).
 
 - `onContextCreation`: [Optional] Function used to re-hydrate context for a contextual action, as seen in [Scenario #3](#scenario-3--trigger-a-contextual-action-with-no-previous-context-ie-from-scratch).
 The parameter is defined as a funcion with four parameters:
@@ -353,7 +353,7 @@ The parameter is defined as a funcion with four parameters:
     - `next`: The method that must be called to continue the execution of the Action Binding. This is required to support asynchronous calls.
     - `session`: The BotBuilder session object. Can be used to retrieve the user's address id or even send messages.
 
-    The Bot sample has a [custom handler](bot/app.js#L43-L75) that re-hydrates the FindHotels action context with default values.
+    The Bot sample has a [custom handler](bot/app.js#L45-L77) that re-hydrates the FindHotels action context with default values.
 
     > NOTE: When defining the `onContextCreationHandler` function, remember to call `next()` to continue executing the action binding's logic.
 

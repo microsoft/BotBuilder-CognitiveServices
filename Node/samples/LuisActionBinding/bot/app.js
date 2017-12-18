@@ -19,6 +19,8 @@ var connector = new builder.ChatConnector({
 server.post('/api/messages', connector.listen());
 
 var bot = new builder.UniversalBot(connector);
+bot.set('storage', new builder.MemoryBotStorage());         // Register in-memory state storage
+
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 var intentDialog = bot.dialog('/', new builder.IntentDialog({ recognizers: [recognizer] })
     .onDefault(DefaultReplyHandler));

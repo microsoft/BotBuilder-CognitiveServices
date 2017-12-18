@@ -20,7 +20,7 @@ You can obtain these values by publishing the Knowledge base, using *Publish* bu
 
 ![Knowledge Base Published](images/qnamaker-publish.png)
 
-Now update the `knowledgeBaseId` and `subscriptionKey` variables in the `QnAMakerRecognizer` constructor [here](app.js#L28-L29).
+Now update the `knowledgeBaseId` and `subscriptionKey` variables in the `QnAMakerRecognizer` constructor [here](app.js#L30-L31).
 
 ### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](../LuisActionBinding/LUIS_MODEL.json) file to your [LUIS account](https://luis.ai/).
@@ -31,7 +31,7 @@ The first step to using LUIS is to create or import an application. Go to the ho
 
 Once you imported the application you'll need to "train" the model ([Training](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Train-Test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/PublishApp).
 
-Finally, edit the [app.js](app.js#L32) file and update the `LuisModelUrl` variable with your's Model URL.
+Finally, edit the [app.js](app.js#L34) file and update the `LuisModelUrl` variable with your's Model URL.
 
 #### Where to find the Model URL
 
@@ -66,7 +66,7 @@ And LUIS Action Binding using the `bindToBotDialog` helper method:
 cognitiveservices.LuisActionBinding.bindToBotDialog(bot, intentsDialog, LuisModelUrl, SampleActions);
 ````
 
-You can see the complete sample implementation [here](app.js#L27-L50).
+You can see the complete sample implementation [here](app.js#L29-L52).
 
 ### More Information
 

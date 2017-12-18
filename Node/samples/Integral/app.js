@@ -17,8 +17,10 @@ var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
-var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
+
+var bot = new builder.UniversalBot(connector);
+bot.set('storage', new builder.MemoryBotStorage());         // Register in-memory state storage
 
 //=========================================================
 // Bots Dialogs

@@ -9,15 +9,16 @@ var cognitiveservices = require('../../../lib/botbuilder-cognitiveservices');
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-    console.log('%s listening to %s', server.name, server.url); 
+    console.log('%s listening to %s', server.name, server.url);
 });
-  
+
 // Create chat bot
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 var bot = new builder.UniversalBot(connector);
+bot.set('storage', new builder.MemoryBotStorage());         // Register in-memory state storage
 server.post('/api/messages', connector.listen());
 
 //=========================================================
@@ -25,7 +26,7 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: 'set your kbid here', 
+    knowledgeBaseId: 'set your kbid here',
     subscriptionKey: 'set your subscription key here',
     top: 4});
 
@@ -48,7 +49,7 @@ basicQnAMakerDialog.respondFromQnAMakerResult = function(session, qnaMakerResult
 
 // Override to log user query and matched Q&A before ending the dialog
 basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
-    if(session.privateConversationData.qnaFeedbackUserQuestion != null && qnaMakerResult.answers != null && qnaMakerResult.answers.length > 0 
+    if(session.privateConversationData.qnaFeedbackUserQuestion != null && qnaMakerResult.answers != null && qnaMakerResult.answers.length > 0
         && qnaMakerResult.answers[0].questions != null && qnaMakerResult.answers[0].questions.length > 0 && qnaMakerResult.answers[0].answer != null){
             console.log('User Query: ' + session.privateConversationData.qnaFeedbackUserQuestion);
             console.log('KB Question: ' + qnaMakerResult.answers[0].questions[0]);

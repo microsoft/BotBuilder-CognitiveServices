@@ -47,4 +47,4 @@ var SampleActions = require('../LuisActionBinding/all');
 cognitiveservices.LuisActionBinding.bindToBotDialog(bot, intentsDialog, LuisModelUrl, SampleActions);
 
 // Default message
-intentsDialog.onDefault(session => session.send('Sorry, I don\'t understand.'));
+intentsDialog.onDefault(session => session.send('Sorry, I didn\'t understand that.'));

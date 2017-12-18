@@ -146,7 +146,7 @@ function bindToBotDialog(bot, intentDialog, modelUrl, actions, options) {
     });
 }
 function createBotLibrary(modelUrl, actions, options) {
-    var defaultReplyHandler = typeof options.defaultReply === 'function' ? options.defaultReply : function (session) { session.endDialog('Sorry, I couldn\'t understart that.'); };
+    var defaultReplyHandler = typeof options.defaultReply === 'function' ? options.defaultReply : function (session) { session.endDialog('Sorry, I didn\'t understand that.'); };
     var fulfillReplyHandler = typeof options.fulfillReply === 'function' ? options.fulfillReply : function (session, actionModel) { session.endDialog(actionModel.result.toString()); };
     var onContextCreationHandler = validateContextCreationHandler(options.onContextCreation);
     var lib = new builder.Library('LuisActions');

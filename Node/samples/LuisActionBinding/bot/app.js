@@ -31,7 +31,7 @@ LuisActions.bindToBotDialog(bot, intentDialog, LuisModelUrl, SampleActions, {
 
 function DefaultReplyHandler(session) {
     session.endDialog(
-        'Sorry, I did not understand "%s". Use sentences like "What is the time in Miami?", "Search for 5 stars hotels in Barcelona", "Tell me the weather in Buenos Aires", "Location of SFO airport")',
+        'Sorry, I did not understand "%s". Use sentences like "What is the time in Miami?", "Search for 5 stars hotels in Barcelona", "Tell me the weather in Buenos Aires", "Location of SFO airport".',
         session.message.text);
 }
 

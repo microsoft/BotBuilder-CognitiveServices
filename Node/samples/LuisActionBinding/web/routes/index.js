@@ -2,9 +2,10 @@ require('dotenv-extended').load({
     path: '../.env'
 });
 
+var _ = require('lodash');
 var express = require('express');
 var router = express.Router();
-var _ = require('lodash');
+var utils = require('../utils');
 
 var LuisActions = require('botbuilder-cognitiveservices').LuisActionBinding;
 
@@ -17,7 +18,14 @@ router.get('/', function (req, res, next) {
 
 router.post('/', function (req, res, next) {
   var query = req.body.query;
-  var actionModel = parseActionModel(req.body.actionModel);
+
+  // parse current model (if present)
+  var actionModel;
+  try {
+    actionModel = utils.deserialize(req.body.actionModel);
+  } catch (err) {
+    actionModel = null;
+  }
 
   // restart if missing query or model
   if (!query && !actionModel) {
@@ -43,7 +51,7 @@ router.post('/', function (req, res, next) {
           var viewModel = {
             query: query,
             hasIntent: true,
-            actionModelJson: JSON.stringify(actionModel),
+            actionModelJson: utils.serialize(actionModel),
             fields: createFieldsViewModel(action.schema, actionModel.parameters, actionModel.parameterErrors)
           };
 
@@ -83,12 +91,4 @@ function createFieldsViewModel(schema, parameteres, fieldErrors) {
       fieldError: fieldError ? fieldError.message : null
     };
   });
-}
-
-function parseActionModel(actionModelJson) {
-  try {
-    return JSON.parse(actionModelJson);
-  } catch (err) {
-    return null;
-  }
 }

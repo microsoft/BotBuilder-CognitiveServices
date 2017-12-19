@@ -178,21 +178,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
         protected virtual async Task DispatchToLuisActionActivityHandler(IDialogContext context, IAwaitable<IMessageActivity> item, string intentName, ILuisAction luisAction)
         {
             var actionHandlerByIntent = new Dictionary<string, LuisActionActivityHandler>(this.GetActionHandlersByIntent());
-
             var handler = default(LuisActionActivityHandler);
-            if (!actionHandlerByIntent.TryGetValue(intentName, out handler))
-            {
-                handler = actionHandlerByIntent[string.Empty];
-            }
-
-            if (handler != null)
-            {
-                await handler(context, item, await this.PerformActionFulfillment(context, item, luisAction));
-            }
-            else
+            if (!actionHandlerByIntent.TryGetValue(intentName, out handler) && !actionHandlerByIntent.TryGetValue(string.Empty, out handler))
             {
                 throw new Exception($"No default intent handler found.");
             }
+
+            await handler(context, item, await this.PerformActionFulfillment(context, item, luisAction));
         }
 
         protected virtual async Task LuisActionMissingDialogFinished(IDialogContext context, IAwaitable<ActionExecutionContext> executionContext)

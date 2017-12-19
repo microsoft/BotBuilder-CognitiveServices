@@ -1,0 +1,333 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute">
+            <summary>
+            Attribute for defining a LUIS Action Binding.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.#ctor(System.String)">
+            <summary>
+            Construct the LUIS Action Binding.
+            </summary>
+            <param name="intentName">The LUIS Intent name that triggers this action.</param>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.CanExecuteWithNoContext">
+            <summary>
+            Indicates if the action can be executed without previous context. This is recommended for sub-actions that can change some variable of the current context.
+            Default value is True.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.ConfirmOnSwitchingContext">
+            <summary>
+            Should ask user before switching action and discarding current action's context.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.FriendlyName">
+            <summary>
+            Text used when asking to switch context.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute.IntentName">
+            <summary>
+            The LUIS Intent name that triggers this action.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingParamAttribute">
+            <summary>
+            Attribute for mapping Action Parameters to extracted LUIS entities.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingParamAttribute.CustomType">
+            <summary>
+            The LUIS Custom entity type name.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingParamAttribute.BuiltinType">
+            <summary>
+            The LUIS Prebuilt entity type name.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingParamAttribute.Order">
+            <summary>
+            Specificy order when asking user to fill-in parameter values.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BaseLuisAction">
+            <summary>
+            Base class for implementing LUIS Action Bindings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BaseLuisAction.FulfillAsync">
+            <summary>
+            The method to be executed when all required parameters are filled. This method should fulfill or call any external services and return the result.
+            </summary>
+            <returns>The result of the action execution.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BaseLuisAction.IsValid(System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult}@)">
+            <summary>
+            Validates if the current action's context is valid, based on the Action properties set so far and their validation attributes.
+            </summary>
+            <param name="validationResults">List of validation errors.</param>
+            <returns>True if context is valid, False otherwise.</returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BaseLuisContextualAction`1">
+            <summary>
+            Base class for implementing LUIS Action Bindings that can modify the context of other actions.
+            </summary>
+            <typeparam name="T">The original action.</typeparam>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BaseLuisContextualAction`1.Context">
+            <summary>
+            The original action being modified.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot.LuisActionHandler">
+            <summary>
+            The handler for a LUIS Action Binding.
+            </summary>
+            <param name="context">The dialog context.</param>
+            <param name="actionResult">The action's result object.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot.LuisActionActivityHandler">
+            <summary>
+            The handler for a LUIS Action Binding.
+            </summary>
+            <param name="context">The dialog context.</param>
+            <param name="message">The dialog message.</param>
+            <param name="actionResult">The action's result object.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot.LuisActionDialog`1">
+            <summary>
+            A dialog specialized to handle Action Binding using LUIS.ai.
+            </summary>
+            <typeparam name="TResult">The result type. Use Object.</typeparam>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot.LuisActionDialog`1.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},Microsoft.Bot.Builder.Luis.ILuisService[])">
+            <summary>
+            Construct a LuisActionDialog instance.
+            </summary>
+            <param name="assemblies">List of assemblies where to find Action Bindings Types.</param>
+            <param name="services">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot.LuisActionDialog`1.#ctor(System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Action{Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.Object},Microsoft.Bot.Builder.Luis.ILuisService[])">
+            <summary>
+            Construct a LuisActionDialog instance.
+            </summary>
+            <param name="assemblies">List of assemblies where to find Action Bindings Types.</param>
+            <param name="onContextCreation">Here you can implement a callback to hydrate action contexts as per request. See LuisActions.Samples.Bot for usage sample.</param>
+            <param name="services">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInDatetimeTypes">
+            <summary>
+            LUIS prebuilt datetime types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+            </summary>
+            <see cref="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInGeographyTypes"/>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInDatetimeV2Types">
+            <summary>
+            LUIS prebuilt datetimeV2 types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities#builtindatetimev2
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInEncyclopediaTypes">
+            <summary>
+            LUIS prebuilt Encyclopedia types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInGeographyTypes">
+            <summary>
+            LUIS prebuilt Geography types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.BuiltInTypes">
+            <summary>
+            LUIS prebuilt-in types.
+            https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Intents">
+            <summary>
+            LUIS Default intent names.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction">
+            <summary>
+            Interface of a LUIS Action Binding.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction.FulfillAsync">
+            <summary>
+            The method to be executed when all required parameters are filled. This method should fulfill or call any external services and return the result.
+            </summary>
+            <returns>The result of the action execution.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction.IsValid(System.Collections.Generic.ICollection{System.ComponentModel.DataAnnotations.ValidationResult}@)">
+            <summary>
+            Validates if the current action's context is valid, based on the Action properties set so far and their validation attributes.
+            </summary>
+            <param name="validationResults">List of validation errors.</param>
+            <returns>True if context is valid, False otherwise.</returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisContextualAction`1">
+            <summary>
+            Base class for implementing a LUIS Contextual Action, a sub-action that can modify the context of another action.
+            </summary>
+            <typeparam name="T">The original action.</typeparam>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisContextualAction`1.Context">
+            <summary>
+            The original action being modified.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver">
+            <summary>
+            Handles retrieving an Action Binding based on the matched intent from the input utterance, validates parameter based on extracted entities.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.#ctor(System.Reflection.Assembly[])">
+            <summary>
+            Construct LuisActionResolver instance.
+            </summary>
+            <param name="lookupAssemblies">List of assemblies where to find Action Bindings Types.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.AssignValue(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.String,System.Object)">
+            <summary>
+            Tries to assign a value to the action's parameter.
+            This method runs the proper validation according to the action's parameter definition.
+            </summary>
+            <param name="action">The current action and context.</param>
+            <param name="paramName">The parameter to try to assign.</param>
+            <param name="paramValue">The parameter value to assign.</param>
+            <returns>True if validation passes and the value was assigned. False if validation or type compatibility fails.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.QueryValueFromLuisAsync(Microsoft.Bot.Builder.Luis.ILuisService,Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.String,System.Object,System.Threading.CancellationToken,System.Func{System.Reflection.PropertyInfo,System.Collections.Generic.IEnumerable{Microsoft.Bot.Builder.Luis.Models.EntityRecommendation},Microsoft.Bot.Builder.Luis.Models.EntityRecommendation})">
+            <summary>
+            Tries to extract intent and entities from the input utterance and validates if the the current parameter should be updated or if a context switch is needed.
+            </summary>
+            <param name="service">Instance of Microsoft.Bot.Builder.Luis.ILuisService to use for extracting intent and entities.</param>
+            <param name="action">The current action and context.</param>
+            <param name="paramName">The parameter to try to assign.</param>
+            <param name="paramValue">The parameter value to assign.</param>
+            <param name="token">Cancellation Token.</param>
+            <param name="entityExtractor">Optional: EntityExtractor to disambiguate multiple values into a single one.</param>
+            <returns>Indicates if the Action Parameter was validated (and set) or a if a Context Switch should occur.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.GetActionDefinition(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction)">
+            <summary>
+            Gets the Action definition from an action instance.
+            </summary>
+            <param name="action">The action instance.</param>
+            <returns>The action definition.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.GetParameterDefinition(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.String)">
+            <summary>
+            Gets the Action Parameter definition from an action instance and parameter name.
+            </summary>
+            <param name="action">The action instance.</param>
+            <param name="paramName">The current parameter's name.</param>
+            <returns>The action parameter definition.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.IsValidContextualAction(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.Boolean@)">
+            <summary>
+            If the action is contextual and related to the current context action, set the contextual action to the current context.
+            </summary>
+            <param name="action">The contextual action to validate.</param>
+            <param name="context">The current action context.</param>
+            <param name="isContextual">Indicates if the contextual action is related to the current action.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.UpdateIfValidContextualAction(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.Boolean@)">
+            <summary>
+            If the action is contextual and related to the current context action, set the contextual action to the current context.
+            </summary>
+            <param name="action">The contextual action to validate.</param>
+            <param name="context">The current action context.</param>
+            <param name="isContextual">Indicates if the contextual action is related to the current action.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.IsContextualAction(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction)">
+            <summary>
+            Indicates if the action is contextual to another action.
+            </summary>
+            <param name="action">The contextual action to validate.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.CanStartWithNoContextAction(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionBindingAttribute@)">
+            <summary>
+            Indicates if the action can be started, either is not a contextual action or it can create the contextual action directly.
+            </summary>
+            <param name="action">The action to validate.</param>
+            <param name="actionDefinition">The action definition.</param>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.BuildContextForContextualAction(Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction,System.String@)">
+            <summary>
+            Builds the action from a contextual action.
+            </summary>
+            <param name="action">The contextual action.</param>
+            <param name="intentName">The LUIS intent name of the parent action.</param>
+            <returns>The parent action.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.ResolveActionFromLuisIntent(Microsoft.Bot.Builder.Luis.Models.LuisResult)">
+            <summary>
+            Returns an action based on the LUIS intent.
+            </summary>
+            <param name="luisResult">The LUIS Result containing intent and extracted entities.</param>
+            <returns>The matched action plus its parameters filled with the extracted entities, or Null if no action was matched.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.ResolveActionFromLuisIntent(Microsoft.Bot.Builder.Luis.Models.LuisResult,System.String@,System.Collections.Generic.IList{Microsoft.Bot.Builder.Luis.Models.EntityRecommendation}@,System.Func{System.Reflection.PropertyInfo,System.Collections.Generic.IEnumerable{Microsoft.Bot.Builder.Luis.Models.EntityRecommendation},Microsoft.Bot.Builder.Luis.Models.EntityRecommendation})">
+            <summary>
+            Returns an action based on the LUIS intent.
+            </summary>
+            <param name="luisResult">The LUIS Result containing intent and extracted entities.</param>
+            <param name="intentName">The LUIS intent name.</param>
+            <param name="intentEntities">The LUIS extracted entities.</param>
+            <param name="entityExtractor">Optional: EntityExtractor to disambiguate multiple values into a single one.</param>
+            <returns>The matched action plus its parameters filled with the extracted entities, or Null if no action was matched.</returns>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.LuisActionResolver.GetDateTimeValues(Microsoft.Bot.Builder.Luis.Models.EntityRecommendation)">
+            <summary>
+            Get the first datetimeV2 resolution value.
+            </summary>
+            <param name="entity">The EntityRecomendation</param>
+            <returns>A Dictionary with the resolution values Or null.</returns>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext">
+            <summary>
+            A LUIS Action Binding context.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext.#ctor(System.String,Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ILuisAction)">
+            <summary>
+            Construct the Action Context.
+            </summary>
+            <param name="intent">The LUIS Intent name that triggered the action.</param>
+            <param name="action">The LUIS Action Binding model that was triggered.</param>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext.Action">
+            <summary>
+            The current LUIS Action Binding model.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext.Intent">
+            <summary>
+            The LUIS Intent name that triggers this action.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.ActionExecutionContext.ChangeRootSignaling">
+            <summary>
+            Indicates if the action was triggered due to context switching.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.QueryValueResult">
+            <summary>
+            Container used to validate if an Action Parameter was validated or a if a Context Switch should occur.
+            </summary>
+        </member>
+    </members>
+</doc>

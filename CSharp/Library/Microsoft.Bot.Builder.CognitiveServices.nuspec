@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Microsoft.Bot.Builder.CognitiveServices</id>
+    <version>$version$</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Provide Cognitive Services extensions to the Microsoft Bot Builder.
+      This includes dialogs and scorables for QnA Maker, and LUIS Action Binding
+    </description>
+    <projectUrl>https://github.com/Microsoft/BotBuilder-CognitiveServices</projectUrl>
+    <iconUrl>http://docs.botframework.com/images/bot_icon.png</iconUrl>
+    <summary>Cognitive Services extensions for Microsoft Bot Builder.</summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="Microsoft.Bot.Builder" version="$builder$"/>
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="QnAMaker\bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.dll" target="lib\net46"/>
+    <file src="QnAMaker\bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.pdb" target="lib\net46" />
+    <file src="QnAMaker\bin\release\Microsoft.Bot.Builder.CognitiveServices.QnAMaker.xml" target="lib\net46" />
+    <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.dll" target="lib\net46"/>
+    <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.pdb" target="lib\net46" />
+    <file src="LuisActionBinding\bin\release\Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.xml" target="lib\net46" />
+    <file src="**\*.cs" exclude="**\obj\**\*.cs" target="src" />
+    <file src="QnAMaker\bin\release\ar\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\ar"/>
+    <file src="QnAMaker\bin\release\en\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\en"/>
+    <file src="QnAMaker\bin\release\es\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\es"/>
+    <file src="QnAMaker\bin\release\fa\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\fa"/>
+    <file src="QnAMaker\bin\release\fr\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\fr"/>
+    <file src="QnAMaker\bin\release\ja\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\ja"/>
+    <file src="QnAMaker\bin\release\ru\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\ru"/>
+    <file src="QnAMaker\bin\release\zh-hans\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\zh-hans"/>
+    <file src="QnAMaker\bin\release\de-dE\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\de-dE"/>
+    <file src="QnAMaker\bin\release\cs\Microsoft.Bot.Builder.CognitiveServices.*.dll" target="lib\net46\cs"/>
+  </files>
+</package>

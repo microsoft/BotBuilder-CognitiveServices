@@ -7,7 +7,7 @@
 ## 2. Do you have a question?
 
 The issue tracker is for **issues**, in other words, bugs and suggestions.
-If you have a *question*, *feedback* or *suggestions*, please check our [support page](http://docs.botframework.com/support/).
+If you have a *question*, *feedback* or *suggestions*, please check our [support page](https://docs.microsoft.com/en-us/bot-framework/resources-links-help).
 
 In general, things we find useful when reviewing suggestions are:
 * A description of the problem you're trying to solve

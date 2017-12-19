@@ -393,7 +393,7 @@ public LuisActionDialog(IEnumerable<Assembly> assemblies, Action<ILuisAction, ob
 }
 ````
 
-In addition, the dialog has a key override for the [MessageReceived](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L#L102-L158) protected method in order to use our [LuisActionResolver](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L123) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
+In addition, the dialog has a key override for the [MessageReceived](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L102-L162) protected method in order to use our [LuisActionResolver](../../Library/LuisActionBinding/Bot/LuisActionDialog.cs#L123) instead of the default implemented logic which checks the `LuisResult` returned from LUIS service and creates a child dialog if it needs to prompt for missing parameters while interacting with LUIS service back and forth for each one of them.
 
 ````C#
 protected override async Task MessageReceived(IDialogContext context, IAwaitable<IMessageActivity> item)
@@ -613,6 +613,17 @@ public async Task WeatherInPlaceActionHandlerAsync(IDialogContext context, objec
 ````
 
 > NOTE: All the `ILuisAction` and `ILuisContextualAction` implementations you plan to use with the `LuisActionDialog` should be serializable.
+
+Finally, when no action is detected, based on the user input, the bot can respond with a custom message. To do so, just override the `NoActionDetectedAsync` method in your custom dialog. You can see an example in the [RootDialog](LuisActions.Samples.Bot/RootDialog.cs#L86-L91):
+
+````C#
+protected override async Task NoActionDetectedAsync(IDialogContext context, IMessageActivity message)
+{
+    var reply = context.MakeMessage();
+    reply.Text = "Sorry, I didn't understand that.";
+    await context.PostAsync(reply);
+}
+````
 
 #### LuisActions.Samples.Web project
 

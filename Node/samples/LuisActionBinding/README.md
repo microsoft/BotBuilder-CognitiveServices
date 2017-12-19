@@ -16,7 +16,7 @@ The first step to using LUIS is to create or import an application. Go to the ho
 
 ![Import an Existing Application](images/prereqs-import.png)
 
-Once you imported the application you'll need to "train" the model ([Training](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Train-Test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/PublishApp).
+Once you imported the application you'll need to "train" the model ([Training](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/train-test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/publishapp).
 
 Finally, edit the [.env](.env#L6) file and update the `LUIS_MODEL_URL` variable with your's Model URL.
 
@@ -197,7 +197,7 @@ var WeatherInPlaceAction = {
 In the [LUIS Action Binding samples folder](../LuisActionBinding) you'll find samples on how to implement Luis Actions.
 
 For example, [`FindHotelsAction`](hotels.js#L4-L39) defines an Action Binding for the `FindHotels` intent, defined in our previous LUIS model.
-This Action Binding has five parameters: three required (Place, Checkin and Checkout) and two optionals (Category and RoomType). These paramteres will be filled with the entities extracted from the user's intent. The matching can be done in two ways: by matching the entity name to the parameter name or by matching the [LUIS Pre-built entity types](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Pre-builtEntities) to the parameter's `builtInType` field.
+This Action Binding has five parameters: three required (Place, Checkin and Checkout) and two optionals (Category and RoomType). These paramteres will be filled with the entities extracted from the user's intent. The matching can be done in two ways: by matching the entity name to the parameter name or by matching the [LUIS Pre-built entity types](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/pre-builtentities) to the parameter's `builtInType` field.
 
 Validation of these paremeters is provided using `schema-inspector` validations, an object schema validator. More information can be found [here](https://github.com/Atinux/schema-inspector#validation).
 The fulfillment of this Action is action is a mock implementation, it only prints out the query details.
@@ -502,7 +502,7 @@ To get more information about how to get started in Bot Builder for Node and LUI
 * [Bot Builder for Node.js Reference](https://docs.microsoft.com/en-us/bot-framework/nodejs/)
 * [Understanding Natural Language](https://docs.botframework.com/en-us/node/builder/guides/understanding-natural-language/)
 * [LUIS Help Docs](https://www.luis.ai/Help/)
-* [Cognitive Services Documentation](https://www.microsoft.com/cognitive-services/en-us/luis-api/documentation/home)
+* [Cognitive Services Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)
 * [IntentDialog](https://docs.botframework.com/en-us/node/builder/chat/IntentDialog/)
 * [LuisRecognizer](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.luisrecognizer.html)
 * [EntityRecognizer](https://docs.botframework.com/en-us/node/builder/chat-reference/classes/_botbuilder_d_.entityrecognizer.html)

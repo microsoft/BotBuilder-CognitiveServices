@@ -34,4 +34,4 @@ Read these resources for more information about the Microsoft Bot Framework, Bot
 * [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
 * [Understanding Natural Language](https://docs.microsoft.com/en-us/bot-framework/cognitive-services-bot-intelligence-overview#language-understanding)
 * [LUIS Help Docs](https://www.luis.ai/Help/)
-* [Cognitive Services Documentation](https://www.microsoft.com/cognitive-services/en-us/luis-api/documentation/home)
+* [Cognitive Services Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)

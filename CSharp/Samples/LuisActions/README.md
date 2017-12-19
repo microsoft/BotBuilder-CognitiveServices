@@ -949,7 +949,7 @@ To get more information about how to get started in Bot Builder for .NET and Con
 * [Bot Builder for .NET](https://docs.microsoft.com/en-us/bot-framework/dotnet/)
 * [Enable language understanding with LUIS](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-luis-dialogs)
 * [LUIS Help Docs](https://www.luis.ai/Help/)
-* [Cognitive Services Documentation](https://www.microsoft.com/cognitive-services/en-us/luis-api/documentation/home)
+* [Cognitive Services Documentation](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)
 * [Specify initial form state and entities](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-formflow-advanced#specify-initial-form-state-and-entities)
 * Other examples using LUIS
     * [Alarm Bot](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-luis-dialogs#alarm-bot-implementation)

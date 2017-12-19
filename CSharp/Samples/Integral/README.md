@@ -28,7 +28,7 @@ The first step to using LUIS is to create or import an application. Go to the ho
 
 ![Import an Existing Application](../LuisActions/images/prereqs-import.png)
 
-Once you imported the application you'll need to "train" the model ([Training](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/Train-Test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://www.microsoft.com/cognitive-services/en-us/LUIS-api/documentation/PublishApp).
+Once you imported the application you'll need to "train" the model ([Training](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/train-test)) before you can "Publish" the model in an HTTP endpoint. For more information, take a look at [Publishing a Model](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/publishapp).
 
 Finally, edit the [Web.config](Web.config#L14-L15) and update the `LuisSubscriptionKey` and `LuisApplicationId` appSettings with the values corresponding to your Subscription and Application.
 

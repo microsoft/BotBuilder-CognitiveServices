@@ -173,6 +173,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\StringCrypto.cs" />
     <Compile Include="Helpers\LuisActionModelBinder.cs" />
     <Compile Include="Models\ActionScaffoldViewModel.cs" />
     <Compile Include="Helpers\EmptyPartialView.cs" />

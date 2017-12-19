@@ -10,14 +10,13 @@
 
         public ILuisAction LuisAction { get; set; }
 
-        // TODO: this is dangerous. This should be stored somewhere else, not in the client
         public string LuisActionType { get; set; }
 
         public bool HasIntent
         {
             get
             {
-                return !string.IsNullOrWhiteSpace(this.LuisActionType);
+                return !string.IsNullOrWhiteSpace(StringCrypto.Decrypt(this.LuisActionType));
             }
         }
     }

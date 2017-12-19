@@ -33,12 +33,12 @@
                 {
                     model.LuisAction = action;
 
-                    // TODO: this is dangerous. This should be stored somewhere else, not in the client, or at least encrypted
-                    model.LuisActionType = action.GetType().AssemblyQualifiedName;
+                    // Store the Action name, encrypted
+                    model.LuisActionType = StringCrypto.Encrypt(action.GetType().AssemblyQualifiedName);
                 }
                 else
                 {
-                    // no action recnogized
+                    // no action recognized
                     return this.View(new QueryViewModel());
                 }
             }

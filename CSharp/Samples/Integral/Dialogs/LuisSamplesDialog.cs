@@ -62,5 +62,13 @@
 
             await context.PostAsync(reply);
         }
+
+        protected override async Task NoActionDetectedAsync(IDialogContext context, IMessageActivity message)
+        {
+            var reply = context.MakeMessage();
+            reply.Text = $"Sorry, I did not understand \"{message.Text}\". Use sentences like \"What is the time in Miami?\", \"Search for 5 stars hotels in Barcelona\", \"Tell me the weather in Buenos Aires\", \"Location of SFO airport\".";
+
+            await context.PostAsync(reply);
+        }
     }
 }

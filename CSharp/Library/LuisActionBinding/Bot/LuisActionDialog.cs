@@ -155,6 +155,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
                     await this.DispatchToLuisActionActivityHandler(context, item, intentName, luisAction);
                 }
             }
+            else
+            {
+                await this.NoActionDetectedAsync(context, message);
+            }
+        }
+
+        protected virtual async Task NoActionDetectedAsync(IDialogContext context, IMessageActivity message)
+        {
         }
 
         protected virtual IDictionary<string, LuisActionActivityHandler> GetActionHandlersByIntent()

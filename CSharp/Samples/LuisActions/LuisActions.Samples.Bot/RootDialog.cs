@@ -82,5 +82,12 @@
 
             await context.PostAsync(reply);
         }
+
+        protected override async Task NoActionDetectedAsync(IDialogContext context, IMessageActivity message)
+        {
+            var reply = context.MakeMessage();
+            reply.Text = "Sorry, I didn't understand that.";
+            await context.PostAsync(reply);
+        }
     }
 }

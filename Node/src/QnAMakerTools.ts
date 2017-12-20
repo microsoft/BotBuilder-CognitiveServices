@@ -32,7 +32,7 @@
 //
 
 import * as builder from 'botbuilder';
-import { IQnAMakerResults, IQnAMakerResult } from './QnAMakerRecognizer'; 
+import { IQnAMakerResults, IQnAMakerResult } from './QnAMakerRecognizer';
 
 export interface IQnAMakerTools{
     createLibrary(): builder.Library;
@@ -46,13 +46,13 @@ export class QnAMakerTools implements IQnAMakerTools{
         this.lib = new builder.Library('qnaMakerTools');
         this.lib.dialog('answerSelection', [
                 function (session, args) {
-					var qnaMakerResult = args as IQnAMakerResults;
+                    var qnaMakerResult = args as IQnAMakerResults;
                     session.dialogData.qnaMakerResult = qnaMakerResult;
                     var questionOptions: string[] = [];
-        			qnaMakerResult.answers.forEach(function (qna: IQnAMakerResult) { questionOptions.push(qna.questions[0]); });
+                    qnaMakerResult.answers.forEach(function (qna: IQnAMakerResult) { questionOptions.push(qna.questions[0]); });
                     questionOptions.push("None of the above.");
                     var promptOptions: builder.IPromptOptions = {listStyle: builder.ListStyle.button, maxRetries: 0};
-                	builder.Prompts.choice(session,  "Did you mean:", questionOptions, promptOptions);
+                    builder.Prompts.choice(session,  "Did you mean:", questionOptions, promptOptions);
                 },
                 function (session, results) {
                     if(results && results.response && results.response.entity){
@@ -61,7 +61,7 @@ export class QnAMakerTools implements IQnAMakerTools{
                         if(filteredResult !== null && filteredResult.length > 0){
                             var selectedQnA = filteredResult[0];
                             session.send(selectedQnA.answer);
-                            session.endDialogWithResult(selectedQnA);
+                            session.endDialogWithResult({ response: selectedQnA });
                         }
                     } else {
                         session.send("Sorry! Not able to match any of the options.");

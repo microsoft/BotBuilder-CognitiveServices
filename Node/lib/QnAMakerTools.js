@@ -21,7 +21,7 @@ var QnAMakerTools = (function () {
                     if (filteredResult !== null && filteredResult.length > 0) {
                         var selectedQnA = filteredResult[0];
                         session.send(selectedQnA.answer);
-                        session.endDialogWithResult(selectedQnA);
+                        session.endDialogWithResult({ response: selectedQnA });
                     }
                 }
                 else {

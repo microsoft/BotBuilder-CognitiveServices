@@ -1,12 +1,15 @@
 {
   "name": "botbuilder-cognitiveservices",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Cognitive Services extensions for Microsoft Bot Builder.",
   "main": "./lib/botbuilder-cognitiveservices.js",
   "typings": "./lib/botbuilder-cognitiveservices.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Microsoft/BotBuilder-CognitiveServices.git"
+  },
+  "scripts": {
+    "build": "tsc -p ./src"
   },
   "keywords": [
     "botbuilder",
@@ -23,9 +26,12 @@
   },
   "homepage": "https://github.com/Microsoft/BotBuilder-CognitiveServices#readme",
   "dependencies": {
-    "botbuilder": "^3.7.0",
+    "bluebird": "^3.5.0",
+    "botbuilder": "^3.8.2",
     "html-entities": "^1.2.0",
+    "lodash": "^4.17.4",
     "request": "^2.78.0",
-    "restify": "^4.3.0"
+    "restify": "^4.3.0",
+    "schema-inspector": "^1.6.8"
   }
 }

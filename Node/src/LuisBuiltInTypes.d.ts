@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
 // 
@@ -31,19 +31,42 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// QnAMaker
-import { QnAMakerDialog } from './QnAMakerDialog';
-import { QnAMakerRecognizer } from './QnAMakerRecognizer';
-import { QnAMakerTools } from './QnAMakerTools';
+export const Age: string;
+export const Dimension: string;
+export const Email: string;
+export const Money: string;
+export const Number: string;
+export const Ordinal: string;
+export const Percentage: string;
+export const PhoneNumber: string;
+export const Temperature: string;
+export const Url: string;
 
-// LUIS Action Binding
-import * as LuisBuiltInTypes from './LuisBuiltInTypes';
-import * as LuisActionBinding from './LuisActionBinding';
+export namespace DateTime {
+    export const Date: string;
+    export const Time: string;
+    export const Duration: string;
+    export const Set: string;
+}
 
-declare var exports: any;
+export namespace DateTimeV2 {
+    export const Date: string;
+    export const Time: string;
+    export const DateRange: string;
+    export const TimeRange: string;
+    export const DateTimeRange: string;
+    export const Duration: string;
+    export const Set: string;
+}
 
-exports.QnAMakerDialog = QnAMakerDialog;
-exports.QnAMakerRecognizer = QnAMakerRecognizer;
-exports.QnAMakerTools = QnAMakerTools;
-exports.LuisBuiltInTypes = LuisBuiltInTypes;
-exports.LuisActionBinding = LuisActionBinding;
+export namespace Encyclopedia {
+    export const Person: string;
+    export const Organization: string;
+    export const Event: string;
+}
+
+export namespace Geography {
+    export const City: string;
+    export const Country: string;
+    export const PointOfInterest: string;
+}

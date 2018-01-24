@@ -38,7 +38,7 @@ import { QnAMakerTools } from './QnAMakerTools';
 
 export class QnAMakerDialog extends builder.Dialog {
     private answerThreshold: number;
-    private defaultNoMatchMessage: string;
+    private defaultNoMatchMessage: string | ((session: builder.Session) => string);
     private recognizers: builder.IntentRecognizerSet;
     private ocpApimSubscriptionKey: string;
     private kbUriForTraining: string;
@@ -70,7 +70,8 @@ export class QnAMakerDialog extends builder.Dialog {
 
     public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
-        var noMatchMessage = this.defaultNoMatchMessage;
+        var noMatchMessage = typeof this.defaultNoMatchMessage === "function" ?
+            this.defaultNoMatchMessage(session): this.defaultNoMatchMessage;
         if (!recognizeResult) {
             var locale = session.preferredLocale();
             var context = <builder.IRecognizeDialogContext>session.toRecognizeContext();

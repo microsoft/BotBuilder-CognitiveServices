@@ -68,6 +68,10 @@ export class QnAMakerDialog extends builder.Dialog {
         }
     }
 
+    public begin(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
+        this.replyReceived(session, recognizeResult);
+    }
+    
     public replyReceived(session: builder.Session, recognizeResult?: builder.IIntentRecognizerResult): void {
         var threshold = this.answerThreshold;
         var noMatchMessage = this.defaultNoMatchMessage;

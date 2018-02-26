@@ -78,7 +78,7 @@ protected override async Task DefaultWaitNextMessageAsync(IDialogContext context
 }
 ````
 #### QnA Scorable based bot
-[QnAScorableBasedBot](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/CSharp/Samples/QnAMaker/QnAScorableBasedBot) demonstrates how to use QnAMaker Service to specify simple question-answer pairs providing an static threshold score and default answer if non of the results surpases this threshold.
+[QnAScorableBasedBot](https://github.com/Microsoft/BotBuilder-CognitiveServices/tree/master/CSharp/Samples/QnAMaker/QnAScorableBasedBot) demonstrates how to use QnAMaker Service to specify simple question-answer pairs providing a static threshold score and default answer if none of the results surpass this threshold.
 The following line located in [Global.asax.cs](https://github.com/Microsoft/BotBuilder-CognitiveServices/blob/master/CSharp/Samples/QnAMaker/QnAScorableBasedBot/Global.asax.cs#L42) sends an automatic message when the best score for the question is less than the defined value.
 
 ````

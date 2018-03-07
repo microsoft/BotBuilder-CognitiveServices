@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace QnABotWithOverrides.Dialogs
 {
@@ -27,6 +28,21 @@ namespace QnABotWithOverrides.Dialogs
             Console.WriteLine("KB Question: " + results.Answers.First().Questions.First());
             Console.WriteLine("KB Answer: " + results.Answers.First().Answer);
             await base.DefaultWaitNextMessageAsync(context, message, results);
+        }
+
+        // Override default message to offer assitance with a suggested action card
+        protected override async Task RespondWithDefaultMessageAsync(IDialogContext context, IMessageActivity request)
+        {
+            var activity = ((Activity)context.Activity).CreateReply("Sorry, I don't understand this right now. Try another query!");
+            activity.SuggestedActions = new SuggestedActions(actions:
+                                            new List<CardAction>
+                                            {
+                                                new CardAction() {
+                                                    Title = "Try asking Bing!",
+                                                    Value = $"https://bing.com/search?q={request.Text}",
+                                                    Type = ActionTypes.OpenUrl }
+                                            });
+            await context.PostAsync(activity);
         }
     }
 }

@@ -118,11 +118,17 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                     if (sendDefaultMessageAndWait)
                     {
-                        await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+                        var responseMessage = ((Activity)context.Activity).CreateReply(qnaMakerResults.ServiceCfg.DefaultMessage);
+                        UpdateDefaultMessageResponse(message.Text, responseMessage);
+                        await context.PostAsync(responseMessage);
                         await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
                     }
                 }
             }
+        }
+
+        protected virtual void UpdateDefaultMessageResponse(string originalQuery, IMessageActivity response)
+        {
         }
 
         protected virtual bool IsConfidentAnswer(QnAMakerResults qnaMakerResults)

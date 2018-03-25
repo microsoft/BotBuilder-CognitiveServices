@@ -51,7 +51,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding
         /// <summary>
         /// Validates if the current action's context is valid, based on the Action properties set so far and their validation attributes.
         /// </summary>
-        /// <param name="validationResults">List of validation errors.</param>
+        /// <param name="results">List of validation errors.</param>
         /// <returns>True if context is valid, False otherwise.</returns>
         bool IsValid(out ICollection<ValidationResult> results);
     }

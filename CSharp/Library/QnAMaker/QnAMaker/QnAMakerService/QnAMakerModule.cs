@@ -39,16 +39,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 {
     public sealed class QnAMakerModule : Module
     {
-        string subscriptionKey;
+        string authKey;
         string kbid;
         string defaultMessage;
+        string endpointHostName;
         double threshold;
         int top;
 
-        public QnAMakerModule(string subscriptionKey, string kbid, string defaultMessage, double threshold, int top = 1)
+        public QnAMakerModule(string authKey, string kbid, string defaultMessage, string endpointHostName, double threshold, int top = 1)
         {
-            this.subscriptionKey = subscriptionKey;
+            this.authKey = authKey;
             this.kbid = kbid;
+            this.endpointHostName = endpointHostName;
             this.defaultMessage = defaultMessage;
             this.threshold = threshold;
             this.top = top;
@@ -59,7 +61,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             base.Load(builder);
 
             builder
-                .Register(c => new QnAMakerAttribute(subscriptionKey, kbid, defaultMessage, threshold, top))
+                .Register(c => new QnAMakerAttribute(authKey, kbid, defaultMessage, endpointHostName, threshold, top))
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .SingleInstance();

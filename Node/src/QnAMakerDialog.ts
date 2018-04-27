@@ -40,7 +40,8 @@ export class QnAMakerDialog extends builder.Dialog {
     private answerThreshold: number;
     private defaultNoMatchMessage: string;
     private recognizers: builder.IntentRecognizerSet;
-    private ocpApimSubscriptionKey: string;
+    private authKey: string;
+    private authHeader: string;
     private kbUriForTraining: string;
     private qnaMakerTools: QnAMakerTools;
    
@@ -48,7 +49,8 @@ export class QnAMakerDialog extends builder.Dialog {
         super();
         this.recognizers = new builder.IntentRecognizerSet(options);
         var qnaRecognizer = this.options.recognizers[0] as QnAMakerRecognizer;
-        this.ocpApimSubscriptionKey = qnaRecognizer.ocpApimSubscriptionKey;
+        this.authKey = qnaRecognizer.authorizationKey;
+        this.authHeader = qnaRecognizer.authHeader;
         this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
         this.qnaMakerTools = this.options.feedbackLib;
         if(typeof this.options.qnaThreshold !== 'number'){
@@ -159,7 +161,7 @@ export class QnAMakerDialog extends builder.Dialog {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': this.ocpApimSubscriptionKey
+                'Ocp-Apim-Subscription-Key': this.authKey
             },
             body: body
         },

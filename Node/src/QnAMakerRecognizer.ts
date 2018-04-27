@@ -36,7 +36,9 @@ import * as request from 'request';
 import * as entities from 'html-entities';
 import { QnAMakerTools } from './QnAMakerTools';
 
-var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
+var qnaMakerV2ServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
+var qnaMakerServiceEndpoint = null;
+var endpointHostName = null;
 var qnaApi = 'generateanswer';
 var qnaTrainApi = 'train';
 var htmlentities = new entities.AllHtmlEntities();
@@ -53,7 +55,8 @@ export interface IQnAMakerResult{
 
 export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     knowledgeBaseId: string;
-    subscriptionKey: string;
+    authKey: string;
+    endpointHostName?: string;
     top?: number;
     qnaThreshold?: number;
     defaultMessage?: string;
@@ -64,14 +67,58 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     private kbUri: string;
     public kbUriForTraining: string;
-    public ocpApimSubscriptionKey: string;
+    public authHeader: string;
+    public authorizationKey: string;
     private top: number;
     private intentName: string;
     
     constructor(private options: IQnAMakerOptions){
-        this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
-        this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
-        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
+        //Check if endpointHostName is passed
+        if(this.options.endpointHostName != null)
+        {
+            var hostName = this.options.endpointHostName.toLowerCase();
+
+            if(hostName.indexOf('https://') > -1)
+                hostName = hostName.split('/')[2];
+
+            // Remove qnamaker
+            if (hostName.indexOf("qnamaker") > -1)
+            {
+                hostName = hostName.split('/')[0];
+            }
+
+            // Trim any trailing /
+            hostName = hostName.replace("/", "");
+         
+            // Construct the V4 URI
+            this.kbUri = 'https://' + hostName + '/qnamaker/knowledgebases/' + this.options.knowledgeBaseId + '/' + qnaApi;
+
+            // Set the Authorization headers
+            this.authHeader = 'Authorization';
+            var re = /endpointkey/gi;
+            if(this.options.authKey.search(re) > -1)
+            {
+                this.authorizationKey = this.options.authKey.trim();
+            }
+            else
+            {
+                this.authorizationKey = 'EndpointKey ' + this.options.authKey.trim();
+            }
+        }
+        else
+        {
+            // Construct the V2 URI
+            this.kbUri = qnaMakerV2ServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
+
+            // Training API only available for V2
+            this.kbUriForTraining = qnaMakerV2ServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;        
+
+            // Set the Authorization headers
+            this.authHeader = 'Ocp-Apim-Subscription-Key';
+            //this.authorizationKey = this.options.authKey.trim();
+            this.authorizationKey = this.options.authKey;
+        }
+
         this.intentName = options.intentName || "qna";
         if(typeof this.options.top !== 'number'){
           this.top = 1;
@@ -86,7 +133,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         var result: IQnAMakerResults = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, this.intentName, (error, result) => {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, (error, result) => {
                     if (!error) {
                         cb(null, result);
                     } else {
@@ -97,13 +144,13 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, top: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
+    static recognize(utterance: string, kbUrl: string, authkey: string, authHeader:string, top: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
         try {
             request({
                 url: kbUrl,
                 method: 'POST',
                 headers: {
-                    'Ocp-Apim-Subscription-Key': ocpApimSubscriptionKey
+                    [authHeader]: authkey
                 },
                 json: {
                     question: utterance,

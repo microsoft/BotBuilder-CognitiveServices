@@ -40,6 +40,7 @@ namespace IntegralSampleBot
                 builder.RegisterModule(new QnAMakerModule(
                     ConfigurationManager.AppSettings["QnAMakerSubscriptionKey"],
                     ConfigurationManager.AppSettings["QnAMakerKnowledgeBaseId"],
+                    ConfigurationManager.AppSettings["QnAMakerEndPointHostName"],
                     "I don't understand this right now! Try another query!",
                     0.50));
             });

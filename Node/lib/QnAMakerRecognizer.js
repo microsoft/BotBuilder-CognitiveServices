@@ -2,16 +2,39 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var request = require("request");
 var entities = require("html-entities");
-var qnaMakerServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
+var qnaMakerV2ServiceEndpoint = 'https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/';
+var qnaMakerServiceEndpoint = null;
+var endpointHostName = null;
 var qnaApi = 'generateanswer';
 var qnaTrainApi = 'train';
 var htmlentities = new entities.AllHtmlEntities();
 var QnAMakerRecognizer = (function () {
     function QnAMakerRecognizer(options) {
         this.options = options;
-        this.kbUri = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
-        this.kbUriForTraining = qnaMakerServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
-        this.ocpApimSubscriptionKey = this.options.subscriptionKey;
+        if (this.options.endpointHostName != null) {
+            var hostName = this.options.endpointHostName.toLowerCase();
+            if (hostName.indexOf('https://') > -1)
+                hostName = hostName.split('/')[2];
+            if (hostName.indexOf("qnamaker") > -1) {
+                hostName = hostName.split('/')[0];
+            }
+            hostName = hostName.replace("/", "");
+            this.kbUri = 'https://' + hostName + '/qnamaker/knowledgebases/' + this.options.knowledgeBaseId + '/' + qnaApi;
+            this.authHeader = 'Authorization';
+            var re = /endpointkey/gi;
+            if (this.options.authKey.search(re) > -1) {
+                this.authorizationKey = this.options.authKey.trim();
+            }
+            else {
+                this.authorizationKey = 'EndpointKey ' + this.options.authKey.trim();
+            }
+        }
+        else {
+            this.kbUri = qnaMakerV2ServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaApi;
+            this.kbUriForTraining = qnaMakerV2ServiceEndpoint + this.options.knowledgeBaseId + '/' + qnaTrainApi;
+            this.authHeader = 'Ocp-Apim-Subscription-Key';
+            this.authorizationKey = this.options.authKey;
+        }
         this.intentName = options.intentName || "qna";
         if (typeof this.options.top !== 'number') {
             this.top = 1;
@@ -24,7 +47,7 @@ var QnAMakerRecognizer = (function () {
         var result = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.ocpApimSubscriptionKey, this.top, this.intentName, function (error, result) {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, function (error, result) {
                 if (!error) {
                     cb(null, result);
                 }
@@ -34,14 +57,14 @@ var QnAMakerRecognizer = (function () {
             });
         }
     };
-    QnAMakerRecognizer.recognize = function (utterance, kbUrl, ocpApimSubscriptionKey, top, intentName, callback) {
+    QnAMakerRecognizer.recognize = function (utterance, kbUrl, authkey, authHeader, top, intentName, callback) {
         try {
             request({
                 url: kbUrl,
                 method: 'POST',
-                headers: {
-                    'Ocp-Apim-Subscription-Key': ocpApimSubscriptionKey
-                },
+                headers: (_a = {},
+                    _a[authHeader] = authkey,
+                    _a),
                 json: {
                     question: utterance,
                     top: top
@@ -96,6 +119,7 @@ var QnAMakerRecognizer = (function () {
         catch (e) {
             callback(e instanceof Error ? e : new Error(e.toString()));
         }
+        var _a;
     };
     return QnAMakerRecognizer;
 }());

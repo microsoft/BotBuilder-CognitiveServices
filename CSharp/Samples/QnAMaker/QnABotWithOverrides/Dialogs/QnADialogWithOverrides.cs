@@ -8,7 +8,7 @@ using System.Linq;
 namespace QnABotWithOverrides.Dialogs
 {
     [Serializable]
-    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50, 3)]
+    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", null, 0.50, 3)]
     public class QnADialogWithOverrides : QnAMakerDialog
     {
         // Override to also include the knowledgebase question with the answer on confident matches

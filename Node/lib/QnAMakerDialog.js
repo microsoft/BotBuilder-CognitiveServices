@@ -19,7 +19,8 @@ var QnAMakerDialog = (function (_super) {
         _this.options = options;
         _this.recognizers = new builder.IntentRecognizerSet(options);
         var qnaRecognizer = _this.options.recognizers[0];
-        _this.ocpApimSubscriptionKey = qnaRecognizer.ocpApimSubscriptionKey;
+        _this.authKey = qnaRecognizer.authorizationKey;
+        _this.authHeader = qnaRecognizer.authHeader;
         _this.kbUriForTraining = qnaRecognizer.kbUriForTraining;
         _this.qnaMakerTools = _this.options.feedbackLib;
         if (typeof _this.options.qnaThreshold !== 'number') {
@@ -117,7 +118,7 @@ var QnAMakerDialog = (function (_super) {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': this.ocpApimSubscriptionKey
+                'Ocp-Apim-Subscription-Key': this.authKey
             },
             body: body
         }, function (error, response, body) {

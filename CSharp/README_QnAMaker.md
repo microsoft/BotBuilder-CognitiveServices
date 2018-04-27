@@ -39,7 +39,7 @@ using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 public class BasicQnAMakerDialog : QnAMakerDialog
 {        
 	//Parameters to QnAMakerService are:
-	//Compulsory: subscriptionKey, knowledgebaseId, 
+	//Compulsory: authKey, knowledgebaseId, 
 	//Optional: defaultMessage, scoreThreshold[Range 0.0 – 1.0]
 	public BasicQnAMakerDialog() : base(new QnAMakerService(new QnAMakerAttribute(Utils.GetAppSetting("QnASubscriptionKey"), Utils.GetAppSetting("QnAKnowledgebaseId"), "No good match in FAQ.", 0.5)))
 	{}

@@ -62,7 +62,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker.Tests
             string text = "asd";
             Uri uri = new Uri("http://test");
             QnAMakerRequestBody postBody = new QnAMakerRequestBody();
-            string subscriptionKey;
+            string authKey;
 
             QnAMakerResults qnaResults1 =
                 JsonConvert.DeserializeObject<QnAMakerResults>(

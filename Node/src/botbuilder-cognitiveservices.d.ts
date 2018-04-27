@@ -9,7 +9,7 @@ export interface IQnAMakerOptions {
     knowledgeBaseId: string;
     
     /** User's QnA Maker Subscription Key for authorization. */
-    subscriptionKey: string;
+    authKey: string;
     
     /** (Optional) message that is returned when there are no responses above the threshold. The default is 'No match found!'. */
     defaultMessage?: string;
@@ -19,6 +19,9 @@ export interface IQnAMakerOptions {
 
     /** And instance of dialog library which includes the feedback flow. This should be set if Top > 1. */
     feedbackLib?: QnAMakerTools;
+
+    /** The endpoint of the service */
+    endpointHostName?: string;
 }
 
 /** Result returned by an QnA Maker recognizer. */
@@ -57,12 +60,13 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     * Calls QnA Maker to retrieve answers for users utterances.
     * @param utterance The text to pass to QnA Maker for recognition.
     * @param kbUrl URI for QnA Maker knowledge base hosted on https://qnamaker.ai.
-    * @param ocpApimSubscriptionKey The subscription key of the user to access knowledge bases on https://qnamaker.ai.
+    * @param authKey The subscription key of the user to access knowledge bases on https://qnamaker.ai.
+    * @param authHeader The subscription key of the user to access knowledge bases on https://qnamaker.ai.
     * @param callback Callback to invoke with the results of the QnA Maker recognition step.
     * @param callback.err Error that occured during the recognition step.
     * @param callback.result the qna maker result that were recognized.
     */
-    static recognize(utterance: string, kbUrl: string, ocpApimSubscriptionKey: string, callback: (error: Error, result?: IQnAMakerResult) => void): void;
+    static recognize(utterance: string, kbUrl: string, authKey: string, authHeader: string, callback: (error: Error, result?: IQnAMakerResult) => void): void;
 }
 
 /** Fetches the best matching answer response from QnA Maker's Knowledge Base. */

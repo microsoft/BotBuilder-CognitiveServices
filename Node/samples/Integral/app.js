@@ -28,7 +28,7 @@ bot.set('storage', new builder.MemoryBotStorage());         // Register in-memor
 
 var qnaRecognizer = new cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: 'set your kbid here',
-    subscriptionKey: 'set your subscription key here'
+    authKey: 'set your authorization key here',
 });
 
 var LuisModelUrl = '';      // set your LUIS url with LuisActionBinding models (see samples/LuisActionBinding/LUIS_MODEL.json)

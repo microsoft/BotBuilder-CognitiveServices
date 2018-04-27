@@ -46,12 +46,17 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <summary>
         /// The Subscription Key to access the QnA Knowledge Base.
         /// </summary>
-        public readonly string SubscriptionKey;
+        public readonly string AuthKey;
         
         /// <summary>
         /// The QnA Knowledgebase ID.
         /// </summary>
         public readonly string KnowledgebaseId;
+
+        /// <summary>
+        /// The name of the host to requests.
+        /// </summary>
+        public readonly string EndpointHostName;
 
         /// <summary>
         /// The default message returned when no match found.
@@ -75,16 +80,18 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <param name="defaultMessage">The default message returned when no match found.</param>
         /// <param name="scoreThreshold">The threshold for answer score.</param>
         /// <param name="top">The number of answers to return.</param>
-        public QnAMakerAttribute(string subscriptionKey, string knowledgebaseId, string defaultMessage = null, double scoreThreshold = 0.3, int top = 1)
+        public QnAMakerAttribute(string authKey, string knowledgebaseId, string endpointHostName=null, string defaultMessage = null, double scoreThreshold = 0.3, int top = 1)
         {
             if (string.IsNullOrEmpty(defaultMessage))
             {
                 defaultMessage = Resource.Resource.defaultMessage;
             }
-            SetField.NotNull(out this.SubscriptionKey, nameof(subscriptionKey), subscriptionKey);
+
+            SetField.NotNull(out this.AuthKey, nameof(authKey), authKey);
             SetField.NotNull(out this.KnowledgebaseId, nameof(knowledgebaseId), knowledgebaseId);
             SetField.NotNull(out this.DefaultMessage, nameof(defaultMessage), defaultMessage);
             this.ScoreThreshold = scoreThreshold;
+            this.EndpointHostName = endpointHostName;
             this.Top = top;
         }
     }

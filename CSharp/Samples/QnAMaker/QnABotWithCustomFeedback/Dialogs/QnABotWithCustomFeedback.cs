@@ -8,7 +8,7 @@ using System.Linq;
 namespace QnABotWithCustomFeedback.Dialogs
 {
     [Serializable]
-    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50, 3)]
+    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", null, 0.50, 3)]
     public class QnABotWithCustomFeedback : QnAMakerDialog
     {
         protected override async Task QnAFeedbackStepAsync(IDialogContext context, QnAMakerResults qnaMakerResults)

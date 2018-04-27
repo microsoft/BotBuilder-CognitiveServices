@@ -14,7 +14,7 @@ Install the botbuilder-cognitiveservices  module using npm.
 `npm install --save botbuilder-cognitiveservices`
 
 The following parameters are passed when invoking the QnA Maker service.
-+ Subscription Key - Each registered user on [QnA Maker](https://qnamaker.ai) is assigned an unique subscription key for metering.
++ Authorization Key - Each registered user on [QnA Maker](https://qnamaker.ai) is assigned an unique subscription key for metering.
 + Knowledge Base ID - Each knowledge base created is assigned a unique subscription key by the tool.
 + Default Message (optional) - Message to show if there is no match in the knowledge base.
 + Score Threshold (optional) - Threshold value of the match confidence score returned by the service. It ranges from 0-1. This is useful in controlling the relevance of the responses.
@@ -25,7 +25,7 @@ The example extends the QnAMakerDialog, and calls it with the required parameter
 ```js
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here',
-	subscriptionKey: 'set your subscription key here'
+	authKey: 'set your authorization key here',
 });
 
 var BasicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({

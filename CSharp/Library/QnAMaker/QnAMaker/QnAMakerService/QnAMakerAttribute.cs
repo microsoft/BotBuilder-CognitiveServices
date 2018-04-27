@@ -71,6 +71,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <summary>
         /// Construct the QnA Knowledgebase information.
         /// </summary>
+        /// <param name="subscriptionKey">The Subscription Key to access the QnA Knowledge Base.</param>
         /// <param name="knowledgebaseId">The QnA Knowledgebase ID.</param>
         /// <param name="defaultMessage">The default message returned when no match found.</param>
         /// <param name="scoreThreshold">The threshold for answer score.</param>

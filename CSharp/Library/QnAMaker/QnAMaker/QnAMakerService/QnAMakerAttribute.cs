@@ -47,7 +47,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// The Subscription Key to access the QnA Knowledge Base.
         /// </summary>
         public readonly string AuthKey;
-        
+
         /// <summary>
         /// The QnA Knowledgebase ID.
         /// </summary>
@@ -80,7 +80,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// <param name="defaultMessage">The default message returned when no match found.</param>
         /// <param name="scoreThreshold">The threshold for answer score.</param>
         /// <param name="top">The number of answers to return.</param>
-        public QnAMakerAttribute(string authKey, string knowledgebaseId, string endpointHostName=null, string defaultMessage = null, double scoreThreshold = 0.3, int top = 1)
+        public QnAMakerAttribute(string authKey, string knowledgebaseId, string defaultMessage = null, double scoreThreshold = 0.3, int top = 1, string endpointHostName = null)
         {
             if (string.IsNullOrEmpty(defaultMessage))
             {

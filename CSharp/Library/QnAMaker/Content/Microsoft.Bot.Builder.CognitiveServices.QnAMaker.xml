@@ -70,7 +70,7 @@
             Maximum number of answers.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.#ctor(System.String,System.String,System.String,System.String,System.Double,System.Int32)">
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.#ctor(System.String,System.String,System.String,System.Double,System.Int32,System.String)">
             <summary>
             Construct the QnA Knowledgebase information.
             </summary>

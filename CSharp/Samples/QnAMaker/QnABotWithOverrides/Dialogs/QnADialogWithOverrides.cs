@@ -8,7 +8,9 @@ using System.Linq;
 namespace QnABotWithOverrides.Dialogs
 {
     [Serializable]
-    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", null, 0.50, 3)]
+    // Below method uses the V2 APIs : https://aka.ms/qnamaker-v2-apis. 
+    // To use V4 stack, you also need to add the Endpoint hostname to the parameters below : https://aka.ms/qnamaker-v4-apis
+    [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50, 3)]
     public class QnADialogWithOverrides : QnAMakerDialog
     {
         // Override to also include the knowledgebase question with the answer on confident matches

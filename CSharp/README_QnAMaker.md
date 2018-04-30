@@ -4,7 +4,7 @@
 The following examples demonstrate how to use the QnA Maker Dialog your Microsoft Bot Framework bot in C#. 
 
 ## Prerequisites
-You should create a knowledge base at [QnA Maker](https://qnamaker.ai). This is a free tool under cognitive services with a limit of 10,000 transactions per month, 10 per minute.
+You should create a knowledge base at [QnA Maker](https://qnamaker.ai).
 
 ## Code Highlights
 
@@ -16,10 +16,12 @@ The **QnAMakerDialog** object contains the **StartAsync** and **MessageReceived*
 The **MessageReceived** method calls your QnA Maker service and returns the response to the user.
 
 The following parameters are passed when invoking the QnA Maker service.
-+ Subscription Key - Each registered user on [QnA Maker](https://qnamaker.ai) is assigned an unique subscription key for metering.
++ Authorization Key - Each registered user on [QnA Maker](https://qnamaker.ai) is assigned an unique subscription key for metering.
 + Knowledge Base ID - Each knowledge base created is assigned a unique subscription key by the tool.
 + Default Message (optional) - Message to show if there is no match in the knowledge base.
 + Score Threshold (optional) - Threshold value of the match confidence score returned by the service. It ranges from 0-1. This is useful in controlling the relevance of the responses.
++ Number of results (optional) - Specify the TopN results to retrieve from the service.
++ Endpoint Hostname (optional) - If using the [V4 APIs](https://aka.ms/qnamaker-v4-apis) and the GA stack, you need to also pass the endpoint hostname.
 
 ### Calling the QnAMakerDialog
 The example extends the QnAMakerDialog, and calls it with the required parameters.
@@ -39,7 +41,7 @@ using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 public class BasicQnAMakerDialog : QnAMakerDialog
 {        
 	//Parameters to QnAMakerService are:
-	//Compulsory: subscriptionKey, knowledgebaseId, 
+	//Compulsory: authKey, knowledgebaseId, 
 	//Optional: defaultMessage, scoreThreshold[Range 0.0 – 1.0]
 	public BasicQnAMakerDialog() : base(new QnAMakerService(new QnAMakerAttribute(Utils.GetAppSetting("QnASubscriptionKey"), Utils.GetAppSetting("QnAKnowledgebaseId"), "No good match in FAQ.", 0.5)))
 	{}

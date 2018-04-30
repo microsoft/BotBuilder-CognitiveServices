@@ -8,6 +8,7 @@ using System.Linq;
 namespace QnABotWithCustomFeedback.Dialogs
 {
     [Serializable]
+    // Train and the feedback API only works with the QnAMaker V2 APIs: https://aka.ms/qnamaker-v2-apis
     [QnAMaker("set yout subscription key here", "set your kbid here", "I don't understand this right now! Try another query!", 0.50, 3)]
     public class QnABotWithCustomFeedback : QnAMakerDialog
     {

@@ -12,11 +12,17 @@ The minimum prerequisites to run this sample are:
 The package contains a Recognizer plugin for QnA Maker that allow interation with QnA Maker knowledge bases. This recognizer along with the QnA Maker dialog are useful for building QnA bots in few minutes.
 
 #### QnA Recognizer
-The QnA Recognizer takes in two inputs 'knowledgeBaseId' and 'subscriptionKey', which is used to interact with the QnA Maker service. There is an optional input 'top' which can be specified to fetch more than 1 response from the service. The default value for 'top' is 1.
+The QnA Recognizer takes in the following inputs:
+* knowledgeBaseId - Your knowledge base id
+* authKey - Your authorization key.
+* top (optional) - Number of results returned.
+* qnaThreshold (optional) - Confidence threshod;
+* defaultMessage (optional) - Message to show if no results returned.
+* endpointHostName (optional) - To be used with the V4 APIs and the GA stack. See [here](https://aka.ms/qnamaker-docs-changesfrompreview).
 ````
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 
-	subscriptionKey: 'set your subscription key here',
+	authKey: 'set your authorization key here',
 	top: 4});
 ````
 
@@ -47,7 +53,7 @@ var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 ````
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 
-	subscriptionKey: 'set your subscription key here'});
+	authKey: 'set your authorization key here'});
 	
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 	recognizers: [recognizer],
@@ -67,7 +73,7 @@ The recognizer instance is set up setting up the optional parameter 'top' to som
 ````
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 
-	subscriptionKey: 'set your subscription key here',
+	authKey: 'set your authorization key here',
 	top: 3});
 ````
 
@@ -145,7 +151,7 @@ basicQnAMakerDialog.defaultWaitNextMessage = function(session, qnaMakerResult){
 ````
 var qnarecognizer = new cognitiveservices.QnAMakerRecognizer({
 	knowledgeBaseId: 'set your kbid here', 
-	subscriptionKey: 'set your subscription key here',
+	authKey: 'set your authorization key here',
     top: 4});
 
 var model='set your luis model uri';

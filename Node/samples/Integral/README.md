@@ -20,7 +20,7 @@ You can obtain these values by publishing the Knowledge base, using *Publish* bu
 
 ![Knowledge Base Published](images/qnamaker-publish.png)
 
-Now update the `knowledgeBaseId` and `subscriptionKey` variables in the `QnAMakerRecognizer` constructor [here](app.js#L30-L31).
+Now update the `knowledgeBaseId` and `authKey` variables in the `QnAMakerRecognizer` constructor [here](app.js#L30-L31).
 
 ### LUIS Application
 If you want to test this sample, you have to import the pre-build [LUIS_MODEL.json](../LuisActionBinding/LUIS_MODEL.json) file to your [LUIS account](https://luis.ai/).

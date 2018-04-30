@@ -12,6 +12,17 @@ public class SimpleQnADialog : QnAMakerDialog
 {
 }
 ````
+The above code sample works with the free preview version of QnAMaker. With the GA of QnAMaker, the runtime of the QnAMaker service is deployed in the user's subscription. See more details of the GA architecture [here](https://aka.ms/qnamaker-docs-home).
+
+To use the QnAMakerDialog with the GA stack, you need to pass in the hostname of your endpoint and the authorization key. See [here](https://aka.ms/qnamaker-docs-changesfrompreview).
+````
+[Serializable]
+[QnAMaker("set yout authorization key here", "set your kbid here", <score threshold>, <number of results>, "endpoint hostname")]
+public class SimpleQnADialog : QnAMakerDialog
+{
+}
+````
+
 And then forward the call from the MessagesController:
 ````
 public async Task<HttpResponseMessage> Post([FromBody]Activity activity)

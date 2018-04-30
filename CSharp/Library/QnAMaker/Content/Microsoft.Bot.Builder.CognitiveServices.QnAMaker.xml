@@ -40,7 +40,7 @@
             The QnA Knowledgebase information.
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.SubscriptionKey">
+        <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.AuthKey">
             <summary>
             The Subscription Key to access the QnA Knowledge Base.
             </summary>
@@ -48,6 +48,11 @@
         <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.KnowledgebaseId">
             <summary>
             The QnA Knowledgebase ID.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.EndpointHostName">
+            <summary>
+            The name of the host to requests.
             </summary>
         </member>
         <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.DefaultMessage">
@@ -65,7 +70,7 @@
             Maximum number of answers.
             </summary>
         </member>
-        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.#ctor(System.String,System.String,System.String,System.Double,System.Int32)">
+        <member name="M:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerAttribute.#ctor(System.String,System.String,System.String,System.Double,System.Int32,System.String)">
             <summary>
             Construct the QnA Knowledgebase information.
             </summary>
@@ -140,7 +145,7 @@
             Standard implementation of IQnAService
             </summary>
         </member>
-        <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerService.UriBase">
+        <member name="F:Microsoft.Bot.Builder.CognitiveServices.QnAMaker.QnAMakerService.UriBaseV2">
             <summary>
             The base URI for accessing QnA Service.
             </summary>

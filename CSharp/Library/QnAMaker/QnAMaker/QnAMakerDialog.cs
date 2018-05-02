@@ -94,12 +94,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
                 {
                     var sendDefaultMessageAndWait = true;
                     qnaMakerResults = tasks.FirstOrDefault(x => x.Result.ServiceCfg != null)?.Result;
-                    if (tasks.Count(x => x.Result.Answers?.Count > 0) > 0)
-                    {
-                        var maxValue = tasks.Max(x => x.Result.Answers[0].Score);
-                        qnaMakerResults = tasks.First(x => x.Result.Answers[0].Score == maxValue).Result;
 
-                        if (qnaMakerResults != null && qnaMakerResults.Answers != null && qnaMakerResults.Answers.Count > 0)
+                    var qnaMakerResultWithFoundAnswers = tasks.Where(x => x.Result.Answers.Any()).ToList();
+                    if (qnaMakerResultWithFoundAnswers.Any())
+                    {
+                        var maxValue = qnaMakerResultWithFoundAnswers.Max(x => x.Result.Answers[0].Score);
+                        qnaMakerResults = qnaMakerResultWithFoundAnswers.First(x => x.Result.Answers[0].Score == maxValue).Result;
+
+                        if (qnaMakerResults?.Answers != null && qnaMakerResults.Answers.Count > 0)
                         {
                             if (this.IsConfidentAnswer(qnaMakerResults))
                             {

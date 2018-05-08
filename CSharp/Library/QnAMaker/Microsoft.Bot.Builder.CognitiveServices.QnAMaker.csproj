@@ -129,6 +129,7 @@
     <EmbeddedResource Include="Resource\Resource.fa.resx" />
     <EmbeddedResource Include="Resource\Resource.fr.resx" />
     <EmbeddedResource Include="Resource\Resource.ja.resx" />
+	<EmbeddedResource Include="Resource\Resource.ru.resx" />
     <EmbeddedResource Include="Resource\Resource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>

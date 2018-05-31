@@ -93,6 +93,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public double Score { get; set; }
         
         /// <summary>
+        /// The source of the answer found in the QnA Service.
+        /// </summary>
+        [JsonProperty(PropertyName = "source")]
+        public string Source { get; set; }
+
+        /// <summary>
         /// The list of metadata associated to the answer.
         /// </summary>
         [JsonProperty(PropertyName = "metadata")]

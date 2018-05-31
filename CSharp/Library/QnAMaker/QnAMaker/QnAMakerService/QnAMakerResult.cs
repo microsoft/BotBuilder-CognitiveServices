@@ -91,5 +91,21 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// </summary>
         [JsonProperty(PropertyName = "score")]
         public double Score { get; set; }
+        
+        /// <summary>
+        /// The list of metadata associated to the answer.
+        /// </summary>
+        [JsonProperty(PropertyName = "metadata")]
+        public List<QnAMakerMetadata> Metadata { get; set; }
+    }
+
+    [Serializable]
+    public class QnAMakerMetadata
+    {
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "value")]
+        public string Value { get; set; }
     }
 }

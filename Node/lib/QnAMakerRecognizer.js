@@ -42,12 +42,18 @@ var QnAMakerRecognizer = (function () {
         else {
             this.top = this.options.top;
         }
+        if(typeof this.options.isTest != null) {
+            this.isTest = this.options.isTest;
+        }
+        else {
+            this.isTest = false;
+        }
     }
     QnAMakerRecognizer.prototype.recognize = function (context, cb) {
         var result = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, function (error, result) {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.isTest, this.top, this.intentName, function (error, result) {
                 if (!error) {
                     cb(null, result);
                 }
@@ -57,7 +63,7 @@ var QnAMakerRecognizer = (function () {
             });
         }
     };
-    QnAMakerRecognizer.recognize = function (utterance, kbUrl, authkey, authHeader, top, intentName, callback) {
+    QnAMakerRecognizer.recognize = function (utterance, kbUrl, authkey, authHeader, isTest, top, intentName, callback) {
         try {
             request({
                 url: kbUrl,
@@ -67,6 +73,7 @@ var QnAMakerRecognizer = (function () {
                     _a),
                 json: {
                     question: utterance,
+                    isTest: isTest,
                     top: top
                 }
             }, function (error, response, result) {

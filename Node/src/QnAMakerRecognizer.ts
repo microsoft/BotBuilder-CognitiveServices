@@ -53,6 +53,22 @@ export interface IQnAMakerResult{
     score: number;
 }
 
+export interface IAuthInfo {
+    kbUri: string;
+    authorizationKey: string;
+    authHeader: string;
+}
+
+export interface ILocaleMap {
+    authorizationKey: string;
+    endpointHostName: string;
+    knowledgeBaseId: string;
+}
+
+export interface IQnAModelMap {
+    [local: string]: ILocaleMap;
+}
+
 export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     knowledgeBaseId: string;
     authKey: string;
@@ -62,6 +78,7 @@ export interface IQnAMakerOptions extends builder.IIntentRecognizerSetOptions {
     defaultMessage?: string;
     intentName?: string;
     feedbackLib?: QnAMakerTools;
+    models?: IQnAModelMap;
 }
 
 export class QnAMakerRecognizer implements builder.IIntentRecognizer {
@@ -71,39 +88,16 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     public authorizationKey: string;
     private top: number;
     private intentName: string;
+    private models: IQnAModelMap;
     
     constructor(private options: IQnAMakerOptions){
         //Check if endpointHostName is passed
         if(this.options.endpointHostName != null)
         {
-            var hostName = this.options.endpointHostName.toLowerCase();
-
-            if(hostName.indexOf('https://') > -1)
-                hostName = hostName.split('/')[2];
-
-            // Remove qnamaker
-            if (hostName.indexOf("qnamaker") > -1)
-            {
-                hostName = hostName.split('/')[0];
-            }
-
-            // Trim any trailing /
-            hostName = hostName.replace("/", "");
-         
-            // Construct the V4 URI
-            this.kbUri = 'https://' + hostName + '/qnamaker/knowledgebases/' + this.options.knowledgeBaseId + '/' + qnaApi;
-
-            // Set the Authorization headers
-            this.authHeader = 'Authorization';
-            var re = /endpointkey/gi;
-            if(this.options.authKey.search(re) > -1)
-            {
-                this.authorizationKey = this.options.authKey.trim();
-            }
-            else
-            {
-                this.authorizationKey = 'EndpointKey ' + this.options.authKey.trim();
-            }
+            var authInfo = QnAMakerRecognizer.getAuthValues(options.endpointHostName, options.authKey, options.knowledgeBaseId);
+            this.kbUri = authInfo.kbUri;
+            this.authHeader = authInfo.authHeader;
+            this.authorizationKey = authInfo.authorizationKey;
         }
         else
         {
@@ -127,20 +121,43 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         {
           this.top = this.options.top;
         }
+
+        this.models = <IQnAModelMap>(options.models || {});
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResults) => void): void {
         var result: IQnAMakerResults = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
+            var locale = context.locale || '*';
+            var dashPos = locale.indexOf('-');
+            const parentLocale = dashPos > 0 ? locale.substr(0, dashPos) : '*';
+            const model = this.models[locale] || this.models[parentLocale];
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, (error, result) => {
-                    if (!error) {
-                        cb(null, result);
-                    } else {
-                        cb(error, null);
+
+            if (model) {
+                var authInfo = QnAMakerRecognizer.getAuthValues(model.endpointHostName, model.authorizationKey, model.knowledgeBaseId);
+
+                QnAMakerRecognizer.recognize(utterance, authInfo.kbUri, authInfo.authorizationKey, authInfo.authHeader, this.top, this.intentName, (error, result) => {
+                        if (!error) {
+                            cb(null, result);
+                        } else {
+                            cb(error, null);
+                        }
                     }
-                }
-            );
+                );
+            } else if (this.kbUri && this.authorizationKey && this.authHeader) {
+                QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, (error, result) => {
+                        if (!error) {
+                            cb(null, result);
+                        } else {
+                            cb(error, null);
+                        }
+                    }
+                );
+            } else {
+                // This is to ensure if there is now locale or keys provided then we return nothing to fall down the waterfall chain. We cannot throw an error as it exits the chain
+                cb(null, null);
+            }
         }
     }
 
@@ -205,6 +222,45 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
             );
         } catch (e) {
             callback(e instanceof Error ? e : new Error(e.toString()));
+        }
+    }
+
+    static getAuthValues(endpointHostName: string, authKey: string, knowledgeBaseId: string): IAuthInfo {
+        var hostName = endpointHostName.toLowerCase();
+
+        if(hostName.indexOf('https://') > -1)
+            hostName = hostName.split('/')[2];
+
+        // Remove qnamaker
+        if (hostName.indexOf("qnamaker") > -1)
+        {
+            hostName = hostName.split('/')[0];
+        }
+
+        // Trim any trailing /
+        hostName = hostName.replace("/", "");
+     
+        // Construct the V4 URI
+        var kbUri = 'https://' + hostName + '/qnamaker/knowledgebases/' + knowledgeBaseId + '/' + qnaApi;
+
+        // Set the Authorization headers
+        var authHeader = 'Authorization';
+        var re = /endpointkey/gi;
+        var authorizationKey = '';
+
+        if(authKey.search(re) > -1)
+        {
+            authorizationKey = authKey.trim();
+        }
+        else
+        {
+            authorizationKey = 'EndpointKey ' + authKey.trim();
+        }
+
+        return {
+            authHeader,
+            authorizationKey,
+            kbUri
         }
     }
 }

@@ -22,6 +22,9 @@ export interface IQnAMakerOptions {
 
     /** The endpoint of the service */
     endpointHostName?: string;
+
+    /** Locale model for different qna makers */
+    models?: IQnAModelMap;
 }
 
 /** Result returned by an QnA Maker recognizer. */
@@ -142,4 +145,20 @@ export class QnAMakerTools{
      * @param qnaMakerResult QnA Maker response from the service. 
      */
     public answerSelector(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+}
+
+/**
+ * Model map for qna maker urls to locales
+ */
+export interface IQnAModelMap {
+    [local: string]: ILocaleMap;
+}
+
+/**
+ * Locale map to return authentication values generated from getAuthInfo function
+ */
+export interface ILocaleMap {
+    authorizationKey: string;
+    endpointHostName: string;
+    knowledgeBaseId: string;
 }

@@ -96,7 +96,7 @@ var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 bot.dialog('/', basicQnAMakerDialog);
 ````
 
-One can also specify their custom logic and add their own feedbackLib. [QnAMakerWithWithCustomTools](QnAMakerWithWithCustomTools) demonstrates how to achieve that. CustomQnAMakerTools.js is an example of how to customize the feedbackLib. Note that, you can also turn off the additional call to QnA Maker service for recording the feedback by just calling endDialog() instead of endDialogWithResult().
+One can also specify their custom logic and add their own feedbackLib. [QnAMakerWithCustomTools](QnAMakerWithCustomTools) demonstrates how to achieve that. CustomQnAMakerTools.js is an example of how to customize the feedbackLib. Note that, you can also turn off the additional call to QnA Maker service for recording the feedback by just calling endDialog() instead of endDialogWithResult().
 
 ````
 function CustomQnAMakerTools() {

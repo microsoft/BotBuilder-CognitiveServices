@@ -118,8 +118,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                     if (sendDefaultMessageAndWait)
                     {
-                        await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
-                        await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
+                        await this.SendDefaultMessageAndWaitAsync(context, message, qnaMakerResults);
                     }
                 }
             }
@@ -198,6 +197,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         protected virtual async Task RespondFromQnAMakerResultAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
             await context.PostAsync(result.Answers.First().Answer);
+        }
+
+        protected virtual async Task SendDefaultMessageAndWaitAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
+        {
+            await context.PostAsync(qnaMakerResults.ServiceCfg.DefaultMessage);
+            await this.DefaultWaitNextMessageAsync(context, message, qnaMakerResults);
         }
 
         protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)

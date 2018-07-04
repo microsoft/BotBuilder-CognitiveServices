@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Cognitive Services based Dialogs for Bot Builder:
-// https://github.com/Microsoft/BotBuilder-CognitiveServices 
-// 
+// https://github.com/Microsoft/BotBuilder-CognitiveServices
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -62,6 +62,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
     public delegate Task LuisActionActivityHandler(IDialogContext context, IAwaitable<IMessageActivity> message, object actionResult);
 
     /// <summary>
+    /// The handler for a LUIS on Action resolve.
+    /// </summary>
+    /// <param name="context">The dialog context.</param>
+    /// <param name="luisAction">The recognized action.</param>
+    public delegate void LuisAfterActionResolved(IDialogContext context, ref ILuisAction luisAction);
+
+    /// <summary>
     /// A dialog specialized to handle Action Binding using LUIS.ai.
     /// </summary>
     /// <typeparam name="TResult">The result type. Use Object.</typeparam>
@@ -71,6 +78,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
         private readonly LuisActionResolver actionResolver;
 
         private readonly Action<ILuisAction, object> onContextCreation;
+
+        private event LuisAfterActionResolved OnLuisActionResolved;
 
         /// <summary>
         /// Construct a LuisActionDialog instance.
@@ -123,6 +132,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
             var luisAction = this.actionResolver.ResolveActionFromLuisIntent(winner.Result, out intentName);
             if (luisAction != null)
             {
+                OnLuisActionResolved?.Invoke(context, ref luisAction);
                 var executionContextChain = new List<ActionExecutionContext> { new ActionExecutionContext(intentName, luisAction) };
                 while (LuisActionResolver.IsContextualAction(luisAction))
                 {

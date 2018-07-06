@@ -28,7 +28,7 @@ server.post('/api/messages', connector.listen());
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: 'set your kbid here',
     authKey: 'set your subscription key here',
-    endpointHostName: 'set your endpoint host name'
+    endpointHostName: 'set your endpoint host name',
     top: 3});
 
 var qnaMakerTools = new cognitiveservices.QnAMakerTools();

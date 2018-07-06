@@ -27,7 +27,8 @@ server.post('/api/messages', connector.listen());
 
 var recognizer = new cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: 'set your kbid here',
-    authKey: 'set your authorization key here'});
+    authKey: 'set your authorization key here',
+    endpointHostName: 'set your endpoint host name'});
 
 var basicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
     recognizers: [recognizer],

@@ -1,15 +1,15 @@
-﻿// 
+﻿//
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license.
-// 
+//
 // Microsoft Bot Framework: http://botframework.com
-// 
+//
 // Cognitive Services based Dialogs for Bot Builder:
-// https://github.com/Microsoft/BotBuilder-CognitiveServices 
-// 
+// https://github.com/Microsoft/BotBuilder-CognitiveServices
+//
 // Copyright (c) Microsoft Corporation
 // All rights reserved.
-// 
+//
 // MIT License:
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -18,10 +18,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -33,16 +33,16 @@
 
 namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 {
+    using Microsoft.Bot.Builder.Dialogs;
+    using Microsoft.Bot.Builder.Internals.Fibers;
+    using Microsoft.Bot.Builder.Luis;
+    using Microsoft.Bot.Connector;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using Microsoft.Bot.Builder.Dialogs;
-    using Microsoft.Bot.Builder.Internals.Fibers;
-    using Microsoft.Bot.Builder.Luis;
-    using Microsoft.Bot.Connector;
 
     /// <summary>
     /// The handler for a LUIS Action Binding.
@@ -312,8 +312,6 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 
             protected virtual async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> item)
             {
-                var nextPromptIdx = 0;
-
                 var validationResults = default(ICollection<ValidationResult>);
                 this.luisAction.IsValid(out validationResults);
 
@@ -328,7 +326,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
 
                     if (result.Succeed)
                     {
-                        nextPromptIdx++;
+                        this.luisAction.IsValid(out validationResults);
                     }
                     else if (!string.IsNullOrWhiteSpace(result.NewIntent) && result.NewAction != null)
                     {
@@ -383,9 +381,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.LuisActionBinding.Bot
                     }
                 }
 
-                if (validationResults.Count > nextPromptIdx)
+                if (validationResults.Count > 0)
                 {
-                    await context.PostAsync(validationResults.ElementAt(nextPromptIdx).ErrorMessage);
+                    await context.PostAsync(validationResults.First().ErrorMessage);
                     context.Wait(this.MessageReceivedAsync);
                 }
                 else

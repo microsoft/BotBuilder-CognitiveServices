@@ -28,6 +28,7 @@ server.post('/api/messages', connector.listen());
 var qnarecognizer = new cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: 'set your kbid here',
     authKey: 'set your authorization key here',
+    endpointHostName: 'set your endpoint host name',
     top: 4});
 
 var model='set your luis model uri';

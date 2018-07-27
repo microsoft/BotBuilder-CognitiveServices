@@ -82,7 +82,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     /// Standard implementation of IQnAService
     /// </summary>
     [Serializable]
-    public sealed class QnAMakerService : IQnAService
+    public class QnAMakerService : IQnAService
     {
         private readonly QnAMakerAttribute qnaInfo;
 

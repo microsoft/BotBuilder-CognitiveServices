@@ -4,16 +4,16 @@
 export interface IQnAMakerOptions {
     /** (Optional) minimum score needed to trigger the response. The default value is 0.3 */
     qnaThreshold?: number;
-    
+
     /** The QnA Maker Knowledge Base ID to query for getting the response. */
     knowledgeBaseId: string;
-    
+
     /** User's QnA Maker Subscription Key for authorization. */
     authKey: string;
-    
+
     /** (Optional) message that is returned when there are no responses above the threshold. The default is 'No match found!'. */
     defaultMessage?: string;
-    
+
     /** (Optional) maximum number of answers from the QnA Maker service. */
     Top?: number;
 
@@ -25,7 +25,7 @@ export interface IQnAMakerOptions {
 }
 
 /** Result returned by an QnA Maker recognizer. */
-export interface IQnAMakerResult{
+export interface IQnAMakerResult {
     /** Answer text of the matched QnA. */
     answer: string;
 
@@ -98,34 +98,34 @@ export class QnAMakerDialog extends builder.Dialog {
      * @param session Session object for the current conversation.
      * @param qnaMakerResult QnA Maker response from the service.
      */
-    qnaFeedbackStep(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+    qnaFeedbackStep(session: builder.Session, qnaMakerResult: IQnAMakerResult): void;
 
     /**
      * Processes the QnA Maker result and returns true when the top answer is very confident
      * @param qnaMakerResult QnA Maker response from the service.
      */
-    isConfidentAnswer(qnaMakerResult: IQnAMakerResults): boolean;
+    isConfidentAnswer(qnaMakerResult: IQnAMakerResult): boolean;
 
     /**
      * Default wait method the service calls after responding to the received text.
      * @param session Session object for the current conversation.
      * @param qnaMakerResult QnA Maker response from the service.
      */
-    defaultWaitNextMessage(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+    defaultWaitNextMessage(session: builder.Session, qnaMakerResult: IQnAMakerResult): void;
 
     /**
      * Sends the message from the bot based on the result from QnA Maker.
      * @param session Session object for the current conversation.
      * @param qnaMakerResult QnA Maker response from the service.
      */
-    respondFromQnAMakerResult(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+    respondFromQnAMakerResult(session: builder.Session, qnaMakerResult: IQnAMakerResult): void;
 }
 
 /**
  * Dialog library which includes the feedback flow when there are more than 1 good match
  * This should be set if Top > 1.
  */
-export class QnAMakerTools{
+export class QnAMakerTools {
     /**
      * Constructs a new instance of QnAMakerTools
      */
@@ -141,5 +141,5 @@ export class QnAMakerTools{
      * @param session Session object for the current conversation.
      * @param qnaMakerResult QnA Maker response from the service. 
      */
-    public answerSelector(session: builder.Session, qnaMakerResult: IQnAMakerResults): void;
+    public answerSelector(session: builder.Session, qnaMakerResult: IQnAMakerResult): void;
 }

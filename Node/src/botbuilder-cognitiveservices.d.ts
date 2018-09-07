@@ -15,7 +15,7 @@ export interface IQnAMakerOptions {
     defaultMessage?: string;
 
     /** (Optional) maximum number of answers from the QnA Maker service. */
-    Top?: number;
+    top?: number;
 
     /** And instance of dialog library which includes the feedback flow. This should be set if Top > 1. */
     feedbackLib?: QnAMakerTools;

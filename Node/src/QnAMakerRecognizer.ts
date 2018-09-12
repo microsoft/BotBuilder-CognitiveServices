@@ -45,6 +45,7 @@ var htmlentities = new entities.AllHtmlEntities();
 
 export interface IQnAMakerResults extends builder.IIntentRecognizerResult {
     answers: IQnAMakerResult[];
+    score: number;
 }
 
 export interface IQnAMakerResult{
@@ -71,6 +72,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
     public authorizationKey: string;
     private top: number;
     private intentName: string;
+    private scoreThreshold: number;
     
     constructor(private options: IQnAMakerOptions){
         //Check if endpointHostName is passed
@@ -127,13 +129,19 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         {
           this.top = this.options.top;
         }
+
+        if(typeof this.options.qnaThreshold !== 'number'){
+            this.scoreThreshold = 0.3;
+        }
+        else {
+        }
     }
 
     public recognize(context: builder.IRecognizeContext, cb: (error: Error, result: IQnAMakerResults) => void): void {
         var result: IQnAMakerResults = { score: 0.0, answers: null, intent: null };
         if (context && context.message && context.message.text) {
             var utterance = context.message.text;
-            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.intentName, (error, result) => {
+            QnAMakerRecognizer.recognize(utterance, this.kbUri, this.authorizationKey, this.authHeader, this.top, this.scoreThreshold, this.intentName, (error, result) => {
                     if (!error) {
                         cb(null, result);
                     } else {
@@ -144,7 +152,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
         }
     }
 
-    static recognize(utterance: string, kbUrl: string, authkey: string, authHeader:string, top: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
+    static recognize(utterance: string, kbUrl: string, authkey: string, authHeader:string, top: number, scoreThreshold: number, intentName: string, callback: (error: Error, result?: IQnAMakerResults) => void): void {
         try {
             request({
                 url: kbUrl,
@@ -166,16 +174,18 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
                                 if(result.answers && result.answers.length > 0){
                                     result.answers.forEach((ans) => {
                                         ans.score /= 100;
-                                        ans.answer = htmlentities.decode(ans.answer);
-                                        if (ans.questions && ans.questions.length > 0) {
-                                            ans.questions = ans.questions.map((q: string) => htmlentities.decode(q));
+                                        if(ans.score >= scoreThreshold) {
+                                            ans.answer = htmlentities.decode(ans.answer);
+                                            if (ans.questions && ans.questions.length > 0) {
+                                                ans.questions = ans.questions.map((q: string) => htmlentities.decode(q));
+                                            }
+                                            var answerEntity = {
+                                                score: ans.score,
+                                                entity: ans.answer,
+                                                type: 'answer'
+                                            }
+                                            answerEntities.push(answerEntity as builder.IEntity);
                                         }
-                                        var answerEntity = {
-                                            score: ans.score,
-                                            entity: ans.answer,
-                                            type: 'answer'
-                                        }
-                                        answerEntities.push(answerEntity as builder.IEntity);
                                     });
                                     result.score = result.answers[0].score;
                                     result.entities = answerEntities;

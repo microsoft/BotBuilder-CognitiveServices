@@ -134,6 +134,7 @@ export class QnAMakerRecognizer implements builder.IIntentRecognizer {
             this.scoreThreshold = 0.3;
         }
         else {
+            this.scoreThreshold = this.options.qnaThreshold;
         }
     }
 

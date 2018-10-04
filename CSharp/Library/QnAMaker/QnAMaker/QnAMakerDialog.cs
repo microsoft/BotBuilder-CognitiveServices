@@ -202,7 +202,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         protected virtual async Task DefaultWaitNextMessageAsync(IDialogContext context, IMessageActivity message, QnAMakerResults result)
         {
-            context.Done(true);
+            context.Done(message);
         }
     }
 }

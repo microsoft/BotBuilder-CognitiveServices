@@ -54,6 +54,14 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         Uri BuildRequest(string queryText, out QnAMakerRequestBody postBody, out string authKey);
 
         /// <summary>
+        /// Build the query uri for the query text.
+        /// </summary>
+        /// <param name="queryText">The query text.</param>
+        /// <param name="strictFilters">The strict filters.</param>
+        /// <returns>The query uri</returns>
+        Uri BuildRequest(string queryText, List<Metadata> strictFilters, out QnAMakerRequestBody postBody, out string authKey);
+
+        /// <summary>
         /// Build the feedback request uri for the query text and the selected QnA.
         /// </summary>
         /// <param name="userId">An unique ID for every user.</param>
@@ -98,9 +106,19 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         public QnAMakerService(QnAMakerAttribute qnaInfo)
         {
             SetField.NotNull(out this.qnaInfo, nameof(qnaInfo), qnaInfo);
-        }
+        }        
 
         Uri IQnAService.BuildRequest(string queryText, out QnAMakerRequestBody postBody, out string authKey)
+        {
+            return BuildRequestInternal(queryText, null, out postBody, out authKey);
+        }
+
+        Uri IQnAService.BuildRequest(string queryText, List<Metadata> strictFilters, out QnAMakerRequestBody postBody, out string authKey)
+        {
+            return BuildRequestInternal(queryText, strictFilters, out postBody, out authKey);
+        }
+
+        private Uri BuildRequestInternal(string queryText, List<Metadata> strictFilters, out QnAMakerRequestBody postBody, out string authKey)
         {
             var knowledgebaseId = this.qnaInfo.KnowledgebaseId;
 
@@ -114,7 +132,8 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
                 // V2 subacription Key
                 authKey = this.qnaInfo.AuthKey.Trim();
-            } else
+            }
+            else
             {
                 // Hostname was passed, build the V4 endpoint URI
                 string hostName = this.qnaInfo.EndpointHostName.ToLower();
@@ -146,9 +165,12 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
             var builder = new UriBuilder($"{UriBase}/{knowledgebaseId}/generateanswer");
 
-            postBody = new QnAMakerRequestBody { question = queryText, top = this.qnaInfo.Top };
+            postBody = strictFilters?.Count == 0
+                ? new QnAMakerRequestBody {question = queryText, top = this.qnaInfo.Top}
+                : new QnAMakerRequestBody {question = queryText, top = this.qnaInfo.Top, strictFilters = strictFilters};
 
             return builder.Uri;
+
         }
 
         Uri IQnAService.BuildFeedbackRequest(string userId, string userQuery, string kbQuestion, string kbAnswer, out QnAMakerTrainingRequestBody postBody, out string authKey, out string knowledgebaseId)
@@ -256,6 +278,9 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 
         [JsonProperty("top")]
         public int top { get; set; }
+
+        [JsonProperty("strictFilters")]
+        public List<Metadata> strictFilters { get; set; }
     }
 
     public class QnAMakerTrainingRequestBody
@@ -293,12 +318,13 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         /// </summary>
         /// <param name="service">QnA service.</param>
         /// <param name="text">The query text.</param>
+        /// <param name="strictFilters">Strict filters</param>
         /// <returns>The QnA result.</returns>
-        public static async Task<QnAMakerResults> QueryServiceAsync(this IQnAService service, string text)
+        public static async Task<QnAMakerResults> QueryServiceAsync(this IQnAService service, string text, List<Metadata> strictFilters = null)
         {
             QnAMakerRequestBody postBody;
             string authKey;
-            var uri = service.BuildRequest(text, out postBody, out authKey);
+            var uri = service.BuildRequest(text, strictFilters, out postBody, out authKey);
             return await service.QueryServiceAsync(uri, postBody, authKey);
         }
 

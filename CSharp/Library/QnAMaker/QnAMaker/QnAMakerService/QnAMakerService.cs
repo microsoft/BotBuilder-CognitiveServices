@@ -86,6 +86,11 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
     {
         private readonly QnAMakerAttribute qnaInfo;
 
+		/// <summary>
+		/// Static re-usable instance of HttpClient
+		/// </summary>
+		private static HttpClient _client = new HttpClient();
+
         /// <summary>
         /// The base URI for accessing QnA Service.
         /// </summary>
@@ -167,22 +172,19 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
         {
             string json = string.Empty;
 
-            using (HttpClient client = new HttpClient())
-            {
-                //Add the key header according to V2 or V4 format
-                if (authKey.ToLower().Contains("endpointkey"))
-                    client.DefaultRequestHeaders.Add("Authorization", authKey);
-                else
-                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", authKey);
+			//Add the key header according to V2 or V4 format
+			if (authKey.ToLower().Contains("endpointkey"))
+				_client.DefaultRequestHeaders.Add("Authorization", authKey);
+			else
+				_client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", authKey);
 
-                var response = await client.PostAsync(uri, new StringContent(JsonConvert.SerializeObject(postBody), Encoding.UTF8, "application/json"));
-                if (response != null && response.Content != null)
-                {
-                    json = await response.Content.ReadAsStringAsync();
-                }
-            }
+			var response = await _client.PostAsync(uri, new StringContent(JsonConvert.SerializeObject(postBody), Encoding.UTF8, "application/json"));
+			if (response != null && response.Content != null)
+			{
+				json = await response.Content.ReadAsStringAsync();
+			}
 
-            try
+			try
             {
                 var qnaMakerResults = JsonConvert.DeserializeObject<QnAMakerResults>(json);
 
@@ -217,30 +219,27 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
             {
                 string json = string.Empty;
 
-                using (HttpClient client = new HttpClient())
-                {
-                    var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri)
-                                      {
-                                          Content =
-                                              new StringContent(
-                                              JsonConvert
-                                              .SerializeObject(
-                                                  postBody),
-                                              Encoding.UTF8,
-                                              "application/json")
-                                      };
+				var request = new HttpRequestMessage(new HttpMethod("PATCH"), uri)
+				{
+					Content =
+											  new StringContent(
+											  JsonConvert
+											  .SerializeObject(
+												  postBody),
+											  Encoding.UTF8,
+											  "application/json")
+				};
 
-                    //Add the subscription key header
-                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", authKey);
+				//Add the subscription key header
+				_client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", authKey);
 
-                    var response = await client.SendAsync(request);
-                    if (response != null && response.Content != null)
-                    {
-                        json = await response.Content.ReadAsStringAsync();
-                    }
-                }
-            
-                return true;
+				var response = await _client.SendAsync(request);
+				if (response != null && response.Content != null)
+				{
+					json = await response.Content.ReadAsStringAsync();
+				}
+
+				return true;
             }
             catch
             {

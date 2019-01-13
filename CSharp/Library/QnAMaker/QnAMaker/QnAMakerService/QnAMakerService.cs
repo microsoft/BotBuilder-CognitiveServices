@@ -231,6 +231,7 @@ namespace Microsoft.Bot.Builder.CognitiveServices.QnAMaker
 				};
 
 				//Add the subscription key header
+				_client.DefaultRequestHeaders.Clear();
 				_client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", authKey);
 
 				var response = await _client.SendAsync(request);

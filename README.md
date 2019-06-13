@@ -1,4 +1,13 @@
-# [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services) control for [Microsoft Bot Builder](https://github.com/microsoft/botbuilder)
+# [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services) control for [Microsoft Bot Builder V3](https://github.com/Microsoft/BotBuilder-V3)
+
+## NOTE
+Bot Builder V4 QnA Maker libraries can be found in the corresponding repository:
+
+BotBuilder-dotnet: [Microsoft.Bot.Builder.AI.QnA](https://github.com/Microsoft/botbuilder-dotnet/tree/master/libraries/Microsoft.Bot.Builder.AI.QnA)
+
+BotBuilder-js: [qnaMaker.ts](https://github.com/Microsoft/botbuilder-js/blob/master/libraries/botbuilder-ai/src/qnaMaker.ts)
+
+## Description
 
 The cognitive services control makes consuming different Microsoft Cognitive Services easy for bots developed using [Microsoft Bot Builder](https://github.com/microsoft/botbuilder) SDK. The control is available for [C#](https://www.nuget.org/packages/Microsoft.Bot.Builder/) and [Node.js](https://www.npmjs.com/package/botbuilder) SDKs.
 
@@ -13,8 +22,8 @@ Currently the control has support for the following cognitive services:
 Read these resources for more information about the Microsoft Bot Framework, Bot Builder SDK and Cognitive service:
 
 * [Microsoft Bot Framework Overview](https://docs.microsoft.com/en-us/bot-framework/)
-* [Microsoft Bot Framework Bot Builder SDK](https://github.com/Microsoft/BotBuilder)
-* [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples)
+* [Microsoft Bot Framework Bot Builder SDK V3](https://github.com/Microsoft/BotBuilder-V3)
+* [Microsoft Bot Framework Samples](https://github.com/Microsoft/BotBuilder-Samples/tree/v3-sdk-samples)
 * [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services)
 * [QnA Maker](https://qnamaker.ai/)
 * [LUIS.ai](https://luis.ai/)

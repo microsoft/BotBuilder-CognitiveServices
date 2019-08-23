@@ -1,4 +1,4 @@
-# Status Update - DEPRICATED
+# Status Update - ARCHIVED
 
 As of August 2019, this repo is now archived. 
 

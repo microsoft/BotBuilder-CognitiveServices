@@ -1,3 +1,9 @@
+# Status Update - DEPRICATED
+
+As of August 2019, this repo is now archived. 
+
+From now on, https://github.com/Microsoft/botframework-sdk repo will be used as hub, with pointers to all the different SDK languages, tools and samples repos.
+
 # [Microsoft Cognitive Services](https://www.microsoft.com/cognitive-services) control for [Microsoft Bot Builder V3](https://github.com/Microsoft/BotBuilder-V3)
 
 ## V3 Deprecation Notification
